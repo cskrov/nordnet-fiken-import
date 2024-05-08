@@ -8,7 +8,7 @@ type FormatMoneyTest struct {
 }
 
 var formatMoneyTests = []FormatMoneyTest{
-	{0, "0,00"},
+	{0, ""},
 	{1, "0,01"},
 	{10, "0,10"},
 	{15, "0,15"},

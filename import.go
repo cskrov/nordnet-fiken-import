@@ -15,6 +15,13 @@ import (
 
 const FIKEN_HEADERS = "Til konto;Bokført dato;Forklarende tekst;Inngående;Ut;Inn;Saldo;Referanse"
 
+const NORDNET_HEADER_ID = "Id"
+const NORDNET_HEADER_BOKFORT_DATO = "Bokføringsdag"
+const NORDNET_HEADER_KONTO = "Portefølje"
+const NORDNET_HEADER_BELØP = "Beløp"
+const NORDNET_HEADER_SALDO = "Saldo"
+const NORDNET_HEADER_FORKLARENDE_TEKST = "Transaksjonstekst"
+
 func main() {
 	if len(os.Args) < 2 {
 		panic("Missing argument: Nordnet file path")
@@ -40,6 +47,15 @@ func main() {
 	content := string(data)
 	lines := strings.Split(content, "\n")
 
+	nordnetHeaders := strings.Split(lines[0], "\t")
+
+	idIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_ID)
+	bokførtDatoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_BOKFORT_DATO)
+	changeIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_BELØP)
+	kontoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_KONTO)
+	saldoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_SALDO)
+	forklarendeTekstIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_FORKLARENDE_TEKST)
+
 	fikenLines := []string{}
 
 	for i, line := range lines {
@@ -49,18 +65,18 @@ func main() {
 
 		fields := strings.Split(line, "\t")
 
-		change := parseMoney(fields[13])
-		after := parseMoney(fields[17])
+		change := parseMoney(fields[changeIndex])
+		after := parseMoney(fields[saldoIndex])
 		before := after - change
 
-		tilKonto := fields[4]
-		bokførtDato := fields[1]
+		tilKonto := fields[kontoIndex]
+		bokførtDato := fields[bokførtDatoIndex]
 		inngående := formatMoney(before)
 		inn := formatMoney(change)
 		ut := formatMoney(0)
 		saldo := formatMoney(after)
-		forklarendeTekst := fields[19]
-		referanse := fields[0]
+		forklarendeTekst := fields[forklarendeTekstIndex]
+		referanse := fields[idIndex]
 
 		fikenLine := []string{tilKonto, bokførtDato, forklarendeTekst, inngående, ut, inn, saldo, referanse}
 
@@ -112,6 +128,10 @@ func parseInt(s string) int {
 }
 
 func formatMoney(i int) string {
+	if i == 0 {
+		return ""
+	}
+
 	integer := i / 100
 	decimal := i % 100
 	return fmt.Sprintf("%d,%02d", integer, decimal)
@@ -121,4 +141,14 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func findHeaderIndex(headers []string, header string) int {
+	for i, h := range headers {
+		if h == header {
+			return i
+		}
+	}
+
+	panic("Nordnet header not found: \"" + header + "\"")
 }
