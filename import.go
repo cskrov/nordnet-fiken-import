@@ -6,14 +6,19 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
 
-const FIKEN_HEADERS = "Til konto;Bokført dato;Forklarende tekst;Inngående;Ut;Inn;Saldo;Referanse"
+const DATE_FORMAT = "2006-01-02"
+
+var FIKEN_HEADERS = []string{"Fra konto", "Til konto", "Bokført dato", "Forklarende tekst", "Inngående", "Ut", "Inn", "Saldo", "Referanse"}
+var COLUMN_COUNT = len(FIKEN_HEADERS)
 
 const NORDNET_HEADER_ID = "Id"
 const NORDNET_HEADER_BOKFORT_DATO = "Bokføringsdag"
@@ -21,6 +26,7 @@ const NORDNET_HEADER_KONTO = "Portefølje"
 const NORDNET_HEADER_BELØP = "Beløp"
 const NORDNET_HEADER_SALDO = "Saldo"
 const NORDNET_HEADER_FORKLARENDE_TEKST = "Transaksjonstekst"
+const NORDNET_HEADER_TYPE = "Transaksjonstype"
 
 func main() {
 	if len(os.Args) < 2 {
@@ -33,21 +39,23 @@ func main() {
 		panic("Empty argument: Nordnet file path")
 	}
 
-	outputFileName := ""
-
-	if len(os.Args) > 2 {
-		outputFileName = os.Args[2]
-	} else {
-		_, file := filepath.Split(nordnetFilePath)
-		outputFileName = file
-	}
+	_, outputFileName := filepath.Split(nordnetFilePath)
 
 	data, err := readFileUTF16(nordnetFilePath)
 	check(err)
 	content := string(data)
-	lines := strings.Split(content, "\n")
 
-	nordnetHeaders := strings.Split(lines[0], "\t")
+	lines := [][]string{}
+
+	var nordnetHeaders []string
+
+	for i, line := range strings.Split(content, "\n") {
+		if i == 0 {
+			nordnetHeaders = strings.Split(line, "\t")
+		} else {
+			lines = append(lines, strings.Split(line, "\t"))
+		}
+	}
 
 	idIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_ID)
 	bokførtDatoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_BOKFORT_DATO)
@@ -55,8 +63,20 @@ func main() {
 	kontoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_KONTO)
 	saldoIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_SALDO)
 	forklarendeTekstIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_FORKLARENDE_TEKST)
+	transaksjonstypeIndex := findHeaderIndex(nordnetHeaders, NORDNET_HEADER_TYPE)
+
+	slices.SortStableFunc(lines, func(a, b int) int {
+		aValue := lines[a][bokførtDatoIndex]
+		bValue := lines[b][bokførtDatoIndex]
+
+		return strings.Compare(aValue, bValue)
+	})
+
+	previousDate := time.Time{}
 
 	fikenLines := []string{}
+
+	slices.Reverse(lines) // Reverses in place. Mutates the original slice.
 
 	for i, line := range lines {
 		if i == 0 || strings.TrimSpace(line) == "" {
@@ -78,7 +98,34 @@ func main() {
 		forklarendeTekst := fields[forklarendeTekstIndex]
 		referanse := fields[idIndex]
 
-		fikenLine := []string{tilKonto, bokførtDato, forklarendeTekst, inngående, ut, inn, saldo, referanse}
+		fraKonto := ""
+		transaksjonstype := fields[transaksjonstypeIndex]
+
+		if transaksjonstype == "INNSKUDD" {
+			fraKonto = os.Args[2]
+		}
+
+		fikenLine := []string{fraKonto, tilKonto, bokførtDato, forklarendeTekst, inngående, ut, inn, saldo, referanse}
+
+		if len(fikenLine) != COLUMN_COUNT {
+			panic("Wrong number of columns: " + strconv.Itoa(len(fikenLine)))
+		}
+
+		date, err := time.Parse(DATE_FORMAT, bokførtDato)
+		check(err)
+
+		if !previousDate.IsZero() {
+			if previousDate.Month() != date.Month() {
+				endOfMonth := calculateEndOfMonth(previousDate)
+
+				if !endOfMonth.Equal(previousDate) {
+					endOfMonthLine := []string{"", tilKonto, endOfMonth.Format(DATE_FORMAT), "Saldo", inngående, ut, inn, saldo, ""}
+					fikenLines = append(fikenLines, strings.Join(endOfMonthLine, ";"))
+				}
+			}
+		}
+
+		previousDate = date
 
 		fikenLines = append(fikenLines, strings.Join(fikenLine, ";"))
 	}
@@ -87,7 +134,7 @@ func main() {
 		panic("No transactions found")
 	}
 
-	ssv := FIKEN_HEADERS + "\n" + strings.Join(fikenLines, "\n")
+	ssv := strings.Join(FIKEN_HEADERS, ";") + "\n" + strings.Join(fikenLines, "\n")
 
 	err = os.WriteFile("output/"+outputFileName, []byte(ssv), 0644)
 	check(err)
@@ -123,7 +170,10 @@ func parseMoney(s string) int {
 func parseInt(s string) int {
 	s = strings.ReplaceAll(s, " ", "")
 	i, err := strconv.Atoi(s)
-	check(err)
+	if err != nil {
+		fmt.Printf("Failed to parse integer: %s\n", s)
+		panic(err)
+	}
 	return i
 }
 
@@ -151,4 +201,8 @@ func findHeaderIndex(headers []string, header string) int {
 	}
 
 	panic("Nordnet header not found: \"" + header + "\"")
+}
+
+func calculateEndOfMonth(date time.Time) time.Time {
+	return date.AddDate(0, 1, -date.Day())
 }
