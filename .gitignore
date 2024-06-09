@@ -25,3 +25,5 @@ go.work
 *.csv
 *.xls
 output/
+examples/
+nordnet-fiken-import

@@ -1,14 +1,16 @@
-package main
+package money
 
-import "testing"
+import (
+	"testing"
+)
 
 type FormatMoneyTest struct {
-	input    int
+	input    Money
 	expected string
 }
 
 var formatMoneyTests = []FormatMoneyTest{
-	{0, ""},
+	{0, "0,00"},
 	{1, "0,01"},
 	{10, "0,10"},
 	{15, "0,15"},
@@ -36,7 +38,7 @@ var formatMoneyTests = []FormatMoneyTest{
 
 func TestFormatMoney(t *testing.T) {
 	for _, test := range formatMoneyTests {
-		actual := formatMoney(test.input)
+		actual := test.input.Format()
 		if actual != test.expected {
 			t.Errorf("Expected %s but got %s", test.expected, actual)
 		}
