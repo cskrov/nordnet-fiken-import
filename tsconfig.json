@@ -1,0 +1,44 @@
+{
+	"extends": "@tsconfig/svelte/tsconfig.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"lib": [
+			"ESNext",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"useDefineForClassFields": true,
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"noUncheckedIndexedAccess": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		/* Paths */
+		"baseUrl": "./src",
+		"paths": {
+			"@app/*": [
+				"*"
+			]
+		},
+		/* Cache */
+		"incremental": true,
+		"tsBuildInfoFile": ".tsbuildinfo",
+	},
+	"include": [
+		"src"
+	],
+}
