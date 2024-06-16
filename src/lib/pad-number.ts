@@ -1,0 +1,1 @@
+export const pad = (n: number, padding: number = 2) => n.toString(10).padStart(padding, "0");

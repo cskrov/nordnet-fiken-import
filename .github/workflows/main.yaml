@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install frontend dependencies
+        shell: bash
+        run: bun install
+  
+      - name: Build frontend
+        shell: bash
+        env:
+          VERSION: ${{ github.sha }}
+        run: bun run build
+
+      - name: Test frontend
+        shell: bash
+        run: bun test
+
+      - name: Login to GitHub Container Registry
+        if: false
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        if: false
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}:latest .
+          docker push ghcr.io/${{ github.repository }}:latest
+
+      - name: SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t ed25519 ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Deploy
+        shell: bash
+        run: scp -r dist/* ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_SERVER }}:${{ secrets.DEPLOY_PATH }}
