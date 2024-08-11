@@ -54,7 +54,7 @@ const getForklarendeTekst = (nordnetLine: NordnetLine, fraKonto: string | null):
   switch (nordnetLine.transaksjonstype) {
     case NordnetType.KJØPT:
       return `Kjøp av ${nordnetLine.verdipapir} (${nordnetLine.ISIN})`;
-    case NordnetType.SOLGT:
+    case NordnetType.SALG:
       return `Salg av ${nordnetLine.verdipapir} (${nordnetLine.ISIN})`;
     case NordnetType.DEBETRENTE:
       return "Debetrente";
@@ -126,7 +126,7 @@ const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, beløp }: 
         return { fraKonto: attemptToExtractAccountNumber(transaksjonstekst), tilKonto: portefølje };
       case NordnetType.KJØPT:
         return { fraKonto: portefølje, tilKonto: portefølje };
-      case NordnetType.SOLGT:
+      case NordnetType.SALG:
         return { fraKonto: portefølje, tilKonto: portefølje };
       case NordnetType.SALDO:
         return { fraKonto: portefølje, tilKonto: portefølje };
