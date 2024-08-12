@@ -36,13 +36,16 @@
     }
   };
 
-  const lastRow = rows.at(-1);
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1;
-  const isCurrentMonth = lastRow !== undefined && lastRow.generated && lastRow.year === currentYear && lastRow.month === currentMonth && !isLastDayOfMonth(now);
+  const isCurrentMonth = $derived.by(() => {
+    const lastRow = rows.at(-1);
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
 
-  const isGenerated = rows.every((row) => row.generated);
+    return lastRow !== undefined && lastRow.generated && lastRow.year === currentYear && lastRow.month === currentMonth && !isLastDayOfMonth(now);
+  });
+
+  const isGenerated = $derived(rows.every((row) => row.generated));
 </script>
 
 <Section variant={"surface"}>
