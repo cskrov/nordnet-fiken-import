@@ -8,8 +8,8 @@
 
   let { amount, reversed = false }: Props = $props();
 
-  const getClass = (value: number) => {
-    switch (Math.sign(value)) {
+  const className = $derived.by(() => {
+    switch (Math.sign(amount)) {
       case 0:
         return "zero";
       case -1:
@@ -17,10 +17,12 @@
       case 1:
         return reversed ? "negative" : "positive";
     }
-  };
+  });
+
+  const prettyAmount = $derived(prettyFormatMoney(amount));
 </script>
 
-<span class={getClass(amount)}>{prettyFormatMoney(amount)}</span>
+<span class={className}>{prettyAmount}</span>
 
 <style>
   .positive {
