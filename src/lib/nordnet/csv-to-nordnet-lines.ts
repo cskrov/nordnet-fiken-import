@@ -3,6 +3,7 @@ import type { CsvFile } from "@app/lib/csv";
 import { parse, isLastDayOfMonth, endOfMonth, addMonths } from "date-fns";
 import { NordnetType, type NordnetLine } from "@app/lib/nordnet/types";
 import { pad } from "@app/lib/pad-number";
+import { chain } from "@app/lib/chain";
 
 export const NORDNET_HEADER_ID = "Id";
 export const NORDNET_HEADER_BOKFORT_DATO = "Bokføringsdag";
@@ -70,7 +71,7 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
   });
 };
 
-export const deduplicateNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
+const deduplicateNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
   const uniqueIds = new Set<string>();
   const uniqueLines: NordnetLine[] = [];
 
@@ -86,11 +87,11 @@ export const deduplicateNordnetLines = (nordnetLines: NordnetLine[]): NordnetLin
   return uniqueLines;
 };
 
-export const sortNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => nordnetLines.toSorted((a, b) => {
+const sortNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => nordnetLines.toSorted((a, b) => {
   return a.bokførtDato.getTime() - b.bokførtDato.getTime();
 });
 
-export const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
+const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
   nordnetLines.flatMap((line, index) => {
     const nextLine = nordnetLines.at(index + 1);
 
@@ -155,3 +156,5 @@ export const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[]
     // Add missing end of month lines.
     return [line, ...missingMonths];
   });
+
+export const fixNordnetLines = chain(deduplicateNordnetLines, sortNordnetLines, generateMissingLines);

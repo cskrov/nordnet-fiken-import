@@ -5,7 +5,7 @@
   import Row from "@app/components/row.svelte";
   import NordnetSection from "@app/components/nordnet/nordnet-section.svelte";
   import UploadButton from "@app/components/upload-button.svelte";
-  import { toNordnetLines, generateMissingLines, deduplicateNordnetLines, sortNordnetLines } from "@app/lib/nordnet/csv-to-nordnet-lines";
+  import { toNordnetLines, fixNordnetLines } from "@app/lib/nordnet/csv-to-nordnet-lines";
   import { toFikenFiles, type FikenFile } from "@app/lib/fiken";
   import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from "@app/lib/download";
   import DownloadIcon from "virtual:icons/mdi/download";
@@ -31,10 +31,8 @@
     const sortedCsvFiles = [...csvFileMap.values()].sort((a, b) => a.fileName.localeCompare(b.fileName));
     try {
       const allNordnetLines = toNordnetLines(sortedCsvFiles);
-      const deduplicatedNordnetLines = deduplicateNordnetLines(allNordnetLines);
-      const generatedNordnetLines = generateMissingLines(sortNordnetLines(deduplicatedNordnetLines));
-      const sortedNordnetLines = sortNordnetLines(generatedNordnetLines);
-      fikenFiles = toFikenFiles(sortedNordnetLines);
+      const fixedNordnetLines = fixNordnetLines(allNordnetLines);
+      fikenFiles = toFikenFiles(fixedNordnetLines);
     } catch (e) {
       if (e instanceof Error) {
         errorMessage = e.message;
