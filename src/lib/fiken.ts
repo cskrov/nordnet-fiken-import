@@ -61,7 +61,7 @@ const getForklarendeTekst = (nordnetLine: NordnetLine, fraKonto: string | null):
     case NordnetType.OVERBELÅNINGSRENTE:
       return "Overbelåningsrente";
     case NordnetType.UTTAK:
-      return "Uttak";
+      return nordnetLine.transaksjonstekst;
     case NordnetType.INNSKUDD: {
       if (fraKonto === null || ACCOUNT_NUMBER_REGEX.test(nordnetLine.transaksjonstekst)) {
         return nordnetLine.transaksjonstekst;
