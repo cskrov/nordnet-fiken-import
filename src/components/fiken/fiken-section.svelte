@@ -13,15 +13,13 @@
   import WarningIcon from "virtual:icons/mdi/warning";
   import FikenRow from "@app/components/fiken/fiken-row.svelte";
   import { isLastDayOfMonth } from "date-fns";
+    import ModalButton from "@app/components/modal-button.svelte";
 
   let { fileName, rows }: FikenFile = $props();
 
-  let showModal = $state(false);
   let errorMessage = $state<string | null>(null);
   let showErrorModal = $state(false);
     
-  const onClose = () => { showModal = false; };
-  const onOpen = () => { showModal = true; };
   const closeError = () => { showErrorModal = false; };
 
   const onClick = () => {
@@ -56,22 +54,23 @@
     
     <div class="button-container">
       {#if isCurrentMonth}
-        <Button variant="warning" size="small" icon={warningIcon} onclick={onOpen}>Inneværende</Button>
-        <Modal isOpen={showModal} onClose={onClose} variant="warning">
+        <ModalButton buttonText="Inneværende" variant="warning" size="small" icon={warningIcon}>
           <div>
-            Dette er inneværende måned, i følge datoen på din enhet, og er derfor ufullstendig.
+            Dette er inneværende måned og er derfor ufullstendig.
           </div>
           <div>
-            Fiken vil ikke kunne avstemme måneden før den er over.
+            Fiken anbefaler å vente til én uke etter måneden er over.
           </div>
-        </Modal>
+          <div>
+            Fiken vil ikke kunne avstemme måneden før måneden er over.
+          </div>
+        </ModalButton>
       {/if}
 
       {#if isGenerated}
-        <Button variant="secondary" size="small" icon={helpIcon} onclick={onOpen}>Generert</Button>
-        <Modal isOpen={showModal} onClose={onClose}>
+        <ModalButton buttonText="Generert" variant="secondary" size="small" icon={helpIcon}>
           Denne måneden er fylt inn for at Fiken skal kunne avstemme måneden.
-        </Modal>
+        </ModalButton>
       {/if}
 
       <Button onclick={onClick} variant="primary" size="small" icon={downloadIcon}>

@@ -3,9 +3,8 @@
   import Money from "@app/components/fiken/money.svelte";
   import DateElement from "@app/components/fiken/date-element.svelte";
   import Account from "@app/components/fiken/account.svelte";
-  import Button from "@app/components/button.svelte";
-  import Modal from "@app/components/modal.svelte";
   import HelpIcon from "virtual:icons/mdi/help-circle";
+    import ModalButton from "@app/components/modal-button.svelte";
 
   interface Props {
     line: FikenLine;
@@ -13,10 +12,6 @@
   }
 
   let { line, lineNumber }: Props = $props();
-  let showModal = $state(false);
-
-  const close = () => { showModal = false; };
-  const open = () => { showModal = true; };
 
   const source = $derived(
     line.source.fileName === null
@@ -47,17 +42,14 @@
   <td>{line.referanse}</td>
   <td>
     {#if line.generated}
-      <Button
+      <ModalButton
         variant="secondary"
         size="small"
         icon={helpIcon}
-        onclick={open}
+        buttonText="Generert"
       >
-        Generert
-      </Button>
-      <Modal isOpen={showModal} onClose={close}>
         Denne raden er fylt inn for at Fiken skal kunne avstemme måneden.
-      </Modal>
+      </ModalButton>
     {:else}
       <span class="fadeout">{source}</span>
     {/if}
