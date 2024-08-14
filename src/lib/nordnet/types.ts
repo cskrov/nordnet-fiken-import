@@ -1,6 +1,6 @@
 export enum NordnetType {
   INNSKUDD = "INNSKUDD",
-  UTTAK = "UTTAK", // TODO: Guessing
+  UTTAK = "UTTAK INTERNET",
   SALDO = "SALDO",
   PLATTFORMAVGIFT = "PLATTFORMAVGIFT",
   KJØPT = "KJØPT",
