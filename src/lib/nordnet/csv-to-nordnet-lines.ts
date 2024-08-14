@@ -1,6 +1,6 @@
 import { parseMoney } from "@app/lib/money";
 import type { CsvFile } from "@app/lib/csv";
-import { parse, isLastDayOfMonth, endOfMonth, addMonths } from "date-fns";
+import { parse, isLastDayOfMonth, endOfMonth, addMonths, isSameMonth } from "date-fns";
 import { NordnetType, type NordnetLine } from "@app/lib/nordnet/types";
 import { pad } from "@app/lib/pad-number";
 import { chain } from "@app/lib/chain";
@@ -96,7 +96,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
     const nextLine = nordnetLines.at(index + 1);
 
     if (nextLine === undefined) {
-      if (isLastDayOfMonth(line.bokførtDato)) {
+      if (isSameMonth(line.bokførtDato, new Date()) || isLastDayOfMonth(line.bokførtDato)) {
         return line;
       }
 
