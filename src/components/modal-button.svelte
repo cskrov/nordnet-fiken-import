@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from "@app/components/button.svelte";
-    import Modal from "@app/components/modal.svelte";
+  import Modal from "@app/components/modal.svelte";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -8,15 +8,18 @@
     variant: "primary" | "secondary" | "warning" | "error";
     size?: "small" | "medium" | "large";
     icon?: Snippet;
+    defaultOpen?: boolean;
+    onClose?: () => void;
     children: Snippet;
   }
 
-  let { buttonText, children, variant, ...buttonProps }: Props = $props();
+  let { buttonText, children, variant, defaultOpen = false, onClose, ...buttonProps }: Props = $props();
 
-  let isOpen = $state<boolean>(false);
+  let isOpen = $state<boolean>(defaultOpen);
 
   const close = () => {
     isOpen = false;
+    onClose?.();
   };
 
   const open = () => {

@@ -103,3 +103,19 @@ body {
   height: 100%;
   width: 100%;
 }
+
+a {
+  color: var(--primary-500);
+  
+  &:visited {
+    color: var(--primary-400);
+  }
+
+  &:hover {
+    color: var(--primary-600);
+  }
+
+  &:active {
+    color: var(--primary-700);
+  }
+}

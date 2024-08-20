@@ -6,19 +6,22 @@
   import NordnetSection from "@app/components/nordnet/nordnet-section.svelte";
   import UploadButton from "@app/components/upload-button.svelte";
   import { toNordnetLines, fixNordnetLines } from "@app/lib/nordnet/csv-to-nordnet-lines";
-  import { toFikenFiles, type FikenFile } from "@app/lib/fiken";
+  import { toFikenFiles, type FikenFile } from "@app/lib/fiken/fiken-files";
   import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from "@app/lib/download";
   import DownloadIcon from "virtual:icons/mdi/download";
   import DownloadMultipleIcon from "virtual:icons/mdi/download-multiple";
   import type { CsvFile } from "@app/lib/csv";
   import FikenSection from "@app/components/fiken/fiken-section.svelte";
   import { SvelteMap } from 'svelte/reactivity';
-  import { AccountEvent } from "@app/lib/account-event";
+  import { FROM_ACCOUNT_EVENT, FromAccountEvent, TO_ACCOUNT_EVENT } from "@app/lib/account-event";
   import Modal from "@app/components/modal.svelte";
+  import { getForklarendeTekst } from "@app/lib/fiken/text";
+  import { type NordnetLine } from "@app/lib/nordnet/types";
 
   let errorMessage = $state<string | null>(null);
-
   let csvFileMap = $state<SvelteMap<string, CsvFile>>(new SvelteMap());
+  let rawNordnetLines = $state<NordnetLine[]>([]);
+  let nordnetLines = $state<NordnetLine[]>([]);
   let fikenFiles = $state<FikenFile[]>([]);
 
   const setFiles = (files: CsvFile[]) => {
@@ -28,12 +31,40 @@
   };
 
   $effect(() => {
-    const sortedCsvFiles = [...csvFileMap.values()].sort((a, b) => a.fileName.localeCompare(b.fileName));
     try {
-      const allNordnetLines = toNordnetLines(sortedCsvFiles);
-      const fixedNordnetLines = fixNordnetLines(allNordnetLines);
-      fikenFiles = toFikenFiles(fixedNordnetLines);
+      const sortedCsvFiles = [...csvFileMap.values()].sort((a, b) => a.fileName.localeCompare(b.fileName));
+      rawNordnetLines = toNordnetLines(sortedCsvFiles);
     } catch (e) {
+      rawNordnetLines = [];
+      nordnetLines = [];
+      fikenFiles = [];
+      if (e instanceof Error) {
+        errorMessage = e.message;
+      } else {
+        errorMessage = "Ukjent feil";
+      }
+    }
+  });
+
+  $effect(() => {
+    try {
+      nordnetLines = fixNordnetLines(rawNordnetLines);
+    } catch (e) {
+      nordnetLines = [];
+      fikenFiles = [];
+      if (e instanceof Error) {
+        errorMessage = e.message;
+      } else {
+        errorMessage = "Ukjent feil";
+      }
+    }
+  });
+
+  $effect(() => {
+    try {
+      fikenFiles = toFikenFiles(nordnetLines);
+    } catch (e) {
+      fikenFiles = [];
       if (e instanceof Error) {
         errorMessage = e.message;
       } else {
@@ -44,13 +75,56 @@
 
   let fikenSectionElement = $state<HTMLElement | null>(null);
 
+  const fromAccountListener = (event: Event) => {
+    if (event instanceof FromAccountEvent) {
+      event.stopPropagation();
+      console.log('from', event.account);
+      const { account, line } = event;
+      const nordnetLine = nordnetLines.find((n) => n.id === line.referanse);
+      const forklarendeTekst = nordnetLine === undefined ? line.forklarendeTekst : getForklarendeTekst(nordnetLine, account, line.tilKonto);
+
+      fikenFiles = fikenFiles.map((f) => {
+        if (!f.rows.includes(line)) {
+          return f;
+        }
+
+        return ({
+          ...f,
+          rows: f.rows.map((r) => r === line ? { ...r, fraKonto: account, forklarendeTekst } : r)
+        });
+      })
+    }
+  };
+
+  const toAccountListener = (event: Event) => {
+    if (event instanceof FromAccountEvent) {
+      event.stopPropagation();
+      console.log('to', event.account);
+      const { account, line } = event;
+      const nordnetLine = nordnetLines.find((n) => n.id === line.referanse);
+      const forklarendeTekst = nordnetLine === undefined ? line.forklarendeTekst : getForklarendeTekst(nordnetLine, line.fraKonto, account);
+
+      fikenFiles = fikenFiles.map((f) => {
+        if (!f.rows.includes(line)) {
+          return f;
+        }
+
+        return ({
+          ...f,
+          rows: f.rows.map((r) => r === line ? { ...r, tilKonto: account, forklarendeTekst } : r)
+        });
+      })
+    }
+  };
+
   $effect(() => {
-    fikenSectionElement?.addEventListener('account', (event) => {
-      if (event instanceof AccountEvent) {
-        const { account, line } = event;
-        line.fraKonto = account;
-      }
-    });
+    fikenSectionElement?.addEventListener(FROM_ACCOUNT_EVENT, fromAccountListener);
+    fikenSectionElement?.addEventListener(TO_ACCOUNT_EVENT, toAccountListener);
+
+    return () => {
+      fikenSectionElement?.removeEventListener(FROM_ACCOUNT_EVENT, fromAccountListener);
+      fikenSectionElement?.removeEventListener(TO_ACCOUNT_EVENT, toAccountListener);
+    };
   });
 
   $effect(() => {

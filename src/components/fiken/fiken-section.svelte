@@ -5,17 +5,18 @@
   import Button from "@app/components/button.svelte";
   import Modal from "@app/components/modal.svelte";
   import Table from "@app/components/table.svelte";
-  import { FIKEN_TABLE_HEADERS } from "@app/lib/fiken";
+  import { FIKEN_TABLE_HEADERS } from "@app/lib/fiken/fiken-csv";
   import { downloadFikenLinesCsv } from "@app/lib/download";
-  import type { FikenFile } from "@app/lib/fiken";
+  import type { FikenFile } from "@app/lib/fiken/fiken-files";
   import DownloadIcon from "virtual:icons/mdi/download";
   import HelpIcon from "virtual:icons/mdi/help-circle";
   import WarningIcon from "virtual:icons/mdi/warning";
   import FikenRow from "@app/components/fiken/fiken-row.svelte";
   import { isLastDayOfMonth } from "date-fns";
-    import ModalButton from "@app/components/modal-button.svelte";
+  import ModalButton from "@app/components/modal-button.svelte";
+  import { MONTHS, isMonth } from "@app/lib/month";
 
-  let { fileName, rows }: FikenFile = $props();
+  let { fileName, month, year, rows }: FikenFile = $props();
 
   let errorMessage = $state<string | null>(null);
   let showErrorModal = $state(false);
@@ -35,12 +36,11 @@
   };
 
   const isCurrentMonth = $derived.by(() => {
-    const lastRow = rows.at(-1);
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
-    return lastRow !== undefined && lastRow.generated && lastRow.year === currentYear && lastRow.month === currentMonth && !isLastDayOfMonth(now);
+    return year === currentYear && month === currentMonth && !isLastDayOfMonth(now);
   });
 
   const isGenerated = $derived(rows.every((row) => row.generated));
@@ -48,22 +48,24 @@
 
 <Section variant={"surface"}>
   <Header>
-    <Heading level={3} size="small">
-      <span>{fileName}</span>
+    <Heading level={1} size="small">
+      <span>{year} {isMonth(month) ? MONTHS.get(month) : 'Ukjent måned'}</span>
     </Heading>
     
+    <span class="filename" aria-label="filnavn">{fileName}</span>
+
     <div class="button-container">
       {#if isCurrentMonth}
         <ModalButton buttonText="Inneværende" variant="warning" size="small" icon={warningIcon}>
-          <div>
+          <span>
             Dette er inneværende måned og er derfor ufullstendig.
-          </div>
-          <div>
+          </span>
+          <span>
             Fiken anbefaler å vente til én uke etter måneden er over.
-          </div>
-          <div>
+          </span>
+          <span>
             Fiken vil ikke kunne avstemme måneden før måneden er over.
-          </div>
+          </span>
         </ModalButton>
       {/if}
 
@@ -109,5 +111,13 @@
   .button-container {
     display: flex;
     gap: 0.5rem;
+  }
+
+  .filename {
+    font-family: monospace;
+    font-style: italic;
+    font-size: 1rem;
+    margin-left: 1em;
+    margin-right: auto;
   }
 </style>

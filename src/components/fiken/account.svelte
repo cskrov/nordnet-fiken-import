@@ -1,28 +1,40 @@
 <script lang="ts">
-  import { AccountEvent } from "@app/lib/account-event";
-  import type { FikenLine } from "@app/lib/fiken";
+  import { FromAccountEvent, ToAccountEvent } from "@app/lib/account-event";
+  import {
+    removeLocalStorageAccountNumber,
+    setLocalStorageAccountNumber,
+  } from "@app/lib/fiken/account-number";
+  import type { FikenLineInnskudd, FikenLineUttak } from "@app/lib/fiken/types";
+  import { NordnetType } from "@app/lib/nordnet/types";
 
   interface Props {
     account: string | null;
-    line: FikenLine;
-    referanse: string;
+    line: FikenLineInnskudd | FikenLineUttak;
   }
 
-  let { account, line, referanse }: Props = $props();
+  let { account, line }: Props = $props();
 
   let inputElement: HTMLInputElement;
 
-  let localAccount = $state(
-    account ?? localStorage.getItem(`account-${referanse}`) ?? "",
-  );
+  const isFromAccount = $derived(line.type === NordnetType.INNSKUDD);
+  let localAccount = $state(account ?? "");
 
   $effect(() => {
-    if (localAccount.length === 0) {
-      localStorage.removeItem(`account-${referanse}`);
-    } else {
-      localStorage.setItem(`account-${referanse}`, localAccount.trim());
+    if (localAccount === account) {
+      return;
     }
-    inputElement.dispatchEvent(new AccountEvent(localAccount.trim(), line));
+
+    if (localAccount.length === 0) {
+      removeLocalStorageAccountNumber(line.referanse);
+    } else {
+      setLocalStorageAccountNumber(line.referanse, localAccount.trim());
+    }
+
+    const event = isFromAccount
+      ? new FromAccountEvent(localAccount.trim(), line)
+      : new ToAccountEvent(localAccount.trim(), line);
+
+    inputElement.dispatchEvent(event);
   });
 </script>
 
