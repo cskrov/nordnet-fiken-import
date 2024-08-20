@@ -91,12 +91,14 @@ const sortNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => nordnet
   return a.bokførtDato.getTime() - b.bokførtDato.getTime();
 });
 
-const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
-  nordnetLines.flatMap((line, index) => {
+const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
+  const now = new Date();
+
+  return nordnetLines.flatMap((line, index) => {
     const nextLine = nordnetLines.at(index + 1);
 
     if (nextLine === undefined) {
-      if (isSameMonth(line.bokførtDato, new Date()) || isLastDayOfMonth(line.bokførtDato)) {
+      if (isSameMonth(line.bokførtDato, now) || isLastDayOfMonth(line.bokførtDato)) {
         return line;
       }
 
@@ -156,5 +158,6 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
     // Add missing end of month lines.
     return [line, ...missingMonths];
   });
+};
 
 export const fixNordnetLines = chain(deduplicateNordnetLines, sortNordnetLines, generateMissingLines);

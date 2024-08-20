@@ -86,12 +86,12 @@
 
     {@render children()}
     
-    <footer>
-      <Button variant="secondary" size="small" onclick={close} icon={closeIcon}>
-        Lukk
-      </Button>
-    </footer>
   </section>
+  <footer>
+    <Button variant="secondary" size="small" onclick={close} icon={closeIcon}>
+      Lukk
+    </Button>
+  </footer>
 </dialog>
 
 {#snippet closeIcon()}
@@ -116,15 +116,15 @@
     font-weight: normal;
     font-style: normal;
     font-size: 1rem;
+    padding: 0;
     border-radius: var(--border-radius);
     color: inherit;
     background-color: var(--surface-900);
     border-width: 1px;
     border-style: solid;
-    padding: 2em;
-    padding-top: 3em;
-    padding-bottom: 3em;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
     
     &.primary {
       border-color: var(--primary-500);
@@ -144,31 +144,34 @@
 
     .heading {
       position: absolute;
-      left: 0.5rem;
-      top: 0.5rem;
+      left: 2rem;
+      top: 2rem;
       margin: 0;
       padding: 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-size: 1em;
     }
     
     .modal-content {
       display: flex;
       flex-direction: column;
       gap: 1em;
+      padding: 2em;
+      padding-top: 5em;
+      padding-bottom: 2em;
+    }
 
-      footer {
-        display: flex;
-        justify-content: flex-end;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding-bottom: 0.5em;
-        padding-right: 0.5em;
-        padding-left: 0.5em;
-      }
+    footer {
+      display: flex;
+      justify-content: flex-end;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding-bottom: 2em;
+      padding-right: 2em;
+      padding-left: 2em;
     }
 
     &::backdrop {

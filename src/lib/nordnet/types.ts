@@ -7,7 +7,6 @@ export enum NordnetType {
   SALG = "SALG",
   DEBETRENTE = "DEBETRENTE",
   OVERBELÅNINGSRENTE = "OVERBELÅNINGSRENTE",
-  UKJENT = "UKJENT"
 }
 
 export const NORDNET_TYPES = Object.values(NordnetType);

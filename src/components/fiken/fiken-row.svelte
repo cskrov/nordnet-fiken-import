@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { isInnskuddLine, type FikenLine } from "@app/lib/fiken";
+  import { isInnskuddLine, isUttakLine } from "@app/lib/fiken/guards";
+  import type { FikenLine } from "@app/lib/fiken/types";
   import Money from "@app/components/fiken/money.svelte";
   import DateElement from "@app/components/fiken/date-element.svelte";
   import Account from "@app/components/fiken/account.svelte";
   import HelpIcon from "virtual:icons/mdi/help-circle";
-    import ModalButton from "@app/components/modal-button.svelte";
+  import ModalButton from "@app/components/modal-button.svelte";
 
   interface Props {
     line: FikenLine;
@@ -25,14 +26,22 @@
   <td><DateElement date={line.bokførtDato} /></td>
   <td>
     {#if isInnskuddLine(line)}
-      <Account account={line.fraKonto} referanse={line.referanse} {line} />
+      <Account account={line.fraKonto} {line} />
     {:else if line.fraKonto === null}
       <span class="ignored">Ikke relevant</span>
     {:else}
       <span>{line.fraKonto}</span>
     {/if}
   </td>
-  <td>{line.tilKonto}</td>
+  <td>
+    {#if isUttakLine(line)}
+      <Account account={line.tilKonto} {line} />
+    {:else if line.tilKonto === null}
+      <span class="ignored">Ikke relevant</span>
+    {:else}
+      <span>{line.tilKonto}</span>
+    {/if}
+  </td>
   <td>{line.forklarendeTekst}</td>
   <td>{line.isin}</td>
   <td><Money amount={line.inngående} /></td>

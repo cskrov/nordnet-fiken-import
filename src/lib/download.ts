@@ -1,4 +1,6 @@
-import { toFikenCsv, type FikenFile, type FikenLine } from "@app/lib/fiken";
+import { toFikenCsv } from "@app/lib/fiken/fiken-csv";
+import type { FikenFile } from "@app/lib/fiken/fiken-files";
+import type { FikenLine } from "@app/lib/fiken/types";
 import { pad } from "@app/lib/pad-number";
 import { format } from "date-fns";
 
