@@ -11,9 +11,9 @@ export const getForklarendeTekst = (nordnetLine: NordnetLine, fraKonto: string |
     case NordnetType.OVERBELÅNINGSRENTE:
       return "Overbelåningsrente";
     case NordnetType.UTTAK:
-      return tilKonto === null ? nordnetLine.transaksjonstekst : `Uttak til konto ${tilKonto}`;
+      return tilKonto === null || tilKonto.length === 0 ? nordnetLine.transaksjonstekst : `Uttak til konto ${tilKonto}`;
     case NordnetType.INNSKUDD:
-      return fraKonto === null ? nordnetLine.transaksjonstekst : `Innskudd fra konto ${fraKonto}`;
+      return fraKonto === null || fraKonto.length === 0 ? nordnetLine.transaksjonstekst : `Innskudd fra konto ${fraKonto}`;
   }
 
   return nordnetLine.transaksjonstekst;
