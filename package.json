@@ -22,7 +22,7 @@
 		"eslint": "9.9.0",
 		"globals": "15.9.0",
 		"svelte-check": "3.8.5",
-		"svelte": "5.0.0-next.228",
+		"svelte": "5.0.0-next.230",
 		"tslib": "2.6.3",
 		"typescript-eslint": "8.2.0",
 		"typescript": "5.5.4",
