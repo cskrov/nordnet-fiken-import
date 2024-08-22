@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ChangeEventHandler } from "svelte/elements";
-  import UploadIcon from "virtual:icons/mdi/upload";
+  import UploadMultipleIcon from "virtual:icons/mdi/upload-multiple";
   import { parseCsvFiles } from "@app/lib/csv";
   import type { CsvFile } from "@app/lib/csv";
   import Button from "@app/components/button.svelte";
@@ -40,7 +40,7 @@
 </Button>
 
 {#snippet uploadIcon()}
-  <UploadIcon />
+  <UploadMultipleIcon />
 {/snippet}
 
 <style>
