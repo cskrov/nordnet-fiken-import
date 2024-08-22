@@ -10,6 +10,7 @@
   import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from "@app/lib/download";
   import DownloadIcon from "virtual:icons/mdi/download";
   import DownloadMultipleIcon from "virtual:icons/mdi/download-multiple";
+  import DeleteMultipleIcon from "virtual:icons/mdi/delete-sweep";
   import type { CsvFile } from "@app/lib/csv";
   import FikenSection from "@app/components/fiken/fiken-section.svelte";
   import { SvelteMap } from 'svelte/reactivity';
@@ -231,7 +232,7 @@
 {/snippet}
 
 {#snippet deleteAllIcon()}
-  <DownloadMultipleIcon  />
+  <DeleteMultipleIcon  />
 {/snippet}
 
 <style>
