@@ -142,7 +142,7 @@
     font-size: 14px;
 
     .pre {
-      font-family: monospace;
+      font-family: "Roboto Mono", monospace;
       color: darkgrey;
     }
   }
@@ -156,7 +156,7 @@
   }
 
   .type {
-    font-family: monospace;
+    font-family: "Roboto Mono", monospace;
     font-size: 0.8em;
     background-color: #444;
     padding: 0.2em 0.4em;

@@ -114,7 +114,7 @@
   }
 
   .filename {
-    font-family: monospace;
+    font-family: "Roboto Mono", monospace;
     font-style: italic;
     font-size: 1rem;
     margin-left: 1em;
