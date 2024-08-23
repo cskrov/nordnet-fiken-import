@@ -1,4 +1,6 @@
-# [Nordnet Fiken import](https://import.sourcecontrol.no)
+# Nordnet Fiken import
+
+Hosted at [https://import.sourcecontrol.no](https://import.sourcecontrol.no).
 
 1. Export CSV from Nordnet.
 2. Convert CSV with this application.
