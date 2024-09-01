@@ -1,36 +1,36 @@
 {
-	"name": "nordnet-fiken-import",
-	"version": "0.0.1",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"start": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.json",
-		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"lint": "eslint ."
-	},
-	"devDependencies": {
-		"@iconify/json": "2.2.241",
-		"@sveltejs/vite-plugin-svelte": "3.1.2",
-		"@tsconfig/svelte": "^5.0.4",
-		"@types/bun": "^1.1.8",
-		"@types/eslint": "9.6.0",
-		"autoprefixer": "10.4.20",
-		"eslint-plugin-svelte": "2.43.0",
-		"eslint": "9.9.1",
-		"globals": "15.9.0",
-		"svelte-check": "3.8.6",
-		"svelte": "5.0.0-next.238",
-		"tslib": "2.7.0",
-		"typescript-eslint": "8.2.0",
-		"typescript": "5.5.4",
-		"unplugin-icons": "0.19.2",
-		"vite-tsconfig-paths": "5.0.1",
-		"vite": "5.4.2"
-	},
-	"dependencies": {
-		"date-fns": "3.6.0"
-	}
+  "name": "nordnet-fiken-import",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@iconify/json": "2.2.243",
+    "@sveltejs/vite-plugin-svelte": "3.1.2",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/bun": "^1.1.8",
+    "@types/eslint": "9.6.1",
+    "autoprefixer": "10.4.20",
+    "eslint-plugin-svelte": "2.43.0",
+    "eslint": "9.9.1",
+    "globals": "15.9.0",
+    "svelte-check": "3.8.6",
+    "svelte": "5.0.0-next.241",
+    "tslib": "2.7.0",
+    "typescript-eslint": "8.3.0",
+    "typescript": "5.5.4",
+    "unplugin-icons": "0.19.2",
+    "vite-tsconfig-paths": "5.0.1",
+    "vite": "5.4.2"
+  },
+  "dependencies": {
+    "date-fns": "3.6.0"
+  }
 }
