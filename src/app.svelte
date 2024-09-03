@@ -79,7 +79,6 @@
   const fromAccountListener = (event: Event) => {
     if (event instanceof FromAccountEvent) {
       event.stopPropagation();
-      console.log('from', event.account);
       const { account, line } = event;
       const nordnetLine = nordnetLines.find((n) => n.id === line.referanse);
       const forklarendeTekst = nordnetLine === undefined ? line.forklarendeTekst : getForklarendeTekst(nordnetLine, account, line.tilKonto);
@@ -100,7 +99,6 @@
   const toAccountListener = (event: Event) => {
     if (event instanceof FromAccountEvent) {
       event.stopPropagation();
-      console.log('to', event.account);
       const { account, line } = event;
       const nordnetLine = nordnetLines.find((n) => n.id === line.referanse);
       const forklarendeTekst = nordnetLine === undefined ? line.forklarendeTekst : getForklarendeTekst(nordnetLine, line.fraKonto, account);
@@ -167,17 +165,17 @@
     <Heading level={1} size="large" centered>Nordnet til Fiken</Heading>
     <p class="description">Konverter CSV eksportert fra Nordnet til et format Fiken forstår.</p>
   </header>
-  
+
   <section>
     <Heading level={1} size="small" spacing>Nordnet</Heading>
-  
+
     <Row>
       <UploadButton onFiles={setFiles} />
       {#if csvFileMap.size !== 0}
         <Button variant="error" icon={deleteAllIcon} onclick={() => csvFileMap.clear()}>Slett alle</Button>
       {/if}
     </Row>
-  
+
     {#if csvFileMap.size === 0}
       <p>
         <em>
@@ -202,7 +200,7 @@
   {#if fikenFiles.length !== 0}
     <section bind:this={fikenSectionElement}>
       <Heading level={1} size="small" spacing>Fiken</Heading>
-  
+
       {#each fikenFiles as fikenFile}
         <FikenSection {...fikenFile} />
       {/each}
