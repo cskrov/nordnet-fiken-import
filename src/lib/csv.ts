@@ -12,7 +12,7 @@ export interface CsvFile {
   data: Csv;
 }
 
-const decoder = new TextDecoder("utf-16");
+const decoder = new TextDecoder('utf-16');
 
 export const parseCsvFiles = async (files: FileList): Promise<CsvFile[]> => {
   const result: CsvFile[] = new Array(files.length);
@@ -22,9 +22,9 @@ export const parseCsvFiles = async (files: FileList): Promise<CsvFile[]> => {
   for (const file of files) {
     const csv = decoder.decode(await file.arrayBuffer());
     const [headers, ...rows] = csv
-      .split("\n")
+      .split('\n')
       .filter((row) => row.length !== 0)
-      .map((row) => row.split("\t"));
+      .map((row) => row.split('\t'));
 
     if (headers === undefined) {
       continue;

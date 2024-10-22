@@ -1,12 +1,15 @@
-import { NordnetType, type NordnetLineSource } from "@app/lib/nordnet/types";
+import type { NordnetLineSource, NordnetType } from '@app/lib/nordnet/types';
+import type { Accessor } from 'solid-js';
 
 export interface BaseFikenLine {
   readonly type: NordnetType | string;
-  fraKonto: string | null;
-  tilKonto: string | null;
+  readonly fraKonto: Accessor<string | null>;
+  readonly setFraKonto: (value: string | null) => void;
+  readonly tilKonto: Accessor<string | null>;
+  readonly setTilKonto: (value: string | null) => void;
   readonly isin: string | null;
   readonly bokførtDato: Date;
-  readonly forklarendeTekst: string;
+  readonly forklarendeTekst: Accessor<string>;
   readonly inngående: number;
   readonly ut: number;
   readonly inn: number;

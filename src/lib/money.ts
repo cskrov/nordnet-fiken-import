@@ -4,10 +4,10 @@ const INTEGER_REGEX = /^[0-9]+$/;
 
 /**
  * @returns A whole number representing the value in øre.
-*/
+ */
 export const parseMoney = (value: string): Money => {
   const isNegative = value.startsWith('-');
-  const [integer = "0", decimal = "0"] = value.replace('-', '').replaceAll(' ', '').split(",");
+  const [integer = '0', decimal = '0'] = value.replace('-', '').replaceAll(' ', '').split(',');
 
   if (!INTEGER_REGEX.test(integer)) {
     throw new Error(`Invalid integer: ${integer}`);
@@ -33,29 +33,34 @@ export const parseMoney = (value: string): Money => {
     return isNegative ? -parsedDecimal : parsedDecimal;
   }
 
-  const parsed = (parsedInteger * 100 + parsedDecimal);
+  const parsed = parsedInteger * 100 + parsedDecimal;
 
   return isNegative ? -parsed : parsed;
-}
+};
 
 const splitMoney = (value: Money): [number, number] => {
-  const integer = Math.trunc(value / 100); // Math.floor(-0.1) === -1
+  const integer = Math.trunc(value / 100);
   const decimal = Math.abs(value) % 100;
 
   return [integer, decimal];
-}
+};
 
 export const formatMoney = (value: Money): string => {
   const [integer, decimal] = splitMoney(value);
 
-  return `${integer.toString(10)},${decimal.toString(10).padStart(2, '0')}`;
-}
+  return `${integer.toString(10)},${decimal.toString(10).padEnd(2, '0')}`;
+};
+
+// "minimumFractionDigits: 2" does not work in Bun (unit tests).
+const FORMATTER = Intl.NumberFormat('nb-NO', {
+  style: 'decimal',
+  useGrouping: true,
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
 
 export const prettyFormatMoney = (value: Money): string => {
-  const sign = Math.sign(value);
   const [integer, decimal] = splitMoney(value);
 
-  const integerString = Math.abs(integer).toString(10).split('').toReversed().map((n, i) => i % 3 === 0 ? `${n} ` : n).toReversed().join('').trim();
-
-  return `${sign === -1 ? '-' : ''}${integerString},${decimal.toString(10).padStart(2, '0')} kr`;
+  return `${FORMATTER.format(integer)},${decimal.toString(10).padEnd(2, '0')} kr`;
 };

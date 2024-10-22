@@ -22,7 +22,7 @@ jobs:
 
       - name: Install frontend dependencies
         shell: bash
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build frontend
         shell: bash

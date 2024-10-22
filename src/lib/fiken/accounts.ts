@@ -1,12 +1,19 @@
-import { attemptToExtractAccountNumber, getLocalStorageAccountNumber } from "@app/lib/fiken/account-number";
-import type { BaseFikenLine } from "@app/lib/fiken/types";
-import { isNordnetType, NordnetType, type NordnetLine } from "@app/lib/nordnet/types";
+import { attemptToExtractAccountNumber, getLocalStorageAccountNumber } from '@app/lib/fiken/account-number';
+import { type NordnetLine, NordnetType, isNordnetType } from '@app/lib/nordnet/types';
 
-export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, beløp, id }: NordnetLine): Pick<BaseFikenLine, 'fraKonto' | 'tilKonto'> => {
+interface NordnetKonti {
+  readonly fraKonto: string | null;
+  readonly tilKonto: string | null;
+}
+
+export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, beløp, id }: NordnetLine): NordnetKonti => {
   if (isNordnetType(transaksjonstype)) {
     switch (transaksjonstype) {
       case NordnetType.INNSKUDD:
-        return { fraKonto: getLocalStorageAccountNumber(id) ?? attemptToExtractAccountNumber(transaksjonstekst), tilKonto: portefølje };
+        return {
+          fraKonto: getLocalStorageAccountNumber(id) ?? attemptToExtractAccountNumber(transaksjonstekst),
+          tilKonto: portefølje,
+        };
       case NordnetType.KJØPT:
         return { fraKonto: portefølje, tilKonto: portefølje };
       case NordnetType.SALG:
@@ -20,10 +27,12 @@ export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, bel
       case NordnetType.PLATTFORMAVGIFT:
         return { fraKonto: portefølje, tilKonto: null };
       case NordnetType.UTTAK:
-        return { fraKonto: portefølje, tilKonto: getLocalStorageAccountNumber(id) ?? attemptToExtractAccountNumber(transaksjonstekst) };
+        return {
+          fraKonto: portefølje,
+          tilKonto: getLocalStorageAccountNumber(id) ?? attemptToExtractAccountNumber(transaksjonstekst),
+        };
     }
   }
 
   return { fraKonto: null, tilKonto: null };
 };
-

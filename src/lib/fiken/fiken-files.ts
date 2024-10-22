@@ -1,48 +1,103 @@
-import { getKonti } from "@app/lib/fiken/accounts";
-import { getForklarendeTekst } from "@app/lib/fiken/text";
-import type { FikenLine } from "@app/lib/fiken/types";
-import { type NordnetLine } from "@app/lib/nordnet/types";
+import { getKonti } from '@app/lib/fiken/accounts';
+import { getForklarendeTekst } from '@app/lib/fiken/text';
+import type { FikenLine } from '@app/lib/fiken/types';
+import type { NordnetLine } from '@app/lib/nordnet/types';
+import { createSignal } from 'solid-js';
 
-export interface FikenFile {
+export interface NordnetMonth {
+  readonly month: number;
+  readonly year: number;
+  readonly rows: NordnetLine[];
+}
+
+export const groupByMonth = (nordnetLines: NordnetLine[]): NordnetMonth[] =>
+  nordnetLines.reduce<NordnetMonth[]>((nordnetMonths, nordnetLine) => {
+    const { month, year } = nordnetLine;
+    const existingFile = nordnetMonths.find((m) => m.year === year && m.month === month);
+
+    if (existingFile) {
+      existingFile.rows.push(nordnetLine);
+    } else {
+      nordnetMonths.push({ year, month, rows: [nordnetLine] });
+    }
+
+    return nordnetMonths;
+  }, []);
+
+export const nordnetMonthToFikenMonth = ({ year, month, rows }: NordnetMonth): FikenFileData => ({
+  fileName: `nordnet-fiken-${year.toString(10)}.${month.toString(10).padStart(2, '0')}.csv`,
+  year,
+  month,
+  rows: rows.map(nordnetLineToFikenLine),
+});
+
+const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
+  const { id, transaksjonstype, bokførtDato, beløp, saldo, ISIN, month, year, source, generated } = nordnetLine;
+  const sign = Math.sign(beløp);
+  const nordnetKonti = getKonti(nordnetLine);
+  const [fraKonto, setFraKonto] = createSignal<string | null>(nordnetKonti.fraKonto);
+  const [tilKonto, setTilKonto] = createSignal<string | null>(nordnetKonti.tilKonto);
+
+  return {
+    type: transaksjonstype,
+    bokførtDato,
+    fraKonto,
+    setFraKonto,
+    tilKonto,
+    setTilKonto,
+    isin: ISIN,
+    forklarendeTekst: () => getForklarendeTekst(nordnetLine, fraKonto(), tilKonto()),
+    inngående: saldo - beløp,
+    ut: sign === -1 ? Math.abs(beløp) : 0,
+    inn: sign === 1 ? beløp : 0,
+    saldo,
+    referanse: id,
+    month,
+    year,
+    source,
+    generated,
+  };
+};
+
+export interface FikenFileData {
   readonly fileName: string;
   readonly month: number;
   readonly year: number;
   readonly rows: FikenLine[];
 }
 
-export const toFikenFiles = (nordnetLines: NordnetLine[]): FikenFile[] => {
-  return nordnetLines.reduce<FikenFile[]>((fikenFiles, nordnetLine) => {
-    const { id, transaksjonstype, bokførtDato, beløp, saldo, ISIN, month, year, source, generated } = nordnetLine;
-    const sign = Math.sign(beløp);
-    const { fraKonto, tilKonto } = getKonti(nordnetLine);
+// export const toFikenFiles = (nordnetLines: NordnetLine[]): FikenFileData[] =>
+//   nordnetLines.reduce<FikenFileData[]>((fikenFiles, nordnetLine) => {
+//     const { id, transaksjonstype, bokførtDato, beløp, saldo, ISIN, month, year, source, generated } = nordnetLine;
+//     const sign = Math.sign(beløp);
+//     const { fraKonto, tilKonto } = getKonti(nordnetLine);
 
-    const fikenLine: FikenLine = {
-      type: transaksjonstype,
-      bokførtDato: bokførtDato,
-      fraKonto,
-      tilKonto,
-      isin: ISIN,
-      forklarendeTekst: getForklarendeTekst(nordnetLine, fraKonto, tilKonto),
-      inngående: saldo - beløp,
-      ut: sign === -1 ? Math.abs(beløp) : 0,
-      inn: sign === 1 ? beløp : 0,
-      saldo: saldo,
-      referanse: id,
-      month: month,
-      year: year,
-      source: source,
-      generated: generated
-    };
+//     const fikenLine: FikenLine = {
+//       type: transaksjonstype,
+//       bokførtDato,
+//       fraKonto,
+//       tilKonto,
+//       isin: ISIN,
+//       forklarendeTekst: getForklarendeTekst(nordnetLine, fraKonto, tilKonto),
+//       inngående: saldo - beløp,
+//       ut: sign === -1 ? Math.abs(beløp) : 0,
+//       inn: sign === 1 ? beløp : 0,
+//       saldo,
+//       referanse: id,
+//       month,
+//       year,
+//       source,
+//       generated,
+//     };
 
-    const fileName = `nordnet-fiken-${fikenLine.year.toString(10)}.${fikenLine.month.toString(10).padStart(2, '0')}.csv`;
-    const existingFile = fikenFiles.find((f) => f.fileName === fileName);
+//     const fileName = `nordnet-fiken-${fikenLine.year.toString(10)}.${fikenLine.month.toString(10).padStart(2, '0')}.csv`;
+//     const existingFile = fikenFiles.find((f) => f.fileName === fileName);
 
-    if (existingFile) {
-      existingFile.rows.push(fikenLine);
-    } else {
-      fikenFiles.push({ fileName, month, year, rows: [fikenLine] });
-    }
+//     if (existingFile) {
+//       existingFile.rows.push(fikenLine);
+//     } else {
+//       fikenFiles.push({ fileName, month, year, rows: [fikenLine] });
+//     }
 
-    return fikenFiles;
-  }, []);
-};
+//     return fikenFiles;
+//   }, []);

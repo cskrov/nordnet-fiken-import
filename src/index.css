@@ -43,7 +43,6 @@
   --warning-800: rgb(140, 107, 5);
   --warning-900: rgb(115, 88, 4);
 
-
   --error-50: rgb(249, 221, 234);
   --error-100: rgb(246, 209, 228);
   --error-200: rgb(244, 198, 221);
@@ -75,14 +74,13 @@
 }
 
 html {
+  height: 100%;
+  width: 100%;
   font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: normal;
   font-style: normal;
-  font-variation-settings:  "wdth" 100;
-
-  height: 100%;
-  width: 100%;
+  font-variation-settings: "wdth" 100;
 }
 
 body {
@@ -95,18 +93,21 @@ body {
   color: var(--text-color);
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%;
+#root {
   width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 16px;
+  border-width: 3px;
+  overflow: auto;
+  position: relative;
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 a {
   color: var(--primary-500);
-  
+
   &:visited {
     color: var(--primary-400);
   }

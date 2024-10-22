@@ -1,0 +1,43 @@
+{
+  "editor.formatOnSave": true,
+  "editor.linkedEditing": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "always",
+    "source.fixAll.biome": "always",
+    "source.organizeImports.biome": "always",
+    "source.addMissingImports.ts": "explicit"
+  },
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "typescript.validate.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "workbench.editor.closeOnFileDelete": true,
+  "npm-intellisense.importQuotes": "'",
+  "npm-intellisense.importES6": true,
+  "npm-intellisense.showBuildInLibs": true,
+  "liveshare.autoShareServers": true,
+  "liveshare.openSharedServers": false,
+  "liveshare.languages.allowGuestCommandControl": true,
+  "liveshare.allowGuestDebugControl": true,
+  "liveshare.allowGuestTaskControl": true,
+  "liveshare.notebooks.allowGuestExecuteCells": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
+}

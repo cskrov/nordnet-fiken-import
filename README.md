@@ -18,5 +18,5 @@ Hosted at [https://import.sourcecontrol.no](https://import.sourcecontrol.no).
 
 - `bun run lint --fix` - lint and fix code.
 - `bun run typecheck` - typecheck code.
-- `bun run test` - run tests.
+- `bun test` - run tests.
 - `bun run build` - build for production.

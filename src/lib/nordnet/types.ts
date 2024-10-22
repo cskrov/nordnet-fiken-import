@@ -1,17 +1,17 @@
 export enum NordnetType {
-  INNSKUDD = "INNSKUDD",
-  UTTAK = "UTTAK INTERNET",
-  SALDO = "SALDO",
-  PLATTFORMAVGIFT = "PLATTFORMAVGIFT",
-  KJØPT = "KJØPT",
-  SALG = "SALG",
-  DEBETRENTE = "DEBETRENTE",
-  OVERBELÅNINGSRENTE = "OVERBELÅNINGSRENTE",
+  INNSKUDD = 'INNSKUDD',
+  UTTAK = 'UTTAK INTERNET',
+  SALDO = 'SALDO',
+  PLATTFORMAVGIFT = 'PLATTFORMAVGIFT',
+  KJØPT = 'KJØPT',
+  SALG = 'SALG',
+  DEBETRENTE = 'DEBETRENTE',
+  OVERBELÅNINGSRENTE = 'OVERBELÅNINGSRENTE',
 }
 
 export const NORDNET_TYPES = Object.values(NordnetType);
 
-export const isNordnetType = (type: string): type is NordnetType => NORDNET_TYPES.some(t => t === type);
+export const isNordnetType = (type: string): type is NordnetType => NORDNET_TYPES.some((t) => t === type);
 
 export interface NordnetLineSource {
   readonly fileName: string | null;
