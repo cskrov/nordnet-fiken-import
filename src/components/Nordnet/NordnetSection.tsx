@@ -1,5 +1,5 @@
 import { Heading, HeadingSize } from '@app/components/Heading';
-import { NordnetRow } from '@app/components/NordnetRow';
+import { NordnetRow } from '@app/components/Nordnet/NordnetRow';
 import { Section, SectionVariant } from '@app/components/Section';
 import { Table } from '@app/components/Table';
 import type { Csv } from '@app/lib/csv';

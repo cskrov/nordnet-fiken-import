@@ -1,5 +1,5 @@
 import { Button, ButtonSize, ButtonVariant } from '@app/components/Button';
-import { FikenRow } from '@app/components/FikenRow';
+import { FikenRow } from '@app/components/Fiken/FikenRow';
 import { Heading, HeadingSize } from '@app/components/Heading';
 import { Modal } from '@app/components/Modal/Modal';
 import { ModalButton } from '@app/components/Modal/ModalButton';

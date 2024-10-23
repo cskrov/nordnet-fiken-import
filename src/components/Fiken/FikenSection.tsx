@@ -1,4 +1,4 @@
-import { FikenFile } from '@app/components/FikenFile';
+import { FikenFile } from '@app/components/Fiken/FikenFile';
 import { Heading, HeadingSize } from '@app/components/Heading';
 import type { CsvFile } from '@app/lib/csv';
 import { groupByMonth } from '@app/lib/fiken/fiken-files';

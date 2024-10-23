@@ -1,10 +1,10 @@
 import { AppFooter } from '@app/components/AppFooter';
 import { Button, ButtonVariant } from '@app/components/Button';
 import { DropZone } from '@app/components/DropZone';
-import { FikenSection } from '@app/components/FikenSection';
+import { FikenSection } from '@app/components/Fiken/FikenSection';
 import { Header } from '@app/components/Header';
 import { Heading, HeadingSize } from '@app/components/Heading';
-import { NordnetSection } from '@app/components/NordnetSection';
+import { NordnetSection } from '@app/components/Nordnet/NordnetSection';
 import { Row } from '@app/components/Row';
 import { UploadButton } from '@app/components/UploadButton';
 import type { CsvFile } from '@app/lib/csv';
