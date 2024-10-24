@@ -68,10 +68,10 @@ interface FromAccountProps {
 
 const FromAccount: VoidComponent<FromAccountProps> = ({ line }) => {
   if (isInnskuddLineAccessor(line)) {
-    return <Account account={line().fraKonto()} line={line()} setAccount={(account) => line().setFraKonto(account)} />;
+    return <Account account={line().fraKonto} line={line} setAccount={(account) => line().setFraKonto(account)} />;
   }
 
-  if (line().fraKonto === null) {
+  if (line().fraKonto() === null) {
     return <Ignored>Ikke relevant</Ignored>;
   }
 
@@ -84,7 +84,7 @@ interface ToAccountProps {
 
 const ToAccount: VoidComponent<ToAccountProps> = ({ line }) => {
   if (isUttakLineAccessor(line)) {
-    return <Account account={line().tilKonto()} line={line()} setAccount={(account) => line().setTilKonto(account)} />;
+    return <Account account={line().tilKonto} line={line} setAccount={(account) => line().setTilKonto(account)} />;
   }
 
   if (line().tilKonto === null) {

@@ -1,32 +1,32 @@
 import { removeLocalStorageAccountNumber, setLocalStorageAccountNumber } from '@app/lib/fiken/account-number';
 import type { FikenLineInnskudd, FikenLineUttak } from '@app/lib/fiken/types';
-import type { JSX, VoidComponent } from 'solid-js';
+import type { Accessor, JSX, VoidComponent } from 'solid-js';
 import { styled } from 'solid-styled-components';
 
 interface AccountProps {
-  account: string | null;
+  account: Accessor<string | null>;
   setAccount: (value: string | null) => void;
-  line: FikenLineInnskudd | FikenLineUttak;
+  line: Accessor<FikenLineInnskudd | FikenLineUttak>;
 }
 
 export const Account: VoidComponent<AccountProps> = ({ account, setAccount, line }) => {
   const onInput: JSX.ChangeEventHandler<HTMLInputElement, Event> = ({ target }) => {
     const localAccount = target.value;
 
-    if (localAccount === account) {
+    if (localAccount === account()) {
       return;
     }
 
     setAccount(localAccount);
 
     if (localAccount.length === 0) {
-      removeLocalStorageAccountNumber(line.referanse);
+      removeLocalStorageAccountNumber(line().referanse);
     } else {
-      setLocalStorageAccountNumber(line.referanse, localAccount.trim());
+      setLocalStorageAccountNumber(line().referanse, localAccount.trim());
     }
   };
 
-  return <StyledInput type="text" required value={account ?? ''} onInput={onInput} />;
+  return <StyledInput type="text" required value={account() ?? ''} onInput={onInput} />;
 };
 
 const StyledInput = styled.input`
