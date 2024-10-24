@@ -89,7 +89,7 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
           year,
           source: { fileName, rowNumber },
           generated: false,
-        } satisfies NordnetLine;
+        };
       })
       .toReversed();
   });

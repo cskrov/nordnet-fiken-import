@@ -8,22 +8,23 @@ import { Section, SectionVariant } from '@app/components/Section';
 import { Table } from '@app/components/Table';
 import { downloadFikenLinesCsv } from '@app/lib/download';
 import { FIKEN_TABLE_HEADERS } from '@app/lib/fiken/fiken-csv';
-import { type NordnetMonth, nordnetMonthToFikenMonth } from '@app/lib/fiken/fiken-files';
+import type { FikenFileData } from '@app/lib/fiken/fiken-files';
 import { MONTHS, isMonth } from '@app/lib/month';
 import { isLastDayOfMonth } from 'date-fns';
 import { Index, Show, type VoidComponent, createSignal } from 'solid-js';
 import { styled } from 'solid-styled-components';
+import DeleteIcon from '~icons/mdi/Delete';
 import DownloadIcon from '~icons/mdi/Download';
 import HelpIcon from '~icons/mdi/HelpCircle';
 import WarningIcon from '~icons/mdi/Warning';
 
 interface FikenSectionProps {
-  nordnetMonth: NordnetMonth;
+  fikenFile: FikenFileData;
+  onRemove?: () => void;
 }
 
-export const FikenFile: VoidComponent<FikenSectionProps> = ({ nordnetMonth }) => {
-  const fikenMonth = nordnetMonthToFikenMonth(nordnetMonth);
-  const { month, year, rows, fileName } = fikenMonth;
+export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemove }) => {
+  const { month, year, rows, fileName } = fikenFile;
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
@@ -74,6 +75,13 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ nordnetMonth }) =>
             </ModalButton>
           </Show>
 
+          <Show when={onRemove}>
+            {(_onRemove) => (
+              <Button onClick={_onRemove()} variant={ButtonVariant.ERROR} size={ButtonSize.SMALL} icon={<DeleteIcon />}>
+                Slett
+              </Button>
+            )}
+          </Show>
           <Show when={isGenerated()}>
             <ModalButton
               buttonText="Generert"
