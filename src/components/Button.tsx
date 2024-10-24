@@ -19,6 +19,7 @@ export interface ButtonProps {
   size?: ButtonSize;
   icon?: JSX.Element;
   onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+  spacing?: boolean;
 }
 
 export const Button: FlowComponent<ButtonProps> = ({
@@ -27,9 +28,10 @@ export const Button: FlowComponent<ButtonProps> = ({
   icon,
   children,
   onClick,
+  spacing = false,
 }) => {
   return (
-    <StyledButton type="button" onClick={onClick} $variant={variant} $size={size}>
+    <StyledButton type="button" onClick={onClick} $variant={variant} $size={size} $spacing={spacing}>
       {icon === undefined ? null : icon}
       <span>{children}</span>
     </StyledButton>
@@ -39,6 +41,7 @@ export const Button: FlowComponent<ButtonProps> = ({
 interface StyleProps {
   $variant: ButtonVariant;
   $size: ButtonSize;
+  $spacing: boolean;
 }
 
 const StyledButton = styled.button<StyleProps>`
@@ -56,6 +59,8 @@ const StyledButton = styled.button<StyleProps>`
   color: ${({ $variant }) => color($variant)};
   background-color: ${({ $variant }) => backgroundColor($variant)};
   padding: ${({ $size }) => padding($size)};
+
+  margin-bottom: ${({ $spacing }) => ($spacing ? '1rem' : '0')};
 
   &:hover {
     background-color: ${({ $variant }) => hoverBackgroundColor($variant)};

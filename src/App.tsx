@@ -13,21 +13,19 @@ import { styled } from 'solid-styled-components';
 import DeleteAllIcon from '~icons/mdi/delete-sweep';
 
 export const App: VoidComponent = () => {
-  const [csvFileMap, setCsvFileMap] = createSignal(new Map<string, CsvFile>());
-  const csvFiles = () => [...csvFileMap().values()].sort((a, b) => a.fileName.localeCompare(b.fileName));
+  const [csvFileList, setCsvFileList] = createSignal<CsvFile[]>([]);
 
-  const onUpload = (files: CsvFile[]) => {
-    const updated = new Map(csvFileMap());
-    for (const file of files) {
-      updated.set(file.fileName, file);
-    }
-    setCsvFileMap(updated);
-  };
+  const removeFile = (fileName: string) => setCsvFileList(csvFileList().filter((file) => file.fileName !== fileName));
 
-  const hasFiles = () => csvFileMap().size !== 0;
+  const addFiles = (files: CsvFile[]) =>
+    setCsvFileList([...csvFileList().filter((e) => !files.some((n) => n.fileName === e.fileName)), ...files]);
+
+  const clearFiles = () => setCsvFileList([]);
+
+  const hasFiles = () => csvFileList().length !== 0;
 
   return (
-    <DropZone onFiles={onUpload}>
+    <DropZone onFiles={addFiles}>
       <AppHeader>
         <Heading level={1} size={HeadingSize.LARGE} centered>
           Nordnet til Fiken
@@ -43,10 +41,10 @@ export const App: VoidComponent = () => {
           </Heading>
 
           <Row>
-            <UploadButton onFiles={onUpload} />
+            <UploadButton onFiles={addFiles} />
 
             <Show when={hasFiles()}>
-              <Button variant={ButtonVariant.ERROR} icon={<DeleteAllIcon />} onClick={() => setCsvFileMap(new Map())}>
+              <Button variant={ButtonVariant.ERROR} icon={<DeleteAllIcon />} onClick={clearFiles}>
                 Slett alle
               </Button>
             </Show>
@@ -58,22 +56,14 @@ export const App: VoidComponent = () => {
             </Description>
           </Show>
 
-          <For each={csvFiles()}>
+          <For each={csvFileList()}>
             {({ fileName, data }) => (
-              <NordnetSection
-                fileName={fileName}
-                data={data}
-                onDelete={() => {
-                  const updated = new Map(csvFileMap());
-                  updated.delete(fileName);
-                  setCsvFileMap(updated);
-                }}
-              />
+              <NordnetSection fileName={fileName} data={data} onDelete={() => removeFile(fileName)} />
             )}
           </For>
         </section>
 
-        <FikenSection csvFiles={csvFiles} />
+        <FikenSection csvFiles={csvFileList} />
       </Main>
 
       <AppFooter />

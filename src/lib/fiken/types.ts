@@ -8,6 +8,7 @@ export interface BaseFikenLine {
   readonly tilKonto: Accessor<string | null>;
   readonly setTilKonto: (value: string | null) => void;
   readonly isin: string | null;
+  readonly nordnetKonto: string;
   readonly bokførtDato: Date;
   readonly forklarendeTekst: Accessor<string>;
   readonly inngående: number;
