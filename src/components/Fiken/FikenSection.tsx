@@ -1,4 +1,5 @@
 import { Button, ButtonVariant } from '@app/components/Button';
+import { FikenDownloadButtons } from '@app/components/Fiken/FikenDownloadButtons';
 import { FikenFile } from '@app/components/Fiken/FikenFile';
 import { Heading, HeadingSize } from '@app/components/Heading';
 import type { CsvFile } from '@app/lib/csv';
@@ -125,6 +126,8 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
         <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
       </section>
+
+      <FikenDownloadButtons fikenFiles={() => [...generatedFikenFiles(), ...convertedFikenFiles()]} />
     </Show>
   );
 };
