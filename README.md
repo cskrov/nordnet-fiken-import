@@ -3,8 +3,11 @@
 Hosted at [https://import.sourcecontrol.no](https://import.sourcecontrol.no).
 
 1. Export CSV from Nordnet.
-2. Convert CSV with this application.
-3. Import CSV in Fiken.
+2. Upload Nordnet CSV-files.
+3. Months without transactions are automatically filled in.
+4. Generate preceeding months and change account numbers as needed.
+5. Download automatically converted and validated Fiken CSV-files.
+6. Import CSV in Fiken.
 
 ## Development
 
