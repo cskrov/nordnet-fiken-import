@@ -20,6 +20,7 @@ export interface BaseFikenLine {
   readonly year: number;
   readonly source: NordnetLineSource;
   readonly generated: boolean;
+  readonly unexpectedSaldo: boolean;
 }
 
 export interface FikenLineInnskudd extends BaseFikenLine {

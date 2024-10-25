@@ -89,6 +89,7 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
           year,
           source: { fileName, rowNumber },
           generated: false,
+          unexpectedSaldo: false,
         };
       })
       .toReversed();
@@ -143,6 +144,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
           year: line.year,
           source: { fileName: null, rowNumber: -1 },
           generated: true,
+          unexpectedSaldo: false,
         },
       ];
     }
@@ -156,6 +158,9 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
     if (monthDiff === 0) {
       return line;
     }
+
+    const expectedSaldo = nextLine.saldo - nextLine.beløp;
+    const unexpectedSaldo = line.saldo !== expectedSaldo;
 
     const start = isLastDayOfMonth(line.bokførtDato) ? 1 : 0;
 
@@ -175,11 +180,12 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
         transaksjonstype: NordnetType.SALDO,
         id: `generert-saldo-${year}-${pad(month)}`,
         verdipapir: null,
-        ISIN: '',
+        ISIN: null,
         month,
         year,
         source: { fileName: null, rowNumber: -1 },
         generated: true,
+        unexpectedSaldo,
       });
     }
 

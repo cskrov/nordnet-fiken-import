@@ -30,7 +30,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
 
   const onCloseError = () => setShowErrorModal(false);
 
-  const onClick = () => {
+  const onDownloadClick = () => {
     try {
       downloadFikenLinesCsv(rows, fileName);
     } catch (error: unknown) {
@@ -43,6 +43,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
   };
 
   const isGenerated = () => rows.every((row) => row.generated);
+  const hasUnexpectedSaldo = () => isGenerated() && rows.some((row) => row.unexpectedSaldo);
 
   const isCurrentMonth = () => {
     const now = new Date();
@@ -82,6 +83,17 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
               </Button>
             )}
           </Show>
+          <Show when={hasUnexpectedSaldo()}>
+            <ModalButton
+              variant={ButtonVariant.ERROR}
+              size={ButtonSize.SMALL}
+              icon={<WarningIcon />}
+              buttonText="Uventet saldo"
+            >
+              <span>Utgående saldo for denne måneden stemmer ikke overens med inngående saldo for neste måned.</span>
+              <span>Har du glemt å laste opp en fil fra Nordnet?</span>
+            </ModalButton>
+          </Show>
           <Show when={isGenerated()}>
             <ModalButton
               buttonText="Generert"
@@ -93,7 +105,12 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
             </ModalButton>
           </Show>
 
-          <Button onClick={onClick} variant={ButtonVariant.PRIMARY} size={ButtonSize.SMALL} icon={<DownloadIcon />}>
+          <Button
+            onClick={onDownloadClick}
+            variant={ButtonVariant.PRIMARY}
+            size={ButtonSize.SMALL}
+            icon={<DownloadIcon />}
+          >
             Last ned
           </Button>
 
