@@ -1,0 +1,46 @@
+name: Sanity Build
+
+on: [pull_request]
+
+jobs:
+  sanity-build:
+    strategy:
+      fail-fast: false
+    name: Sanity Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Restore TypeScript cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .tsbuildinfo
+          key: ${{ github.ref_name }}-${{ hashFiles('tsconfig.json') }} # This will never hit, but it is required.
+          restore-keys: |
+            ${{ github.ref_name }}-${{ hashFiles('tsconfig.json') }}
+            shared-${{ hashFiles('tsconfig.json') }}
+
+      - name: Typecheck
+        run: bun run typecheck
+            
+      - name: Lint
+        run: bun run lint
+    
+      - name: Test
+        run: bun test
+
+      - name: Save TypeScript cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .tsbuildinfo
+          key: ${{ github.ref_name }}-${{ hashFiles('tsconfig.json') }}-${{ github.run_id }}
