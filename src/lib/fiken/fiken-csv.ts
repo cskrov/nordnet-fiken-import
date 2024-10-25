@@ -24,6 +24,10 @@ export const toFikenCsv = (fikenLines: FikenLine[]): Csv => {
     throw new Error('Ingen linjer å laste ned.');
   }
 
+  if (fikenLines.some((line) => line.unexpectedSaldo)) {
+    throw new Error('En eller flere linjer har uventet saldo.');
+  }
+
   const missingAccountNumberCount = fikenLines.filter(
     (line) => lineRequiresAccountNumber(line) && isNullOrEmpty(line.fraKonto()),
   ).length;

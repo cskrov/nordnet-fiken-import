@@ -32,6 +32,7 @@ export interface NordnetLine {
   readonly month: number;
   readonly source: NordnetLineSource;
   readonly generated: boolean;
+  readonly unexpectedSaldo: boolean;
 }
 
 export type NordnetKey = `${string}-${string}`;

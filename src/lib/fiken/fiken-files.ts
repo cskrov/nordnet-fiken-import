@@ -50,8 +50,20 @@ export const nordnetLinesToFikenLines = (nordnetLines: NordnetLine[]): FikenLine
   nordnetLines.map(nordnetLineToFikenLine);
 
 export const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
-  const { id, transaksjonstype, portefølje, bokførtDato, beløp, saldo, ISIN, month, year, source, generated } =
-    nordnetLine;
+  const {
+    id,
+    transaksjonstype,
+    portefølje,
+    bokførtDato,
+    beløp,
+    saldo,
+    ISIN,
+    month,
+    year,
+    source,
+    generated,
+    unexpectedSaldo,
+  } = nordnetLine;
   const sign = Math.sign(beløp);
   const nordnetKonti = getKonti(nordnetLine);
   const [fraKonto, setFraKonto] = createSignal<string | null>(nordnetKonti.fraKonto);
@@ -76,6 +88,7 @@ export const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     year,
     source,
     generated,
+    unexpectedSaldo,
   };
 };
 

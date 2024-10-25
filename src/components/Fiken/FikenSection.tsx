@@ -95,6 +95,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
       year,
       source: { fileName: null, rowNumber: -1 },
       isin: null,
+      unexpectedSaldo: false,
     });
   };
 
