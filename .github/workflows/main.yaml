@@ -35,16 +35,18 @@ jobs:
         run: bun test
 
       - name: Login to GitHub Container Registry
-        if: false
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
-        if: false
         run: |
           docker build -t ghcr.io/${{ github.repository }}:latest .
           docker push ghcr.io/${{ github.repository }}:latest
 
+      - name: Trigger Dokploy deploy
+        run: curl --silent --output /dev/null ${{ secrets.DEPLOY_WEBHOOK }}
+
       - name: SSH
+        if: false
         shell: bash
         run: |
           mkdir -p ~/.ssh
@@ -53,5 +55,6 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Deploy
+        if: false
         shell: bash
         run: scp -r dist/* ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_SERVER }}:${{ secrets.DEPLOY_PATH }}
