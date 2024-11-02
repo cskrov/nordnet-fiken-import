@@ -68,6 +68,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
   const previousDate = createMemo(() => endOfMonth(subMonths(firstLine().bokførtDato, 1)));
 
   const generatePreviousMonth = () => {
+    umami.track('Generate previous month');
     const _firstLine = firstLine();
 
     const bokførtDato = endOfMonth(subMonths(_firstLine.bokførtDato, 1));

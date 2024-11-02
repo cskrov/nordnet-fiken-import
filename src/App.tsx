@@ -17,8 +17,21 @@ export const App: VoidComponent = () => {
 
   const removeFile = (fileName: string) => setCsvFileList(csvFileList().filter((file) => file.fileName !== fileName));
 
-  const addFiles = (files: CsvFile[]) =>
-    setCsvFileList([...csvFileList().filter((e) => !files.some((n) => n.fileName === e.fileName)), ...files]);
+  const addFiles = (files: CsvFile[]) => {
+    const previousFileList = csvFileList();
+    const newFileList = [...previousFileList.filter((e) => !files.some((n) => n.fileName === e.fileName)), ...files];
+
+    umami.track('Files added', {
+      addedFileCount: files.length,
+      adddedRowCount: files.reduce((acc, file) => acc + file.data.rows.length, 0),
+      newFileCount: newFileList.length,
+      newRowCount: newFileList.reduce((acc, file) => acc + file.data.rows.length, 0),
+      previousFileCount: previousFileList.length,
+      previousRowCount: previousFileList.reduce((acc, file) => acc + file.data.rows.length, 0),
+    });
+
+    setCsvFileList(newFileList);
+  };
 
   const clearFiles = () => setCsvFileList([]);
 

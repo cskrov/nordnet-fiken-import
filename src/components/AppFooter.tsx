@@ -6,11 +6,11 @@ import { Index, type VoidComponent, createSignal } from 'solid-js';
 import { styled } from 'solid-styled-components';
 
 export const AppFooter: VoidComponent = () => {
-  const [disclaimerShown, setDisclaimerShown] = createSignal(localStorage.getItem('disclaimer-shown') === 'true');
+  const [disclaimerShown, setDisclaimerShown] = createSignal(localStorage.getItem('disclaimer-shown') === 'v1');
 
   const closeDisclaimer = () => {
     setDisclaimerShown(true);
-    localStorage.setItem('disclaimer-shown', 'true');
+    localStorage.setItem('disclaimer-shown', 'v1');
   };
 
   return (
@@ -43,7 +43,6 @@ export const AppFooter: VoidComponent = () => {
           Databehandling
         </Heading>
         <StyledParagraph>Alt prosesseres i nettleseren din. Ingen data sendes til server.</StyledParagraph>
-        <StyledParagraph>Ingen sporing, ingen cookies, ingen annonser.</StyledParagraph>
         <StyledParagraph>
           Kontonumre lagres på enheten din med <Pre>localStorage</Pre>.
         </StyledParagraph>

@@ -31,6 +31,8 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
   const onCloseError = () => setShowErrorModal(false);
 
   const onDownloadClick = () => {
+    umami.track('Download single');
+
     try {
       downloadFikenLinesCsv(rows, fileName);
     } catch (error: unknown) {

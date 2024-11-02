@@ -27,6 +27,7 @@ jobs:
       - name: Build frontend
         shell: bash
         env:
+          UNAMI_ID: ${{ secrets.UMAMI_ID }}
           VERSION: ${{ github.sha }}
         run: bun run build
 

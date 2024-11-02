@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client", "unplugin-icons/types/solid", "@types/bun"],
+    "types": ["vite/client", "unplugin-icons/types/solid", "@types/bun", "@types/umami"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

@@ -17,6 +17,8 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
   const onClickDownloadSingle = () => {
+    umami.track('Download all (single files)');
+
     try {
       downloadFikenMapSingleCsv(fikenFiles().flatMap((f) => f.rows));
     } catch (error) {
@@ -28,7 +30,9 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
     }
   };
 
-  const onCLickDownloadSeparate = () => {
+  const onClickDownloadSeparate = () => {
+    umami.track('Download all (separate files)');
+
     try {
       downloadFikenMapMultipleCsv(fikenFiles());
     } catch (error) {
@@ -51,7 +55,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
         Last ned alle - én fil
       </Button>
       <Button
-        onClick={onCLickDownloadSeparate}
+        onClick={onClickDownloadSeparate}
         variant={ButtonVariant.PRIMARY}
         size={ButtonSize.LARGE}
         icon={<DownloadMultipleIcon />}
