@@ -26,6 +26,8 @@ export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, bel
         return { fraKonto: portefølje, tilKonto: null };
       case NordnetType.PLATTFORMAVGIFT:
         return { fraKonto: portefølje, tilKonto: null };
+      case NordnetType.PLATTFORMAVG_KORR:
+        return { fraKonto: null, tilKonto: portefølje };
       case NordnetType.UTTAK:
         return {
           fraKonto: portefølje,
