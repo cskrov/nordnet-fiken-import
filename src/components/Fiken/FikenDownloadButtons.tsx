@@ -52,7 +52,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
         size={ButtonSize.LARGE}
         icon={<DownloadIcon />}
       >
-        Last ned alle - én fil
+        Last ned alle i én fil
       </Button>
       <Button
         onClick={onClickDownloadSeparate}
@@ -60,7 +60,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
         size={ButtonSize.LARGE}
         icon={<DownloadMultipleIcon />}
       >
-        Last ned alle - én fil per måned
+        Last ned alle i separate filer
       </Button>
       <Modal isOpen={showErrorModal} onClose={() => setShowErrorModal(false)} variant={ModalVariant.ERROR}>
         <span>{modalErrorMessage()}</span>
