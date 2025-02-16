@@ -1,5 +1,6 @@
 import type { FlowComponent } from 'solid-js';
 import type { JSX } from 'solid-js/jsx-runtime';
+import { twMerge } from 'tailwind-merge';
 
 export enum HeadingSize {
   XSMALL = -1,
@@ -15,52 +16,42 @@ interface Props {
   size: HeadingSize;
   spacing?: boolean;
   centered?: boolean;
+  className?: string;
   children: JSX.Element;
 }
+
+const BASE_CLASSES = 'flex flex-row items-center gap-x-1 font-bold';
 
 export const Heading: FlowComponent<Props> = ({
   level,
   size = HeadingSize.MEDIUM,
   spacing = false,
   centered = false,
+  className,
   children,
 }) => {
-  const style: JSX.CSSProperties = {
-    display: 'flex',
-    'flex-direction': 'row',
-    'align-items': 'center',
-    'column-gap': '0.25em',
-    'margin-top': 0,
-    'justify-content': centered ? 'center' : 'left',
-    'font-size': fontSize(size),
-    'margin-bottom': spacing ? '1em' : 0,
-  };
+  const variantClasses = `${BASE_CLASSES} ${centered ? 'justify-center' : 'justify-start'} ${FONT_SIZE[size]} ${spacing ? 'mb-4' : ''}`;
+  const headingClasses = twMerge(variantClasses, className);
 
   switch (level) {
     case 1:
-      return <h1 style={style}>{children}</h1>;
+      return <h1 class={headingClasses}>{children}</h1>;
     case 2:
-      return <h2 style={style}>{children}</h2>;
+      return <h2 class={headingClasses}>{children}</h2>;
     case 3:
-      return <h3 style={style}>{children}</h3>;
+      return <h3 class={headingClasses}>{children}</h3>;
     case 4:
-      return <h4 style={style}>{children}</h4>;
+      return <h4 class={headingClasses}>{children}</h4>;
     case 5:
-      return <h5 style={style}>{children}</h5>;
+      return <h5 class={headingClasses}>{children}</h5>;
     case 6:
-      return <h6 style={style}>{children}</h6>;
+      return <h6 class={headingClasses}>{children}</h6>;
   }
 };
 
-const fontSize = (size: HeadingSize) => {
-  switch (size) {
-    case HeadingSize.XSMALL:
-      return '1rem';
-    case HeadingSize.SMALL:
-      return '1.5rem';
-    case HeadingSize.MEDIUM:
-      return '2rem';
-    case HeadingSize.LARGE:
-      return '2.5rem';
-  }
+const FONT_SIZE: Record<HeadingSize, string> = {
+  [HeadingSize.XSMALL]: 'text-base',
+  [HeadingSize.SMALL]: 'text-2xl',
+  [HeadingSize.MEDIUM]: 'text-3xl',
+  [HeadingSize.LARGE]: 'text-4xl',
 };

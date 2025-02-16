@@ -9,7 +9,6 @@ import { Row } from '@app/components/Row';
 import { UploadButton } from '@app/components/UploadButton';
 import type { CsvFile } from '@app/lib/csv';
 import { For, Show, type VoidComponent, createSignal } from 'solid-js';
-import { styled } from 'solid-styled-components';
 import DeleteAllIcon from '~icons/mdi/delete-sweep';
 
 export const App: VoidComponent = () => {
@@ -39,15 +38,15 @@ export const App: VoidComponent = () => {
 
   return (
     <DropZone onFiles={addFiles}>
-      <AppHeader>
+      <Header className="pt-4 px-4" spacing>
         <Heading level={1} size={HeadingSize.LARGE} centered>
           Nordnet til Fiken
         </Heading>
 
-        <Subtitle>Konverter CSV eksportert fra Nordnet til et format Fiken forstår.</Subtitle>
-      </AppHeader>
+        <p class="m-0 italic text-center">Konverter CSV eksportert fra Nordnet til et format Fiken forstår.</p>
+      </Header>
 
-      <Main>
+      <main class="flex flex-col gap-y-8 grow px-4 pb-16">
         <section>
           <Heading level={1} size={HeadingSize.SMALL} spacing>
             Nordnet
@@ -64,47 +63,24 @@ export const App: VoidComponent = () => {
           </Row>
 
           <Show when={!hasFiles()}>
-            <Description>
-              Dra og slipp CSV-filer fra Nordnet hvor som helst for å få de oversatt til et format Fiken forstår.
-            </Description>
+            <p class="m-0 italic">Dra og slipp CSV-filer fra Nordnet hvor som helst.</p>
           </Show>
 
-          <For each={csvFileList()}>
-            {({ fileName, data }) => (
-              <NordnetSection fileName={fileName} data={data} onDelete={() => removeFile(fileName)} />
-            )}
-          </For>
+          <Show when={hasFiles()}>
+            <div class="flex flex-col gap-y-4">
+              <For each={csvFileList()}>
+                {({ fileName, data }) => (
+                  <NordnetSection fileName={fileName} data={data} onDelete={() => removeFile(fileName)} />
+                )}
+              </For>
+            </div>
+          </Show>
         </section>
 
         <FikenSection csvFiles={csvFileList} />
-      </Main>
+      </main>
 
       <AppFooter />
     </DropZone>
   );
 };
-
-const AppHeader = styled(Header)`
-  padding-top: 16px;
-  padding-left: 16px;
-  padding-right: 16px;
-`;
-
-const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  row-gap: 32px;
-  flex-grow: 1;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 64px;
-`;
-
-const Description = styled.p`
-  margin: 0;
-  font-style: italic;
-`;
-
-const Subtitle = styled(Description)`
-  text-align: center;
-`;

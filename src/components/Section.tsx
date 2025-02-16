@@ -1,5 +1,4 @@
 import type { FlowComponent } from 'solid-js';
-import { styled } from 'solid-styled-components';
 
 export enum SectionVariant {
   PRIMARY = 0,
@@ -13,32 +12,12 @@ export interface Props {
 }
 
 export const Section: FlowComponent<Props> = ({ variant = SectionVariant.PRIMARY, children }) => (
-  <StyledSection $variant={variant}>{children}</StyledSection>
+  <section class={`flex flex-col gap-y-4 p-4 rounded-lg ${BACKGROUND_COLOR[variant]}`}>{children}</section>
 );
 
-interface StyledSectionProps {
-  $variant: SectionVariant;
-}
-
-const StyledSection = styled.section<StyledSectionProps>`
-  display: flex;
-  flex-direction: column;
-  row-gap: 1em;
-  margin-bottom: 1em;
-  padding: 1em;
-  border-radius: var(--border-radius);
-  background-color: ${({ $variant }) => backgroundColor($variant)};
-`;
-
-const backgroundColor = (variant: SectionVariant) => {
-  switch (variant) {
-    case SectionVariant.PRIMARY:
-      return 'var(--primary-800)';
-    case SectionVariant.SECONDARY:
-      return 'var(--secondary-800)';
-    case SectionVariant.SURFACE:
-      return 'var(--surface-800)';
-    case SectionVariant.INACTIVE:
-      return 'var(--surface-400)';
-  }
+const BACKGROUND_COLOR: Record<SectionVariant, string> = {
+  [SectionVariant.PRIMARY]: 'bg-primary-800',
+  [SectionVariant.SECONDARY]: 'bg-secondary-800',
+  [SectionVariant.SURFACE]: 'bg-surface-800',
+  [SectionVariant.INACTIVE]: 'bg-surface-400',
 };

@@ -1,6 +1,5 @@
 import { prettyFormatMoney } from '@app/lib/money';
-import type { Component, JSX } from 'solid-js';
-import { styled } from 'solid-styled-components';
+import type { Component } from 'solid-js';
 
 interface Props {
   children: number;
@@ -8,38 +7,28 @@ interface Props {
 }
 
 export const Money: Component<Props> = ({ children, reversed = false }) => (
-  <StyledMoney amount={children} reversed={reversed}>
-    {prettyFormatMoney(children)}
-  </StyledMoney>
+  <span class={COLOR[sign(children, reversed)]}>{prettyFormatMoney(children)}</span>
 );
 
-interface StyledMoneyProps {
-  amount: number;
-  reversed: boolean;
+enum Sign {
+  POSITIVE = 1,
+  NEGATIVE = -1,
+  ZERO = 0,
 }
 
-const StyledMoney = styled.span<StyledMoneyProps>`
-  color: ${({ amount, reversed }) => (reversed ? getReversedColor(amount) : getColor(amount))};
-`;
-
-const getColor = (amount: number): JSX.CSSProperties['color'] => {
+const sign = (amount: number, reverse: boolean): Sign => {
   switch (Math.sign(amount)) {
     case 1:
-      return 'lightgreen';
+      return reverse ? Sign.NEGATIVE : Sign.POSITIVE;
     case -1:
-      return 'orangered';
+      return reverse ? Sign.POSITIVE : Sign.NEGATIVE;
     default:
-      return 'darkgray';
+      return Sign.ZERO;
   }
 };
 
-const getReversedColor = (amount: number): JSX.CSSProperties['color'] => {
-  switch (Math.sign(amount)) {
-    case 1:
-      return 'orangered';
-    case -1:
-      return 'lightgreen';
-    default:
-      return 'darkgray';
-  }
+const COLOR: Record<Sign, string> = {
+  [Sign.POSITIVE]: 'text-green-300',
+  [Sign.NEGATIVE]: 'text-red-300',
+  [Sign.ZERO]: 'text-gray-300',
 };

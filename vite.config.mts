@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
@@ -12,6 +13,7 @@ export default defineConfig({
     */
     // devtools(),
     solidPlugin(),
+    tailwindcss(),
     Icons({ compiler: 'solid' }),
   ],
   server: {

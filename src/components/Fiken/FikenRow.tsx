@@ -7,8 +7,6 @@ import type { FikenLine } from '@app/lib/fiken/types';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { type Accessor, Show, type VoidComponent } from 'solid-js';
-
-import { styled } from 'solid-styled-components';
 import HelpIcon from '~icons/mdi/HelpCircle';
 
 interface FikenRowProps {
@@ -16,38 +14,46 @@ interface FikenRowProps {
   lineNumber: number;
 }
 
+const GENERATED_CLASSES = 'opacity-60 italic';
+const NOT_GENERATED_CLASSES = 'opacity-100 normal';
+
+const CELL_CLASSES = 'p-2 whitespace-nowrap';
+const IGNORED_CLASSES = 'italic text-gray-500';
+
 export const FikenRow: VoidComponent<FikenRowProps> = ({ line, lineNumber }) => {
   const source = line().source.fileName === null ? null : `${line().source.fileName} (${line().source.rowNumber + 1})`;
 
   return (
-    <Row $isGenerated={line().generated}>
-      <Cell>{lineNumber + 1}</Cell>
-      <Cell>
+    <tr
+      class={`${line().generated ? GENERATED_CLASSES : NOT_GENERATED_CLASSES} odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row`}
+    >
+      <td class={CELL_CLASSES}>{lineNumber + 1}</td>
+      <td class={CELL_CLASSES}>
         <DateElement date={line().bokførtDato} />
-      </Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>
         <FromAccount line={line} />
-      </Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>
         <ToAccount line={line} />
-      </Cell>
-      <Cell>{line().forklarendeTekst()}</Cell>
-      <Cell>{line().isin}</Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>{line().forklarendeTekst()}</td>
+      <td class={CELL_CLASSES}>{line().isin}</td>
+      <td class={CELL_CLASSES}>
         <Money>{line().inngående}</Money>
-      </Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>
         <Money reversed>{line().ut}</Money>
-      </Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>
         <Money>{line().inn}</Money>
-      </Cell>
-      <Cell>
+      </td>
+      <td class={CELL_CLASSES}>
         <Money>{line().saldo}</Money>
-      </Cell>
-      <Cell>{line().referanse}</Cell>
-      <Cell>
-        <Show when={line().generated} fallback={<Source>{source}</Source>}>
+      </td>
+      <td class={CELL_CLASSES}>{line().referanse}</td>
+      <td class={CELL_CLASSES}>
+        <Show when={line().generated} fallback={<span class="text-gray-500">{source}</span>}>
           <ModalButton
             variant={ButtonVariant.SECONDARY}
             size={ButtonSize.SMALL}
@@ -57,8 +63,8 @@ export const FikenRow: VoidComponent<FikenRowProps> = ({ line, lineNumber }) => 
             Denne raden er fylt inn for at Fiken skal kunne avstemme måneden.
           </ModalButton>
         </Show>
-      </Cell>
-    </Row>
+      </td>
+    </tr>
   );
 };
 
@@ -72,7 +78,7 @@ const FromAccount: VoidComponent<FromAccountProps> = ({ line }) => {
   }
 
   if (line().fraKonto() === null) {
-    return <Ignored>Ikke relevant</Ignored>;
+    return <span class={IGNORED_CLASSES}>Ikke relevant</span>;
   }
 
   return <span>{line().fraKonto()}</span>;
@@ -88,7 +94,7 @@ const ToAccount: VoidComponent<ToAccountProps> = ({ line }) => {
   }
 
   if (line().tilKonto === null) {
-    return <Ignored>Ikke relevant</Ignored>;
+    return <span class={IGNORED_CLASSES}>Ikke relevant</span>;
   }
 
   return <span>{line().tilKonto()}</span>;
@@ -101,38 +107,3 @@ interface DateElementProps {
 const DateElement: VoidComponent<DateElementProps> = ({ date }) => (
   <time datetime={format(date, 'yyyy-MM-dd')}>{format(date, 'dd. MMM yyyy', { locale: nb })}</time>
 );
-
-interface RowProps {
-  $isGenerated: boolean;
-}
-
-const Row = styled.tr<RowProps>`
-  opacity: ${({ $isGenerated }) => ($isGenerated ? 0.6 : 1)};
-  font-style: ${({ $isGenerated }) => ($isGenerated ? 'italic' : 'normal')};
-
-  &:nth-of-type(odd) {
-    background-color: var(--table-odd-row);
-  }
-
-  &:nth-of-type(even) {
-    background-color: var(--table-even-row);
-  }
-
-  &:hover {
-    background-color: var(--table-hover-row);
-  }
-`;
-
-const Cell = styled.td`
-  padding: 0.5em;
-  white-space: nowrap;
-`;
-
-const Source = styled.span`
-  color: darkgray;
-`;
-
-const Ignored = styled.span`
-  font-style: italic;
-  color: darkgray;
-`;

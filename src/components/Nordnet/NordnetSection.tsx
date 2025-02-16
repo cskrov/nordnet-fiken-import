@@ -3,8 +3,8 @@ import { NordnetRow } from '@app/components/Nordnet/NordnetRow';
 import { Section, SectionVariant } from '@app/components/Section';
 import { Table } from '@app/components/Table';
 import type { Csv } from '@app/lib/csv';
-import { Index, Show, type VoidComponent, createSignal } from 'solid-js';
-import { styled } from 'solid-styled-components';
+import { type FlowComponent, Index, type JSX, Show, type VoidComponent, createSignal } from 'solid-js';
+import { twMerge } from 'tailwind-merge';
 import DeleteIcon from '~icons/mdi/Delete';
 import ExpandLessIcon from '~icons/mdi/ExpandLess';
 import ExpandMore from '~icons/mdi/ExpandMore';
@@ -24,17 +24,17 @@ export const NordnetSection: VoidComponent<Props> = ({ fileName, data, onDelete 
 
   return (
     <Section variant={rows.length === 0 ? SectionVariant.INACTIVE : SectionVariant.SURFACE}>
-      <Heading level={1} size={HeadingSize.XSMALL}>
-        <ExpandButton onClick={() => setIsOpen((o) => !o)}>
+      <Heading level={1} size={HeadingSize.XSMALL} className="font-normal">
+        <HeadingButton className="grow" onClick={() => setIsOpen((o) => !o)}>
           {isOpen() ? <ExpandLessIcon /> : <ExpandMore />}
           <CsvIcon />
           <span>
             {fileName} ({rows.length} linjer)
           </span>
-        </ExpandButton>
-        <DeleteButton onClick={onDelete}>
+        </HeadingButton>
+        <HeadingButton className="text-red-500" onClick={onDelete}>
           <DeleteIcon />
-        </DeleteButton>
+        </HeadingButton>
       </Heading>
       <Show when={isOpen()}>
         <Show when={rowCount !== 0} fallback={<NoTransactions />}>
@@ -53,28 +53,12 @@ const NoTransactions: VoidComponent = () => (
   </p>
 );
 
-const HeadingButton = styled.button`
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: left;
-  column-gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: inherit;
-  font-family: inherit;
-  color: inherit;
-  text-align: inherit;
-  padding: 0;
-`;
+interface HeadingButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'class' | 'classList'> {
+  className?: string;
+}
 
-const ExpandButton = styled(HeadingButton)`
-  flex-grow: 1;
-`;
-
-const DeleteButton = styled(HeadingButton)`
-  flex-grow: 0;
-  flex-shrink: 0;
-  color: red;
-`;
+const HeadingButton: FlowComponent<HeadingButtonProps> = ({ children, className, type = 'button', ...rest }) => (
+  <button {...rest} type={type} class={twMerge('flex items-center justify-start gap-x-1 cursor-pointer', className)}>
+    {children}
+  </button>
+);

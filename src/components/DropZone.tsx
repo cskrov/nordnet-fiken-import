@@ -1,6 +1,5 @@
 import { type CsvFile, parseCsvFiles } from '@app/lib/csv';
-import { type Accessor, type FlowComponent, createSignal } from 'solid-js';
-import { styled } from 'solid-styled-components';
+import { type FlowComponent, createSignal } from 'solid-js';
 
 interface Props {
   onFiles: (files: CsvFile[]) => void;
@@ -30,45 +29,41 @@ export const DropZone: FlowComponent<Props> = ({ onFiles, children }) => {
   };
 
   const onDragExit = (event: DragEvent) => {
-    console.log('drag exit');
     event.preventDefault();
     event.stopPropagation();
     setIsDragOver(false);
   };
 
   return (
-    <Container onDrop={onDrop} onDragOver={onDragOver} onDragExit={onDragExit} $isDragOver={isDragOver}>
+    <div
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragExit={onDragExit}
+      data-label="Slipp her"
+      class={`flex flex-col w-full h-full ${isDragOver() ? 'before:flex' : 'before:hidden'} ${beforeClasses}`}
+    >
       {children}
-    </Container>
+    </div>
   );
 };
 
-interface StyledProps {
-  $isDragOver: Accessor<boolean>;
-}
-
-const Container = styled.div<StyledProps>`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-
-  &::before {
-    content: 'Slipp filene her';
-    font-size: 2rem;
-    font-weight: bold;
-    display: ${({ $isDragOver }) => ($isDragOver() ? 'flex' : 'none')};
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-style: dashed;
-    border-color: var(---text-color);
-    border-width: 4px;
-    transition: border-color .2s ease-in-out;
-  }
-`;
+const beforeClasses = `
+before:content-[attr(data-label)]
+before:text-4xl
+before:items-center
+before:justify-center
+before:backdrop-blur-xs
+before:absolute
+before:top-0
+before:left-0
+before:right-0
+before:bottom-0
+before:border-dashed
+before:border-white
+before:border-4
+before:transition-colors
+before:duration-200
+before:ease-in-out
+`
+  .trim()
+  .replaceAll('\n', ' ');

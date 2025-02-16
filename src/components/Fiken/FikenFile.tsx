@@ -12,7 +12,6 @@ import type { FikenFileData } from '@app/lib/fiken/fiken-files';
 import { MONTHS, isMonth } from '@app/lib/month';
 import { isLastDayOfMonth } from 'date-fns';
 import { Index, Show, type VoidComponent, createSignal } from 'solid-js';
-import { styled } from 'solid-styled-components';
 import DeleteIcon from '~icons/mdi/Delete';
 import DownloadIcon from '~icons/mdi/Download';
 import HelpIcon from '~icons/mdi/HelpCircle';
@@ -57,14 +56,16 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
 
   return (
     <Section variant={SectionVariant.SURFACE}>
-      <Header>
+      <header class="flex flex-row items-center justify-between">
         <Heading level={1} size={HeadingSize.XSMALL}>
           {year} {isMonth(month) ? MONTHS.get(month) : 'Ukjent måned'}
         </Heading>
 
-        <FileName aria-label="filnavn">{fileName}</FileName>
+        <span class="font-mono italic text-base ml-4 mr-auto" aria-label="filnavn">
+          {fileName}
+        </span>
 
-        <ButtonContainer>
+        <div class="flex gap-2">
           <Show when={isCurrentMonth()}>
             <ModalButton
               buttonText="Inneværende"
@@ -119,8 +120,8 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
           <Modal isOpen={showErrorModal} onClose={onCloseError} variant={ModalVariant.ERROR}>
             <span>{errorMessage()}</span>
           </Modal>
-        </ButtonContainer>
-      </Header>
+        </div>
+      </header>
 
       <Table headers={FIKEN_TABLE_HEADERS} showLineNumbers rowCount={rows.length}>
         <Index each={rows}>{(line, lineNumber) => <FikenRow line={line} lineNumber={lineNumber} />}</Index>
@@ -128,23 +129,3 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
     </Section>
   );
 };
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const FileName = styled.span`
-  font-family: "Roboto Mono", monospace;
-  font-style: italic;
-  font-size: 1rem;
-  margin-left: 1em;
-  margin-right: auto;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;

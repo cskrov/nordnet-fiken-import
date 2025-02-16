@@ -1,5 +1,4 @@
 import type { FlowComponent, JSX } from 'solid-js';
-import { styled } from 'solid-styled-components';
 
 export enum ButtonVariant {
   PRIMARY = 0,
@@ -22,6 +21,9 @@ export interface ButtonProps {
   spacing?: boolean;
 }
 
+const BASE_CLASSES =
+  'flex items-center flex-row rounded-lg border-none text-center text-decoration-none cursor-pointer gap-x-1';
+
 export const Button: FlowComponent<ButtonProps> = ({
   variant = ButtonVariant.PRIMARY,
   size = ButtonSize.MEDIUM,
@@ -29,86 +31,46 @@ export const Button: FlowComponent<ButtonProps> = ({
   children,
   onClick,
   spacing = false,
-}) => {
-  return (
-    <StyledButton type="button" onClick={onClick} $variant={variant} $size={size} $spacing={spacing}>
-      {icon === undefined ? null : icon}
-      <span>{children}</span>
-    </StyledButton>
-  );
+}) => (
+  <button
+    type="button"
+    class={`${BASE_CLASSES} ${TEXT_SIZE[size]} ${COLOR_CLASSES[variant]} ${BACKGROUND_COLOR[variant]} ${HOVER_BACKGROUND_COLOR[variant]} ${PADDING[size]} ${spacing ? 'mb-4' : ''}`}
+    onClick={onClick}
+  >
+    {icon === undefined ? null : icon}
+    <span>{children}</span>
+  </button>
+);
+
+const TEXT_SIZE: Record<ButtonSize, string> = {
+  [ButtonSize.SMALL]: 'text-sm',
+  [ButtonSize.MEDIUM]: 'text-base',
+  [ButtonSize.LARGE]: 'text-base',
 };
 
-interface StyleProps {
-  $variant: ButtonVariant;
-  $size: ButtonSize;
-  $spacing: boolean;
-}
-
-const StyledButton = styled.button<StyleProps>`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  border-radius: var(--border-radius);
-  border: none;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 1rem;
-  column-gap: 0.25em;
-  
-  color: ${({ $variant }) => color($variant)};
-  background-color: ${({ $variant }) => backgroundColor($variant)};
-  padding: ${({ $size }) => padding($size)};
-
-  margin-bottom: ${({ $spacing }) => ($spacing ? '1rem' : '0')};
-
-  &:hover {
-    background-color: ${({ $variant }) => hoverBackgroundColor($variant)};
-  }
-`;
-
-const color = (variant: ButtonVariant) => {
-  switch (variant) {
-    case ButtonVariant.WARNING:
-      return 'var(--text-color-inverted)';
-    default:
-      return 'var(--text-color)';
-  }
+const COLOR_CLASSES: Record<ButtonVariant, string> = {
+  [ButtonVariant.PRIMARY]: 'text-default',
+  [ButtonVariant.SECONDARY]: 'text-default',
+  [ButtonVariant.WARNING]: 'text-inverted',
+  [ButtonVariant.ERROR]: 'text-default',
 };
 
-const backgroundColor = (variant: ButtonVariant) => {
-  switch (variant) {
-    case ButtonVariant.PRIMARY:
-      return 'var(--primary-500)';
-    case ButtonVariant.SECONDARY:
-      return 'var(--secondary-500)';
-    case ButtonVariant.WARNING:
-      return 'var(--warning-500)';
-    case ButtonVariant.ERROR:
-      return 'var(--error-500)';
-  }
+const BACKGROUND_COLOR: Record<ButtonVariant, string> = {
+  [ButtonVariant.PRIMARY]: 'bg-primary-500',
+  [ButtonVariant.SECONDARY]: 'bg-secondary-500',
+  [ButtonVariant.WARNING]: 'bg-warning-500',
+  [ButtonVariant.ERROR]: 'bg-error-500',
 };
 
-const hoverBackgroundColor = (variant: ButtonVariant) => {
-  switch (variant) {
-    case ButtonVariant.PRIMARY:
-      return 'var(--primary-400)';
-    case ButtonVariant.SECONDARY:
-      return 'var(--secondary-400)';
-    case ButtonVariant.WARNING:
-      return 'var(--warning-400)';
-    case ButtonVariant.ERROR:
-      return 'var(--error-400)';
-  }
+const HOVER_BACKGROUND_COLOR: Record<ButtonVariant, string> = {
+  [ButtonVariant.PRIMARY]: 'hover:bg-primary-400',
+  [ButtonVariant.SECONDARY]: 'hover:bg-secondary-400',
+  [ButtonVariant.WARNING]: 'hover:bg-warning-400',
+  [ButtonVariant.ERROR]: 'hover:bg-error-400',
 };
 
-const padding = (size: ButtonSize) => {
-  switch (size) {
-    case ButtonSize.SMALL:
-      return '0.25em 0.5em';
-    case ButtonSize.MEDIUM:
-      return '0.5em 1em';
-    case ButtonSize.LARGE:
-      return '0.75em 1.5em';
-  }
+const PADDING: Record<ButtonSize, string> = {
+  [ButtonSize.SMALL]: 'py-0.5 px-2',
+  [ButtonSize.MEDIUM]: 'py-2 px-4',
+  [ButtonSize.LARGE]: 'py-2 px-4',
 };

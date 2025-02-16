@@ -1,6 +1,5 @@
 import { ModalVariant } from '@app/components/Modal/types';
-import type { VoidComponent } from 'solid-js';
-import { styled } from 'solid-styled-components';
+import type { FlowComponent, VoidComponent } from 'solid-js';
 import ErrorIcon from '~icons/mdi/Error';
 import HelpIcon from '~icons/mdi/HelpCircle';
 import WarningIcon from '~icons/mdi/Warning';
@@ -33,14 +32,6 @@ export const ModalHeading: VoidComponent<HeadingProps> = ({ variant }) => {
   }
 };
 
-const Heading = styled.h1`
-  position: absolute;
-  left: 2rem;
-  top: 2rem;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1em;
-`;
+const Heading: FlowComponent = (props) => (
+  <h1 {...props} class="absolute left-8 top-8 m-0 p-0 flex items-center gap-2 text-base" />
+);

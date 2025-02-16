@@ -1,5 +1,4 @@
 import { type Accessor, Index, type VoidComponent } from 'solid-js';
-import { styled } from 'solid-styled-components';
 
 interface Props {
   line: Accessor<string[]>;
@@ -7,27 +6,8 @@ interface Props {
 }
 
 export const NordnetRow: VoidComponent<Props> = ({ line, lineNumber }) => (
-  <StyledRow>
-    <StyledCell>{lineNumber + 1}</StyledCell>
-    <Index each={line()}>{(cell) => <StyledCell>{cell()}</StyledCell>}</Index>
-  </StyledRow>
+  <tr class="odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row">
+    <td class="p-2 whitespace-nowrap">{lineNumber + 1}</td>
+    <Index each={line()}>{(cell) => <td class="p-2 whitespace-nowrap">{cell()}</td>}</Index>
+  </tr>
 );
-
-const StyledRow = styled.tr`
-  &:nth-of-type(odd) {
-    background-color: var(--table-odd-row);
-  }
-
-  &:nth-of-type(even) {
-    background-color: var(--table-even-row);
-  }
-
-  &:hover {
-    background-color: var(--table-hover-row);
-  }
-`;
-
-const StyledCell = styled.td`
-  padding: 0.5em;
-  white-space: nowrap;
-`;

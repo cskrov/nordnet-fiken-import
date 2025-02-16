@@ -125,7 +125,11 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
           )}
         </For>
 
-        <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
+        <Show when={convertedFikenFiles().length !== 0}>
+          <div class="flex flex-col gap-y-4">
+            <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
+          </div>
+        </Show>
       </section>
 
       <FikenDownloadButtons fikenFiles={() => [...generatedFikenFiles(), ...convertedFikenFiles()]} />

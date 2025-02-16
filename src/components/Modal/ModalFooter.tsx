@@ -1,6 +1,5 @@
 import { Button, ButtonSize, ButtonVariant } from '@app/components/Button';
 import type { VoidComponent } from 'solid-js';
-import { styled } from 'solid-styled-components';
 import CloseIcon from '~icons/mdi/WindowClose';
 
 interface ModalFooterProps {
@@ -8,20 +7,9 @@ interface ModalFooterProps {
 }
 
 export const ModalFooter: VoidComponent<ModalFooterProps> = ({ closeModal }) => (
-  <StyledFooter>
+  <footer class="flex justify-end bottom-0 left-0 right-0 pb-8 px-8">
     <Button variant={ButtonVariant.SECONDARY} size={ButtonSize.SMALL} onClick={closeModal} icon={<CloseIcon />}>
       Lukk
     </Button>
-  </StyledFooter>
+  </footer>
 );
-
-const StyledFooter = styled.footer`
-  display: flex;
-  justify-content: flex-end;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding-bottom: 2em;
-  padding-right: 2em;
-  padding-left: 2em;
-`;

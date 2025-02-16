@@ -1,9 +1,12 @@
-import { styled } from 'solid-styled-components';
+import type { FlowComponent } from 'solid-js';
+import { twMerge } from 'tailwind-merge';
 
-export const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-bottom: 1em;
-  gap: 1em;
-`;
+interface Props {
+  className?: string;
+}
+
+export const Row: FlowComponent<Props> = ({ children, className, ...rest }) => (
+  <div {...rest} class={twMerge('flex flex-row flex-wrap mb-4 gap-4', className)}>
+    {children}
+  </div>
+);
