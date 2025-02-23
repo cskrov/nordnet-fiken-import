@@ -62,5 +62,5 @@ const FORMATTER = Intl.NumberFormat('nb-NO', {
 export const prettyFormatMoney = (value: Money): string => {
   const [integer, decimal] = splitMoney(value);
 
-  return `${FORMATTER.format(integer)},${decimal.toString(10).padEnd(2, '0')} kr`;
+  return `${FORMATTER.format(integer)},${decimal.toString(10).padStart(2, '0').padEnd(2, '0')} kr`;
 };
