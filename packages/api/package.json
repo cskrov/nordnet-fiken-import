@@ -1,0 +1,24 @@
+{
+  "name": "api",
+  "scripts": {
+    "start": "bun run main.ts",
+    "dev": "bun --watch run main.ts",
+    "generate": "drizzle-kit generate",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check"
+  },
+  "dependencies": {
+    "date-fns": "4.1.0",
+    "drizzle-kit": "0.30.4",
+    "drizzle-orm": "0.39.3",
+    "nodemailer": "6.10.0",
+    "redis": "4.7.0",
+    "shared": "workspace:*",
+    "ua-parser-js": "2.0.2",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/nodemailer": "6.4.17"
+  }
+}

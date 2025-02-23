@@ -1,0 +1,43 @@
+// Folder-specific settings
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "code_actions_on_format": {
+    "source.fixAll.biome": true,
+    "source.organizeImports.biome": true
+  },
+  "formatter": {
+    "language_server": {
+      "name": "biome"
+    }
+  },
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative"
+          }
+        }
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        // "classAttributes": [
+        //   "class",
+        //   "className",
+        //   "ngClass",
+        // ],
+        "experimental": {
+          "classRegex": [
+            ":\\s*?[\"'`]([^\"'`]*).*?,",
+            "const\\s\\w*Classes\\s+=\\s+[\"'`]([^\"'`]*)",
+            "const\\s\\w*_CLASSES\\s+=\\s+[\"'`]([^\"'`]*)",
+            "@tw\\s\\*/\\s+[\"'`]([^\"'`]*)"
+          ]
+        }
+      }
+    }
+  }
+}

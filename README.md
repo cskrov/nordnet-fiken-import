@@ -15,7 +15,7 @@ Hosted at [https://import.sourcecontrol.no](https://import.sourcecontrol.no).
 2. Clone repository.
 3. `bun install` - install dependencies.
 4. `bun start` - run locally.
-5. [http://localhost:5173/](http://localhost:5173/) - open in browser.
+5. [http://localhost:3000/](http://localhost:3000/) - open in browser.
 
 ### Commands
 

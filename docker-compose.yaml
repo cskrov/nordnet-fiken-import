@@ -1,5 +1,27 @@
 services:
-  web:
-    build: .
+  app:
+    build: packages/app
+    depends_on:
+      - api
     ports:
       - "3000:3000"
+  api:
+    build: packages/api
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/fiknet
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fiknet
+  valkey:
+    image: valkey:8-alpine
+    ports:
+      - "6379:6379"

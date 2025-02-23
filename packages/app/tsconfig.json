@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "unplugin-icons/types/solid", "@types/umami"],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+
+    // /* Paths */
+    // "baseUrl": "./src",
+    // "paths": {
+    //   "@app/*": ["./*"],
+    //   "@shared": ["../../shared"]
+    // }
+  }
+  // "include": ["src"]
+}

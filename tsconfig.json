@@ -2,13 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client", "unplugin-icons/types/solid", "@types/bun", "@types/umami"],
+    "lib": ["ESNext"],
+    "types": ["@types/bun"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
 
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
@@ -22,14 +20,16 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Paths */
-    "baseUrl": "./src",
+    "baseUrl": "./packages",
     "paths": {
-      "@app/*": ["*"]
+      "@app/*": ["./app/src/*"],
+      "@api/*": ["./api/*"],
+      "@shared/*": ["./shared/*"]
     },
 
     /* Cache */
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["packages/app", "packages/api", "packages/shared"]
 }
