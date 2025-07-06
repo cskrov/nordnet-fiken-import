@@ -4,7 +4,7 @@ import { ModalVariant } from '@app/components/Modal/types';
 import { Row } from '@app/components/Row';
 import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from '@app/lib/download';
 import type { FikenFileData } from '@app/lib/fiken/fiken-files';
-import { type Accessor, type VoidComponent, createSignal } from 'solid-js';
+import { type Accessor, createSignal, type VoidComponent } from 'solid-js';
 import DownloadIcon from '~icons/mdi/Download';
 import DownloadMultipleIcon from '~icons/mdi/DownloadMultiple';
 

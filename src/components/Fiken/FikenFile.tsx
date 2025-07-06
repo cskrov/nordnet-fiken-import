@@ -9,9 +9,9 @@ import { Table } from '@app/components/Table';
 import { downloadFikenLinesCsv } from '@app/lib/download';
 import { FIKEN_TABLE_HEADERS } from '@app/lib/fiken/fiken-csv';
 import type { FikenFileData } from '@app/lib/fiken/fiken-files';
-import { MONTHS, isMonth } from '@app/lib/month';
+import { isMonth, MONTHS } from '@app/lib/month';
 import { isLastDayOfMonth } from 'date-fns';
-import { Index, Show, type VoidComponent, createSignal } from 'solid-js';
+import { createSignal, Index, Show, type VoidComponent } from 'solid-js';
 import DeleteIcon from '~icons/mdi/Delete';
 import DownloadIcon from '~icons/mdi/Download';
 import HelpIcon from '~icons/mdi/HelpCircle';
@@ -61,9 +61,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
           {year} {isMonth(month) ? MONTHS.get(month) : 'Ukjent måned'}
         </Heading>
 
-        <span class="font-mono italic text-base ml-4 mr-auto" aria-label="filnavn">
-          {fileName}
-        </span>
+        <span class="font-mono italic text-base ml-4 mr-auto">{fileName}</span>
 
         <div class="flex gap-2">
           <Show when={isCurrentMonth()}>

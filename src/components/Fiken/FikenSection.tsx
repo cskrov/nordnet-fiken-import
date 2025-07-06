@@ -10,7 +10,7 @@ import { NordnetType } from '@app/lib/nordnet/types';
 import { pad } from '@app/lib/pad-number';
 import { endOfMonth, format, subMonths } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { type Accessor, For, Show, type VoidComponent, createEffect, createMemo, createSignal } from 'solid-js';
+import { type Accessor, createEffect, createMemo, createSignal, For, Show, type VoidComponent } from 'solid-js';
 import CreationIcon from '~icons/mdi/creation';
 
 interface FikenFilesProps {

@@ -1,8 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
@@ -10,7 +8,10 @@
       "suspicious": {
         "noDoubleEquals": {
           "level": "error",
-          "fix": "unsafe"
+          "fix": "unsafe",
+          "options": {
+            "ignoreNull": false
+          }
         },
         "noGlobalIsFinite": {
           "level": "error",
@@ -35,7 +36,16 @@
         "noUnusedTemplateLiteral": {
           "level": "warn",
           "fix": "unsafe"
-        }
+        },
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   },
@@ -53,20 +63,7 @@
       "enabled": true
     }
   },
-  "overrides": [
-    {
-      "include": ["*.svelte"],
-      "linter": {
-        "rules": {
-          "style": {
-            "useConst": "off",
-            "useImportType": "off"
-          }
-        }
-      }
-    }
-  ],
   "files": {
-    "ignore": ["dist/**", "output/**", "testfiles/**", "node_modules/**"]
+    "includes": ["**", "!dist/**", "!output/**", "!testfiles/**", "!node_modules/**"]
   }
 }

@@ -1,6 +1,6 @@
 import { Button, ButtonVariant } from '@app/components/Button';
 import { type CsvFile, parseCsvFiles } from '@app/lib/csv';
-import { type VoidComponent, onCleanup } from 'solid-js';
+import { onCleanup, type VoidComponent } from 'solid-js';
 import UploadMultipleIcon from '~icons/mdi/upload-multiple';
 
 interface Props {

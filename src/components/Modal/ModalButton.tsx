@@ -1,7 +1,7 @@
 import { Button, type ButtonProps, ButtonVariant } from '@app/components/Button';
 import { Modal } from '@app/components/Modal/Modal';
 import { ModalVariant } from '@app/components/Modal/types';
-import { type FlowComponent, createSignal } from 'solid-js';
+import { createSignal, type FlowComponent } from 'solid-js';
 
 interface Props extends ButtonProps {
   buttonText: string;

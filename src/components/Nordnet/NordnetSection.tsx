@@ -3,7 +3,7 @@ import { NordnetRow } from '@app/components/Nordnet/NordnetRow';
 import { Section, SectionVariant } from '@app/components/Section';
 import { Table } from '@app/components/Table';
 import type { Csv } from '@app/lib/csv';
-import { type FlowComponent, Index, type JSX, Show, type VoidComponent, createSignal } from 'solid-js';
+import { createSignal, type FlowComponent, Index, type JSX, Show, type VoidComponent } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import DeleteIcon from '~icons/mdi/Delete';
 import ExpandLessIcon from '~icons/mdi/ExpandLess';

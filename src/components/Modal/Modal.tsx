@@ -1,7 +1,7 @@
 import { ModalFooter } from '@app/components/Modal/ModalFooter';
 import { ModalHeading } from '@app/components/Modal/ModalHeading';
 import { ModalVariant } from '@app/components/Modal/types';
-import { type Accessor, type FlowComponent, createEffect, createSignal, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, createSignal, type FlowComponent, onCleanup } from 'solid-js';
 
 interface Props {
   isOpen: Accessor<boolean>;

@@ -8,7 +8,7 @@ import { NordnetSection } from '@app/components/Nordnet/NordnetSection';
 import { Row } from '@app/components/Row';
 import { UploadButton } from '@app/components/UploadButton';
 import type { CsvFile } from '@app/lib/csv';
-import { For, Show, type VoidComponent, createSignal } from 'solid-js';
+import { createSignal, For, Show, type VoidComponent } from 'solid-js';
 import DeleteAllIcon from '~icons/mdi/delete-sweep';
 
 export const App: VoidComponent = () => {

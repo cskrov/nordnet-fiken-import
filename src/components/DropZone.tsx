@@ -1,5 +1,5 @@
 import { type CsvFile, parseCsvFiles } from '@app/lib/csv';
-import { type FlowComponent, createSignal } from 'solid-js';
+import { createSignal, type FlowComponent } from 'solid-js';
 
 interface Props {
   onFiles: (files: CsvFile[]) => void;
@@ -35,6 +35,7 @@ export const DropZone: FlowComponent<Props> = ({ onFiles, children }) => {
   };
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Drop zone
     <div
       onDrop={onDrop}
       onDragOver={onDragOver}

@@ -2,7 +2,7 @@ import { ButtonSize, ButtonVariant } from '@app/components/Button';
 import { Heading, HeadingSize } from '@app/components/Heading';
 import { ModalButton } from '@app/components/Modal/ModalButton';
 import { NORDNET_TYPES } from '@app/lib/nordnet/types';
-import { Index, type VoidComponent, createSignal } from 'solid-js';
+import { createSignal, Index, type VoidComponent } from 'solid-js';
 
 export const AppFooter: VoidComponent = () => {
   const [disclaimerShown, setDisclaimerShown] = createSignal(localStorage.getItem('disclaimer-shown') === 'v1');
