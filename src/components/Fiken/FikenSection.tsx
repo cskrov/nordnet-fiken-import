@@ -68,13 +68,12 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
   const previousDate = createMemo(() => endOfMonth(subMonths(firstLine().bokførtDato, 1)));
 
   const generatePreviousMonth = () => {
-    umami.track('Generate previous month');
-    const _firstLine = firstLine();
+    const month = previousDate().getMonth() + 1;
+    const year = previousDate().getFullYear();
 
-    const bokførtDato = endOfMonth(subMonths(_firstLine.bokførtDato, 1));
-    const month = bokførtDato.getMonth() + 1;
-    const year = bokførtDato.getFullYear();
-    const { nordnetKonto } = _firstLine;
+    umami.track('Generate previous month', { month, year });
+
+    const { nordnetKonto, inngående } = firstLine();
 
     const [konto, setKonto] = createSignal<string>(nordnetKonto);
 
@@ -84,15 +83,15 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
       setFraKonto: setKonto,
       tilKonto: konto,
       setTilKonto: setKonto,
-      nordnetKonto: _firstLine.nordnetKonto,
+      nordnetKonto,
       referanse: `generert-saldo-${year}-${pad(month)}`,
-      bokførtDato: bokførtDato,
+      bokførtDato: previousDate(),
       forklarendeTekst: () => 'Saldo',
       generated: true,
       inn: 0,
       ut: 0,
-      inngående: _firstLine.inngående,
-      saldo: _firstLine.inngående,
+      inngående,
+      saldo: inngående,
       month,
       year,
       source: { fileName: null, rowNumber: -1 },

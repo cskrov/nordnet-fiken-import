@@ -17,7 +17,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
   const onClickDownloadSingle = () => {
-    umami.track('Download all (single files)');
+    umami.track('Download all (single file)', getEventData(fikenFiles()));
 
     try {
       downloadFikenMapSingleCsv(fikenFiles().flatMap((f) => f.rows));
@@ -31,7 +31,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   };
 
   const onClickDownloadSeparate = () => {
-    umami.track('Download all (separate files)');
+    umami.track('Download all (separate files)', getEventData(fikenFiles()));
 
     try {
       downloadFikenMapMultipleCsv(fikenFiles());
@@ -67,4 +67,16 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
       </Modal>
     </Row>
   );
+};
+
+const getEventData = (allFiles: FikenFileData[]) => {
+  const fromYear = allFiles.reduce((acc, file) => Math.min(acc, file.year), Number.POSITIVE_INFINITY);
+  const toYear = allFiles.reduce((acc, file) => Math.max(acc, file.year), Number.NEGATIVE_INFINITY);
+  const fromMonth = allFiles.reduce((acc, file) => Math.min(acc, file.month), Number.POSITIVE_INFINITY);
+  const toMonth = allFiles.reduce((acc, file) => Math.max(acc, file.month), Number.NEGATIVE_INFINITY);
+  const totalRows = allFiles.reduce((acc, file) => acc + file.rows.length, 0);
+  const monthCount = allFiles.length;
+  const generatedMonthCount = allFiles.filter((f) => f.rows.every((r) => r.generated)).length;
+
+  return { fromYear, toYear, fromMonth, toMonth, totalRows, monthCount, generatedMonthCount };
 };

@@ -11,7 +11,7 @@ import { FIKEN_TABLE_HEADERS } from '@app/lib/fiken/fiken-csv';
 import type { FikenFileData } from '@app/lib/fiken/fiken-files';
 import { isMonth, MONTHS } from '@app/lib/month';
 import { isLastDayOfMonth } from 'date-fns';
-import { createSignal, Index, Show, type VoidComponent } from 'solid-js';
+import { createEffect, createSignal, Index, Show, type VoidComponent } from 'solid-js';
 import DeleteIcon from '~icons/mdi/Delete';
 import DownloadIcon from '~icons/mdi/Download';
 import HelpIcon from '~icons/mdi/HelpCircle';
@@ -29,8 +29,24 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
 
   const onCloseError = () => setShowErrorModal(false);
 
+  const hasUnexpectedSaldo = () => isGenerated() && rows.some((row) => row.unexpectedSaldo);
+  const isGenerated = () => rows.every((row) => row.generated);
+  const isCurrentMonth = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    return year === currentYear && month === currentMonth && !isLastDayOfMonth(now);
+  };
+
+  createEffect(() => {
+    if (hasUnexpectedSaldo()) {
+      umami.track('Unexpected saldo', { year, month, rows: rows.length, generated: isGenerated() });
+    }
+  });
+
   const onDownloadClick = () => {
-    umami.track('Download single');
+    umami.track('Download single', { year, month, rows: rows.length, generated: isGenerated() });
 
     try {
       downloadFikenLinesCsv(rows, fileName);
@@ -41,17 +57,6 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
         setShowErrorModal(true);
       }
     }
-  };
-
-  const isGenerated = () => rows.every((row) => row.generated);
-  const hasUnexpectedSaldo = () => isGenerated() && rows.some((row) => row.unexpectedSaldo);
-
-  const isCurrentMonth = () => {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
-
-    return year === currentYear && month === currentMonth && !isLastDayOfMonth(now);
   };
 
   return (
