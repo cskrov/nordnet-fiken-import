@@ -115,18 +115,18 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
           Generer saldo for {format(previousDate(), 'MMMM yyyy', { locale: nb })}
         </Button>
 
-        <For each={generatedFikenFiles()}>
-          {(fikenFile, index) => (
-            <FikenFile
-              fikenFile={fikenFile}
-              // Only allow removing the first generated file, to prevent accidental holes.
-              onRemove={index() === 0 ? () => removeGeneratedFikenLines(fikenFile.rows) : undefined}
-            />
-          )}
-        </For>
-
-        <Show when={convertedFikenFiles().length !== 0}>
+        <Show when={convertedFikenFiles().length !== 0 || generatedFikenFiles().length !== 0}>
           <div class="flex flex-col gap-y-4">
+            <For each={generatedFikenFiles()}>
+              {(fikenFile, index) => (
+                <FikenFile
+                  fikenFile={fikenFile}
+                  // Only allow removing the first generated file, to prevent accidental holes.
+                  onRemove={index() === 0 ? () => removeGeneratedFikenLines(fikenFile.rows) : undefined}
+                />
+              )}
+            </For>
+
             <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
           </div>
         </Show>
