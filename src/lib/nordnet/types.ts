@@ -25,8 +25,8 @@ export interface NordnetLine {
   readonly bokførtDato: Date;
   readonly portefølje: string;
   readonly transaksjonstype: string;
-  readonly beløp: number;
-  readonly saldo: number;
+  readonly beløp: bigint;
+  readonly saldo: bigint;
   readonly transaksjonstekst: string;
   readonly verdipapir: string | null;
   readonly ISIN: string | null;

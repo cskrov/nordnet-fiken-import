@@ -1,6 +1,7 @@
 import { getKonti } from '@app/lib/fiken/accounts';
 import { getForklarendeTekst } from '@app/lib/fiken/text';
 import type { FikenLine } from '@app/lib/fiken/types';
+import { Money, Sign } from '@app/lib/money';
 import type { NordnetLine } from '@app/lib/nordnet/types';
 import { createSignal } from 'solid-js';
 
@@ -64,7 +65,7 @@ export const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     generated,
     unexpectedSaldo,
   } = nordnetLine;
-  const sign = Math.sign(beløp);
+  const sign = Money.sign(beløp);
   const nordnetKonti = getKonti(nordnetLine);
   const [fraKonto, setFraKonto] = createSignal<string | null>(nordnetKonti.fraKonto);
   const [tilKonto, setTilKonto] = createSignal<string | null>(nordnetKonti.tilKonto);
@@ -80,8 +81,8 @@ export const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     isin: ISIN,
     forklarendeTekst: () => getForklarendeTekst(nordnetLine, fraKonto(), tilKonto()),
     inngående: saldo - beløp,
-    ut: sign === -1 ? Math.abs(beløp) : 0,
-    inn: sign === 1 ? beløp : 0,
+    ut: sign === Sign.NEGATIVE ? Money.abs(beløp) : 0n,
+    inn: sign !== Sign.NEGATIVE ? beløp : 0n,
     saldo,
     referanse: id,
     month,

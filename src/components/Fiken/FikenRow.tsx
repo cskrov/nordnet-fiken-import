@@ -1,7 +1,7 @@
 import { Account } from '@app/components/Account';
 import { ButtonSize, ButtonVariant } from '@app/components/Button';
 import { ModalButton } from '@app/components/Modal/ModalButton';
-import { Money } from '@app/components/Money';
+import { DisplayMoney } from '@app/components/Money';
 import { isInnskuddLineAccessor, isUttakLineAccessor } from '@app/lib/fiken/guards';
 import type { FikenLine } from '@app/lib/fiken/types';
 import { format } from 'date-fns';
@@ -40,16 +40,16 @@ export const FikenRow: VoidComponent<FikenRowProps> = ({ line, lineNumber }) => 
       <td class={CELL_CLASSES}>{line().forklarendeTekst()}</td>
       <td class={CELL_CLASSES}>{line().isin}</td>
       <td class={CELL_CLASSES}>
-        <Money>{line().inngående}</Money>
+        <DisplayMoney>{line().inngående}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>
-        <Money reversed>{line().ut}</Money>
+        <DisplayMoney reversed>{line().ut}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>
-        <Money>{line().inn}</Money>
+        <DisplayMoney>{line().inn}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>
-        <Money>{line().saldo}</Money>
+        <DisplayMoney>{line().saldo}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>{line().referanse}</td>
       <td class={CELL_CLASSES}>

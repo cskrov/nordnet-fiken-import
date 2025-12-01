@@ -131,7 +131,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
         {
           bokførtDato: endOfMonth(line.bokførtDato),
           portefølje: line.portefølje,
-          beløp: 0,
+          beløp: 0n,
           saldo: line.saldo,
           transaksjonstekst: 'Saldo',
           transaksjonstype: NordnetType.SALDO,
@@ -143,7 +143,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
           source: { fileName: null, rowNumber: -1 },
           generated: true,
           unexpectedSaldo: false,
-        },
+        } satisfies NordnetLine,
       ];
     }
 
@@ -172,7 +172,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
       missingMonths.push({
         bokførtDato: endOfMonth(addMonths(line.bokførtDato, i)),
         portefølje: line.portefølje,
-        beløp: 0,
+        beløp: 0n,
         saldo: line.saldo,
         transaksjonstekst: 'Saldo',
         transaksjonstype: NordnetType.SALDO,

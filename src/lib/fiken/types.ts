@@ -11,10 +11,10 @@ export interface BaseFikenLine {
   readonly nordnetKonto: string;
   readonly bokførtDato: Date;
   readonly forklarendeTekst: Accessor<string>;
-  readonly inngående: number;
-  readonly ut: number;
-  readonly inn: number;
-  readonly saldo: number;
+  readonly inngående: bigint;
+  readonly ut: bigint;
+  readonly inn: bigint;
+  readonly saldo: bigint;
   readonly referanse: string;
   readonly month: number;
   readonly year: number;
