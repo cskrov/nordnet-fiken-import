@@ -3,7 +3,6 @@
   "editor.linkedEditing": true,
   "editor.defaultFormatter": "biomejs.biome",
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "always",
     "source.fixAll.biome": "always",
     "source.organizeImports.biome": "always",
     "source.addMissingImports.ts": "explicit"
