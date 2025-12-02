@@ -42,7 +42,9 @@
   "tailwindCSS.experimental.classRegex": [
     ":\\s*?[\"'`]([^\"'`]*).*?,",
     "const\\s\\w*Classes\\s+=\\s+[\"'`]([^\"'`]*)",
+    "const\\s\\w*Class\\s+=\\s+[\"'`]([^\"'`]*)",
     "const\\s\\w*_CLASSES\\s+=\\s+[\"'`]([^\"'`]*)",
+    "const\\s\\w*_CLASS\\s+=\\s+[\"'`]([^\"'`]*)",
     "@tw\\s\\*/\\s+[\"'`]([^\"'`]*)"
   ]
 }
