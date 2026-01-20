@@ -117,4 +117,4 @@ const splitMoney = (value: bigint): [bigint, bigint] => {
 const TRAILING_ZEROS_REGEX = /0+$/g;
 
 const formatDecimal = (decimal: bigint): string =>
-  decimal.toString(10).padStart(RESOLUTION_DIGITS, '0').replaceAll(TRAILING_ZEROS_REGEX, '').padStart(2, '0');
+  decimal.toString(10).padStart(RESOLUTION_DIGITS, '0').replaceAll(TRAILING_ZEROS_REGEX, '').padEnd(2, '0');
