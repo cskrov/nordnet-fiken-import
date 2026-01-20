@@ -8,7 +8,7 @@ import type { FikenLine } from '@app/lib/fiken/types';
 import { fixNordnetLines, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
 import { NordnetType } from '@app/lib/nordnet/types';
 import { pad } from '@app/lib/pad-number';
-import { endOfMonth, format, subMonths } from 'date-fns';
+import { addMonths, endOfMonth, format, isBefore, startOfMonth, subMonths } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { type Accessor, createEffect, createMemo, createSignal, For, Show, type VoidComponent } from 'solid-js';
 import CreationIcon from '~icons/mdi/creation';
@@ -23,7 +23,8 @@ export const FikenSection: VoidComponent<FikenFilesProps> = ({ csvFiles }) => {
 
   const firstLine: Accessor<FikenLine | undefined> = () => generatedFikenLines().at(0) ?? convertedFikenLines().at(0);
 
-  const addGeneratedFikenLine = (newLine: FikenLine) => setGeneratedFikenLines([newLine, ...generatedFikenLines()]);
+  const prependGeneratedFikenLine = (newLine: FikenLine) => setGeneratedFikenLines([newLine, ...generatedFikenLines()]);
+  const appendGeneratedFikenLine = (newLine: FikenLine) => setGeneratedFikenLines([...generatedFikenLines(), newLine]);
 
   const removeGeneratedFikenLines = (lines: FikenLine[]) =>
     setGeneratedFikenLines(generatedFikenLines().filter((l) => !lines.includes(l)));
@@ -42,7 +43,8 @@ export const FikenSection: VoidComponent<FikenFilesProps> = ({ csvFiles }) => {
           firstLine={_firstLine}
           convertedFikenLines={convertedFikenLines}
           generatedFikenLines={generatedFikenLines}
-          addGeneratedFikenLine={addGeneratedFikenLine}
+          prependGeneratedFikenLine={prependGeneratedFikenLine}
+          appendGeneratedFikenLine={appendGeneratedFikenLine}
           removeGeneratedFikenLines={removeGeneratedFikenLines}
         />
       )}
@@ -54,7 +56,8 @@ interface FikenSectionWithFirstLineProps {
   convertedFikenLines: Accessor<FikenLine[]>;
   generatedFikenLines: Accessor<FikenLine[]>;
   firstLine: Accessor<FikenLine>;
-  addGeneratedFikenLine: (line: FikenLine) => void;
+  prependGeneratedFikenLine: (line: FikenLine) => void;
+  appendGeneratedFikenLine: (line: FikenLine) => void;
   removeGeneratedFikenLines: (lines: FikenLine[]) => void;
 }
 
@@ -62,10 +65,17 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
   convertedFikenLines,
   generatedFikenLines,
   firstLine,
-  addGeneratedFikenLine,
+  prependGeneratedFikenLine,
+  appendGeneratedFikenLine,
   removeGeneratedFikenLines,
 }) => {
+  const lastLine: Accessor<FikenLine> = createMemo(
+    () => generatedFikenLines().at(-1) ?? convertedFikenLines().at(-1) ?? firstLine(),
+  );
+
   const previousDate = createMemo(() => endOfMonth(subMonths(firstLine().bokførtDato, 1)));
+  const nextDate = createMemo(() => endOfMonth(addMonths(lastLine().bokførtDato, 1)));
+  const canGenerateNextMonth = createMemo(() => isBefore(nextDate(), startOfMonth(new Date())));
 
   const generatePreviousMonth = () => {
     const month = previousDate().getMonth() + 1;
@@ -77,7 +87,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
     const [konto, setKonto] = createSignal<string>(nordnetKonto);
 
-    addGeneratedFikenLine({
+    prependGeneratedFikenLine({
       type: NordnetType.SALDO,
       fraKonto: konto,
       setFraKonto: setKonto,
@@ -100,8 +110,61 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
     });
   };
 
+  const generateNextMonth = () => {
+    const month = nextDate().getMonth() + 1;
+    const year = nextDate().getFullYear();
+
+    umami.track('Generate next month', { month, year });
+
+    const { nordnetKonto, saldo } = lastLine();
+
+    const [konto, setKonto] = createSignal<string>(nordnetKonto);
+
+    appendGeneratedFikenLine({
+      type: NordnetType.SALDO,
+      fraKonto: konto,
+      setFraKonto: setKonto,
+      tilKonto: konto,
+      setTilKonto: setKonto,
+      nordnetKonto,
+      referanse: `generert-saldo-${year}-${pad(month)}`,
+      bokførtDato: nextDate(),
+      forklarendeTekst: () => 'Saldo',
+      generated: true,
+      inn: 0n,
+      ut: 0n,
+      inngående: saldo,
+      saldo,
+      month,
+      year,
+      source: { fileName: null, rowNumber: -1 },
+      isin: null,
+      unexpectedSaldo: false,
+    });
+  };
+
   const generatedFikenFiles = createMemo(() => fikenLinesToFikenFiles(generatedFikenLines()));
   const convertedFikenFiles = createMemo(() => fikenLinesToFikenFiles(convertedFikenLines()));
+
+  const firstConvertedFile = () => convertedFikenFiles().at(0);
+
+  const generatedPreviousFikenFiles = createMemo(() => {
+    const first = firstConvertedFile();
+    if (first === undefined) {
+      return [];
+    }
+    return generatedFikenFiles().filter((f) => f.year < first.year || (f.year === first.year && f.month < first.month));
+  });
+
+  const generatedNextFikenFiles = createMemo(() => {
+    const first = firstConvertedFile();
+    if (first === undefined) {
+      return [];
+    }
+    return generatedFikenFiles().filter(
+      (f) => f.year > first.year || (f.year === first.year && f.month >= first.month),
+    );
+  });
 
   return (
     <Show when={convertedFikenFiles().length !== 0}>
@@ -116,7 +179,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
         <Show when={convertedFikenFiles().length !== 0 || generatedFikenFiles().length !== 0}>
           <div class="flex flex-col gap-y-4">
-            <For each={generatedFikenFiles()}>
+            <For each={generatedPreviousFikenFiles()}>
               {(fikenFile, index) => (
                 <FikenFile
                   fikenFile={fikenFile}
@@ -127,7 +190,29 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
             </For>
 
             <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
+
+            <For each={generatedNextFikenFiles()}>
+              {(fikenFile, index) => (
+                <FikenFile
+                  fikenFile={fikenFile}
+                  // Only allow removing the last generated file, to prevent accidental holes.
+                  onRemove={
+                    index() === generatedNextFikenFiles().length - 1
+                      ? () => removeGeneratedFikenLines(fikenFile.rows)
+                      : undefined
+                  }
+                />
+              )}
+            </For>
           </div>
+
+          <Show when={canGenerateNextMonth()}>
+            <div class="mt-4">
+              <Button onClick={generateNextMonth} variant={ButtonVariant.SECONDARY} icon={<CreationIcon />}>
+                Generer saldo for {format(nextDate(), 'MMMM yyyy', { locale: nb })}
+              </Button>
+            </div>
+          </Show>
         </Show>
       </section>
 
