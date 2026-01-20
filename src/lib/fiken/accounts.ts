@@ -30,6 +30,12 @@ export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, bel
         return { fraKonto: null, tilKonto: portefølje };
       case NordnetType.TILBAKEBETALING_FOND_AVG:
         return { fraKonto: null, tilKonto: portefølje };
+      case NordnetType.MVA:
+        return { fraKonto: portefølje, tilKonto: null };
+      case NordnetType.OPPBEVARING_NORDISKE_UNOTERTE:
+        return { fraKonto: portefølje, tilKonto: null };
+      case NordnetType.TILBAKEBETALING:
+        return { fraKonto: null, tilKonto: portefølje };
       case NordnetType.UTTAK:
         return {
           fraKonto: portefølje,

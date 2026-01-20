@@ -20,6 +20,14 @@ export const getForklarendeTekst = (
       return fraKonto === null || fraKonto.length === 0
         ? nordnetLine.transaksjonstekst
         : `Innskudd fra konto ${fraKonto}`;
+    case NordnetType.MVA:
+      return 'MVA';
+    case NordnetType.OPPBEVARING_NORDISKE_UNOTERTE:
+      return 'Oppbevaring av unoterte verdipapir';
+    case NordnetType.TILBAKEBETALING:
+      return nordnetLine.verdipapir !== null
+        ? `Tilbakebetaling ${nordnetLine.verdipapir} (${nordnetLine.ISIN})`
+        : 'Tilbakebetaling';
   }
 
   return nordnetLine.transaksjonstekst;
