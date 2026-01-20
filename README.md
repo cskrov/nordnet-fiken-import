@@ -14,7 +14,7 @@ Hosted at [https://import.sourcecontrol.no](https://import.sourcecontrol.no).
 1. [Install Bun.](https://bun.sh)
 2. Clone repository.
 3. `bun install` - install dependencies.
-4. `bun start` - run locally.
+4. `bun dev` - run locally.
 5. [http://localhost:5173/](http://localhost:5173/) - open in browser.
 
 ### Commands
