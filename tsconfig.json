@@ -4,7 +4,7 @@
     "module": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client", "unplugin-icons/types/solid", "@types/bun", "@types/umami"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
@@ -22,9 +22,8 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Paths */
-    "baseUrl": "./src",
     "paths": {
-      "@app/*": ["*"]
+      "@app/*": ["./src/*"]
     },
 
     /* Cache */
