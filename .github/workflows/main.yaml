@@ -1,4 +1,4 @@
-name: Deploy
+name: Build and deploy
 
 on:
   push:
@@ -7,31 +7,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deply:
+    name: Build and deploy
     runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         shell: bash
         run: bun install --frozen-lockfile
 
-      - name: Build frontend
+      - name: Build
         shell: bash
         env:
-          UNAMI_ID: ${{ secrets.UMAMI_ID }}
           VERSION: ${{ github.sha }}
         run: bun run build
 
-      - name: Test frontend
+      - name: Test
         shell: bash
         run: bun test
 
@@ -42,20 +42,3 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ github.repository }}:latest .
           docker push ghcr.io/${{ github.repository }}:latest
-
-      - name: Trigger Dokploy deploy
-        run: curl --silent --output /dev/null ${{ secrets.DEPLOY_WEBHOOK }}
-
-      - name: SSH
-        if: false
-        shell: bash
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -t ed25519 ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
-          echo "${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-
-      - name: Deploy
-        if: false
-        shell: bash
-        run: scp -r dist/* ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_SERVER }}:${{ secrets.DEPLOY_PATH }}
