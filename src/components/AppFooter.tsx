@@ -1,6 +1,8 @@
 import { ButtonSize, ButtonVariant } from '@app/components/Button';
 import { Heading, HeadingSize } from '@app/components/Heading';
+import { Link } from '@app/components/Link';
 import { ModalButton } from '@app/components/Modal/ModalButton';
+import { Version, VersionSize } from '@app/components/Version';
 import { NORDNET_TYPES } from '@app/lib/nordnet/types';
 import { createSignal, Index, type VoidComponent } from 'solid-js';
 
@@ -13,8 +15,8 @@ export const AppFooter: VoidComponent = () => {
   };
 
   return (
-    <footer class="flex justify-center items-center flex-row gap-4 p-4 bg-surface-900 text-sm italic">
-      <span>Denne tjenesten har ingen relasjon til Fiken eller Nordnet. Bruk på eget ansvar.</span>
+    <footer class="flex justify-center items-center flex-row gap-4 p-4 bg-surface-900 text-sm">
+      <span class="italic">Denne tjenesten har ingen relasjon til Fiken eller Nordnet. Bruk på eget ansvar.</span>
 
       <ModalButton
         buttonText="Mer info"
@@ -22,6 +24,11 @@ export const AppFooter: VoidComponent = () => {
         variant={ButtonVariant.PRIMARY}
         defaultOpen={!disclaimerShown()}
         onClose={closeDisclaimer}
+        footerContent={
+          <span class="text-xs text-gray-300 italic">
+            Versjon <Version size={VersionSize.SMALL} />
+          </span>
+        }
       >
         <Heading level={2} size={HeadingSize.SMALL}>
           Støttede Nordnet-transaksjoner
@@ -51,8 +58,9 @@ export const AppFooter: VoidComponent = () => {
           Feil kan rapporteres som issues på{' '}
           <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link>.
         </p>
-        </p>
       </ModalButton>
+
+      <Version size={VersionSize.SMALL} title="Versjon" />
     </footer>
   );
 };

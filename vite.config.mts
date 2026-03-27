@@ -19,6 +19,9 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.VERSION ?? 'local'),
+  },
   build: {
     target: 'esnext',
   },

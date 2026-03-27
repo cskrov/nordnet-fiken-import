@@ -1,12 +1,13 @@
 import { Button, type ButtonProps, ButtonVariant } from '@app/components/Button';
 import { Modal } from '@app/components/Modal/Modal';
 import { ModalVariant } from '@app/components/Modal/types';
-import { createSignal, type FlowComponent } from 'solid-js';
+import { createSignal, type FlowComponent, type JSX } from 'solid-js';
 
 interface Props extends ButtonProps {
   buttonText: string;
   defaultOpen?: boolean;
   onClose?: () => void;
+  footerContent?: JSX.Element;
 }
 
 export const ModalButton: FlowComponent<Props> = ({
@@ -16,6 +17,7 @@ export const ModalButton: FlowComponent<Props> = ({
   icon,
   defaultOpen = false,
   onClose,
+  footerContent,
   children,
 }) => {
   const [isOpen, setIsOpen] = createSignal(defaultOpen);
@@ -30,7 +32,12 @@ export const ModalButton: FlowComponent<Props> = ({
       <Button variant={variant} size={size} onClick={() => setIsOpen(true)} icon={icon}>
         {buttonText}
       </Button>
-      <Modal variant={BUTTON_VARAINT_TO_MODAL_VARIANT[variant]} isOpen={isOpen} onClose={close}>
+      <Modal
+        variant={BUTTON_VARAINT_TO_MODAL_VARIANT[variant]}
+        isOpen={isOpen}
+        onClose={close}
+        footerContent={footerContent}
+      >
         {children}
       </Modal>
     </>

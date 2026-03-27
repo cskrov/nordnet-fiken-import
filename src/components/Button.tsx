@@ -14,6 +14,7 @@ export enum ButtonSize {
 }
 
 export interface ButtonProps {
+  class?: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
   icon?: JSX.Element;
@@ -25,6 +26,7 @@ const BASE_CLASSES =
   'flex items-center flex-row rounded-lg border-none text-center text-decoration-none cursor-pointer gap-x-1';
 
 export const Button: FlowComponent<ButtonProps> = ({
+  class: className,
   variant = ButtonVariant.PRIMARY,
   size = ButtonSize.MEDIUM,
   icon,
@@ -34,7 +36,7 @@ export const Button: FlowComponent<ButtonProps> = ({
 }) => (
   <button
     type="button"
-    class={`${BASE_CLASSES} ${TEXT_SIZE[size]} ${COLOR_CLASSES[variant]} ${BACKGROUND_COLOR[variant]} ${HOVER_BACKGROUND_COLOR[variant]} ${PADDING[size]} ${spacing ? 'mb-4' : ''}`}
+    class={`${BASE_CLASSES} ${TEXT_SIZE[size]} ${COLOR_CLASSES[variant]} ${BACKGROUND_COLOR[variant]} ${HOVER_BACKGROUND_COLOR[variant]} ${PADDING[size]} ${spacing ? 'mb-4' : ''} ${className ?? ''}`}
     onClick={onClick}
   >
     {icon === undefined ? null : icon}

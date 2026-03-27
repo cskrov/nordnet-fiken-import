@@ -1,15 +1,22 @@
 import { ModalFooter } from '@app/components/Modal/ModalFooter';
 import { ModalHeading } from '@app/components/Modal/ModalHeading';
 import { ModalVariant } from '@app/components/Modal/types';
-import { type Accessor, createEffect, createSignal, type FlowComponent, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, createSignal, type FlowComponent, type JSX, onCleanup } from 'solid-js';
 
 interface Props {
   isOpen: Accessor<boolean>;
   onClose?: () => void;
   variant?: ModalVariant;
+  footerContent?: JSX.Element;
 }
 
-export const Modal: FlowComponent<Props> = ({ isOpen, onClose, variant = ModalVariant.PRIMARY, children }) => {
+export const Modal: FlowComponent<Props> = ({
+  isOpen,
+  onClose,
+  variant = ModalVariant.PRIMARY,
+  footerContent,
+  children,
+}) => {
   let dialogRef: HTMLDialogElement;
 
   createEffect(() => {
@@ -76,7 +83,7 @@ export const Modal: FlowComponent<Props> = ({ isOpen, onClose, variant = ModalVa
         <ModalHeading variant={variant} />
         {children}
       </section>
-      <ModalFooter closeModal={closeModal} />
+      <ModalFooter closeModal={closeModal}>{footerContent}</ModalFooter>
     </dialog>
   );
 };
