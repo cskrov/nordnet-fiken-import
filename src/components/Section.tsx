@@ -7,7 +7,7 @@ export enum SectionVariant {
   INACTIVE = 3,
 }
 
-export interface Props {
+interface Props {
   variant?: SectionVariant;
 }
 

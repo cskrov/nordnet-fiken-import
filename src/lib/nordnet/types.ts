@@ -39,7 +39,3 @@ export interface NordnetLine {
   readonly generated: boolean;
   readonly unexpectedSaldo: boolean;
 }
-
-export type NordnetKey = `${string}-${string}`;
-
-export type NordnetMap = Map<NordnetKey, NordnetLine[]>;

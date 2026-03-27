@@ -5,26 +5,6 @@ import { Money, Sign } from '@app/lib/money';
 import type { NordnetLine } from '@app/lib/nordnet/types';
 import { createSignal } from 'solid-js';
 
-export interface NordnetMonth {
-  readonly month: number;
-  readonly year: number;
-  readonly rows: NordnetLine[];
-}
-
-export const groupByMonth = (nordnetLines: NordnetLine[]): NordnetMonth[] =>
-  nordnetLines.reduce<NordnetMonth[]>((nordnetMonths, nordnetLine) => {
-    const { month, year } = nordnetLine;
-    const existingFile = nordnetMonths.find((m) => m.year === year && m.month === month);
-
-    if (existingFile) {
-      existingFile.rows.push(nordnetLine);
-    } else {
-      nordnetMonths.push({ year, month, rows: [nordnetLine] });
-    }
-
-    return nordnetMonths;
-  }, []);
-
 export const fikenLinesToFikenFiles = (fikenLines: FikenLine[]): FikenFileData[] =>
   fikenLines.reduce<FikenFileData[]>((fikenFiles, fikenLine) => {
     const { year, month } = fikenLine;
@@ -40,17 +20,10 @@ export const fikenLinesToFikenFiles = (fikenLines: FikenLine[]): FikenFileData[]
     return fikenFiles;
   }, []);
 
-export const nordnetMonthToFikenMonth = ({ year, month, rows }: NordnetMonth): FikenFileData => ({
-  fileName: `nordnet-fiken-${year.toString(10)}.${month.toString(10).padStart(2, '0')}.csv`,
-  year,
-  month,
-  rows: rows.map(nordnetLineToFikenLine),
-});
-
 export const nordnetLinesToFikenLines = (nordnetLines: NordnetLine[]): FikenLine[] =>
   nordnetLines.map(nordnetLineToFikenLine);
 
-export const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
+const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
   const {
     id,
     transaksjonstype,

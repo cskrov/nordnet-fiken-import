@@ -5,15 +5,15 @@ import { type NordnetLine, NordnetType } from '@app/lib/nordnet/types';
 import { pad } from '@app/lib/pad-number';
 import { addMonths, endOfMonth, isLastDayOfMonth, isSameMonth, parse } from 'date-fns';
 
-export const NORDNET_HEADER_ID = 'Id';
-export const NORDNET_HEADER_BOKFORT_DATO = 'Bokføringsdag';
-export const NORDNET_HEADER_KONTO = 'Portefølje';
-export const NORDNET_HEADER_BELØP = 'Beløp';
-export const NORDNET_HEADER_SALDO = 'Saldo';
-export const NORDNET_HEADER_TRANSAKSJONSTEKST = 'Transaksjonstekst';
-export const NORDNET_HEADER_TYPE = 'Transaksjonstype';
-export const NORDNET_HEADER_VERDIPAPIR = 'Verdipapir';
-export const NORDNET_HEADER_ISIN = 'ISIN';
+const NORDNET_HEADER_ID = 'Id';
+const NORDNET_HEADER_BOKFORT_DATO = 'Bokføringsdag';
+const NORDNET_HEADER_KONTO = 'Portefølje';
+const NORDNET_HEADER_BELØP = 'Beløp';
+const NORDNET_HEADER_SALDO = 'Saldo';
+const NORDNET_HEADER_TRANSAKSJONSTEKST = 'Transaksjonstekst';
+const NORDNET_HEADER_TYPE = 'Transaksjonstype';
+const NORDNET_HEADER_VERDIPAPIR = 'Verdipapir';
+const NORDNET_HEADER_ISIN = 'ISIN';
 
 const NORDNET_HEADERS = [
   NORDNET_HEADER_ID,

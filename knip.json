@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreDependencies": ["@iconify/json"],
+  "ignoreUnresolved": ["~icons/.+"],
+  "bun": {
+    "entry": ["src/**/*.test.ts"]
+  }
+}

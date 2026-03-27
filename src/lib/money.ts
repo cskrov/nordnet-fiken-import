@@ -22,7 +22,7 @@ export namespace Money {
 
 const INTEGER_REGEX = /^[0-9]+$/;
 
-export const RESOLUTION_DIGITS = 10;
+const RESOLUTION_DIGITS = 10;
 export const RESOLUTION = 10n ** BigInt(RESOLUTION_DIGITS);
 
 /**

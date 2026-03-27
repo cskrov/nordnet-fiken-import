@@ -9,7 +9,7 @@ export const setLocalStorageAccountNumber = (referanse: string, accountNumber: s
 export const removeLocalStorageAccountNumber = (referanse: string): void =>
   localStorage.removeItem(getAccountNumberStorageKey(referanse));
 
-export const ACCOUNT_NUMBER_REGEX = /[0-9]{8,11}$/;
+const ACCOUNT_NUMBER_REGEX = /[0-9]{8,11}$/;
 
 export const attemptToExtractAccountNumber = (text: string): string | null => {
   const match = text.match(ACCOUNT_NUMBER_REGEX);

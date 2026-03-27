@@ -4,7 +4,7 @@ import { formatMoney } from '@app/lib/money';
 import { NordnetType } from '@app/lib/nordnet/types';
 import { format } from 'date-fns';
 
-export const FIKEN_CSV_HEADERS = [
+const FIKEN_CSV_HEADERS = [
   'Bokført dato',
   'Fra konto',
   'Til konto',
