@@ -70,36 +70,25 @@
   --color-table-even-row: #2d3759;
   --color-table-hover-row: #313d62;
   --color-table-border-color: #2e395c;
-
-  /* --border-radius: 8px; */
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* html {
-  height: 100%;
-  width: 100%;
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: normal;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
-} */
-
 a {
-  color: var(--primary-500);
+  color: var(--color-primary-500);
+  text-decoration: underline;
 
   &:visited {
-    color: var(--primary-400);
+    color: var(--color-primary-400);
   }
 
   &:hover {
-    color: var(--primary-600);
+    color: var(--color-primary-600);
   }
 
   &:active {
-    color: var(--primary-700);
+    color: var(--color-primary-700);
   }
 }
