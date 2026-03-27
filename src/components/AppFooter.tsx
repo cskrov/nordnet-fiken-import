@@ -36,10 +36,8 @@ export const AppFooter: VoidComponent = () => {
         </p>
         <p class="m-0">
           Om du har eksportert filer fra Nordnet med andre typer enn de nevnt over, meld fra på{' '}
-          <a href="https://github.com/cskrov/nordnet-fiken-import/issues" target="_blank" rel="noreferrer">
-            GitHub
-          </a>{' '}
-          med de typene som mangler og hva de gjelder. Inkluder gjerne en eksempelfil.
+          <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link> med de typene som mangler og
+          hva de gjelder. Inkluder gjerne en eksempelfil.
         </p>
 
         <Heading level={2} size={HeadingSize.SMALL}>
@@ -47,14 +45,12 @@ export const AppFooter: VoidComponent = () => {
         </Heading>
         <p class="m-0">Alt prosesseres i nettleseren din. Ingen data sendes til server.</p>
         <p class="m-0">
-          Kontonumre lagres på enheten din med <span class="text-gray-300">localStorage</span>.
+          Kontonumre lagres på enheten din med <span class="text-gray-300 font-mono">localStorage</span>.
         </p>
         <p class="m-0">
           Feil kan rapporteres som issues på{' '}
-          <a href="https://github.com/cskrov/nordnet-fiken-import/issues" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          .
+          <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link>.
+        </p>
         </p>
       </ModalButton>
     </footer>
