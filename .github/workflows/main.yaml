@@ -4,6 +4,19 @@ on:
   push:
     branches:
       - main
+    paths:
+      - src/**
+      - static/**
+      - package.json
+      - bun.lock
+      - bunfig.toml
+      - tsconfig.json
+      - vite.config.mts
+      - biome.json
+      - index.html
+      - Dockerfile
+      - nginx.conf
+      - .github/workflows/main.yaml
   workflow_dispatch:
 
 jobs:
