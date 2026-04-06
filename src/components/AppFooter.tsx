@@ -58,6 +58,9 @@ export const AppFooter: VoidComponent = () => {
           Feil kan rapporteres som issues på{' '}
           <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link>.
         </p>
+        <p>
+          <Link href="https://umami.is">Umami</Link> brukes til enkel statistikk over bruk.
+        </p>
       </ModalButton>
 
       <Version size={VersionSize.SMALL} title="Versjon" />
