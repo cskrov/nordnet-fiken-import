@@ -33,7 +33,7 @@ export const AppFooter: VoidComponent = () => {
         <Heading level={2} size={HeadingSize.SMALL}>
           Støttede Nordnet-transaksjoner
         </Heading>
-        <p class="m-0">
+        <p>
           <span>Følgende transaksjonstyper fra Nordnet støttes:</span>
           <span class="inline-flex flex-wrap flex-row gap-1">
             <Index each={NORDNET_TYPES}>
@@ -41,7 +41,7 @@ export const AppFooter: VoidComponent = () => {
             </Index>
           </span>
         </p>
-        <p class="m-0">
+        <p>
           Om du har eksportert filer fra Nordnet med andre typer enn de nevnt over, meld fra på{' '}
           <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link> med de typene som mangler og
           hva de gjelder. Inkluder gjerne en eksempelfil.
@@ -50,11 +50,11 @@ export const AppFooter: VoidComponent = () => {
         <Heading level={2} size={HeadingSize.SMALL}>
           Databehandling
         </Heading>
-        <p class="m-0">Alt prosesseres i nettleseren din. Ingen data sendes til server.</p>
-        <p class="m-0">
+        <p>Alt prosesseres i nettleseren din. Ingen data sendes til server.</p>
+        <p>
           Kontonumre lagres på enheten din med <span class="text-gray-300 font-mono">localStorage</span>.
         </p>
-        <p class="m-0">
+        <p>
           Feil kan rapporteres som issues på{' '}
           <Link href="https://github.com/cskrov/nordnet-fiken-import/issues">GitHub</Link>.
         </p>

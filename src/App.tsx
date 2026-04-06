@@ -43,7 +43,7 @@ export const App: VoidComponent = () => {
           Nordnet til Fiken
         </Heading>
 
-        <p class="m-0 italic text-center">Konverter CSV eksportert fra Nordnet til et format Fiken forstår.</p>
+        <p class="italic text-center">Konverter CSV eksportert fra Nordnet til et format Fiken forstår.</p>
       </Header>
 
       <main class="flex flex-col gap-y-8 grow px-4 pb-16">
@@ -63,7 +63,7 @@ export const App: VoidComponent = () => {
           </Row>
 
           <Show when={!hasFiles()}>
-            <p class="m-0 italic">Dra og slipp CSV-filer fra Nordnet hvor som helst.</p>
+            <p class="italic">Dra og slipp CSV-filer fra Nordnet hvor som helst.</p>
           </Show>
 
           <Show when={hasFiles()}>

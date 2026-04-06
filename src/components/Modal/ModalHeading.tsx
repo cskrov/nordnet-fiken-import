@@ -33,5 +33,5 @@ export const ModalHeading: VoidComponent<HeadingProps> = ({ variant }) => {
 };
 
 const Heading: FlowComponent = (props) => (
-  <h1 {...props} class="absolute left-8 top-8 m-0 p-0 flex items-center gap-2 text-base" />
+  <h1 {...props} class="absolute left-8 top-8 flex items-center gap-2 text-base" />
 );
