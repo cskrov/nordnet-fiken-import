@@ -22,6 +22,6 @@ interface Props {
 
 export const Version: Component<Props> = ({ title, size = VersionSize.MEDIUM }) => (
   <span class={`${SIZE[size]} bg-gray-700 font-mono`} title={title}>
-    {__APP_VERSION__}
+    {__APP_VERSION__.slice(0, 7)}
   </span>
 );
