@@ -16,6 +16,8 @@ if (typeof umami === 'undefined') {
   };
 }
 
+umami.identify({ version: __APP_VERSION__ });
+
 const root = document.getElementById('root');
 
 if (root === null) {
