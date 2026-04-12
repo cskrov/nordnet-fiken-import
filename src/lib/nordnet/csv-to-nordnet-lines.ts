@@ -193,3 +193,19 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
 };
 
 export const fixNordnetLines = chain(deduplicateNordnetLines, sortNordnetLines, generateMissingLines);
+
+export const groupNordnetLinesByAccount = (lines: NordnetLine[]): Map<string, NordnetLine[]> => {
+  const groups = new Map<string, NordnetLine[]>();
+
+  for (const line of lines) {
+    const existing = groups.get(line.portefølje);
+
+    if (existing !== undefined) {
+      existing.push(line);
+    } else {
+      groups.set(line.portefølje, [line]);
+    }
+  }
+
+  return groups;
+};

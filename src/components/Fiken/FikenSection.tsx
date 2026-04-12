@@ -1,11 +1,10 @@
 import { Button, ButtonVariant } from '@app/components/Button';
 import { FikenDownloadButtons } from '@app/components/Fiken/FikenDownloadButtons';
 import { FikenFile } from '@app/components/Fiken/FikenFile';
-import { Heading, HeadingSize } from '@app/components/Heading';
-import type { CsvFile } from '@app/lib/csv';
 import { fikenLinesToFikenFiles, nordnetLinesToFikenLines } from '@app/lib/fiken/fiken-files';
 import type { FikenLine } from '@app/lib/fiken/types';
-import { fixNordnetLines, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
+import { fixNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
+import type { NordnetLine } from '@app/lib/nordnet/types';
 import { NordnetType } from '@app/lib/nordnet/types';
 import { pad } from '@app/lib/pad-number';
 import { addMonths, endOfMonth, format, isBefore, startOfMonth, subMonths } from 'date-fns';
@@ -14,11 +13,11 @@ import { type Accessor, createEffect, createMemo, createSignal, For, Show, type 
 import CreationIcon from '~icons/mdi/creation';
 
 interface FikenFilesProps {
-  csvFiles: Accessor<CsvFile[]>;
+  nordnetLines: Accessor<NordnetLine[]>;
 }
 
-export const FikenSection: VoidComponent<FikenFilesProps> = ({ csvFiles }) => {
-  const convertedFikenLines = createMemo(() => nordnetLinesToFikenLines(fixNordnetLines(toNordnetLines(csvFiles()))));
+export const FikenSection: VoidComponent<FikenFilesProps> = ({ nordnetLines }) => {
+  const convertedFikenLines = createMemo(() => nordnetLinesToFikenLines(fixNordnetLines(nordnetLines())));
   const [generatedFikenLines, setGeneratedFikenLines] = createSignal<FikenLine[]>([]);
 
   const firstLine: Accessor<FikenLine | undefined> = () => generatedFikenLines().at(0) ?? convertedFikenLines().at(0);
@@ -168,53 +167,47 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
   return (
     <Show when={convertedFikenFiles().length !== 0}>
-      <section>
-        <Heading level={1} size={HeadingSize.SMALL} spacing>
-          Fiken
-        </Heading>
+      <Button onClick={generatePreviousMonth} variant={ButtonVariant.SECONDARY} icon={<CreationIcon />} spacing>
+        Generer saldo for {format(previousDate(), 'MMMM yyyy', { locale: nb })}
+      </Button>
 
-        <Button onClick={generatePreviousMonth} variant={ButtonVariant.SECONDARY} icon={<CreationIcon />} spacing>
-          Generer saldo for {format(previousDate(), 'MMMM yyyy', { locale: nb })}
-        </Button>
+      <Show when={convertedFikenFiles().length !== 0 || generatedFikenFiles().length !== 0}>
+        <div class="flex flex-col gap-y-4">
+          <For each={generatedPreviousFikenFiles()}>
+            {(fikenFile, index) => (
+              <FikenFile
+                fikenFile={fikenFile}
+                // Only allow removing the first generated file, to prevent accidental holes.
+                onRemove={index() === 0 ? () => removeGeneratedFikenLines(fikenFile.rows) : undefined}
+              />
+            )}
+          </For>
 
-        <Show when={convertedFikenFiles().length !== 0 || generatedFikenFiles().length !== 0}>
-          <div class="flex flex-col gap-y-4">
-            <For each={generatedPreviousFikenFiles()}>
-              {(fikenFile, index) => (
-                <FikenFile
-                  fikenFile={fikenFile}
-                  // Only allow removing the first generated file, to prevent accidental holes.
-                  onRemove={index() === 0 ? () => removeGeneratedFikenLines(fikenFile.rows) : undefined}
-                />
-              )}
-            </For>
+          <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
 
-            <For each={convertedFikenFiles()}>{(fikenFile) => <FikenFile fikenFile={fikenFile} />}</For>
+          <For each={generatedNextFikenFiles()}>
+            {(fikenFile, index) => (
+              <FikenFile
+                fikenFile={fikenFile}
+                // Only allow removing the last generated file, to prevent accidental holes.
+                onRemove={
+                  index() === generatedNextFikenFiles().length - 1
+                    ? () => removeGeneratedFikenLines(fikenFile.rows)
+                    : undefined
+                }
+              />
+            )}
+          </For>
+        </div>
 
-            <For each={generatedNextFikenFiles()}>
-              {(fikenFile, index) => (
-                <FikenFile
-                  fikenFile={fikenFile}
-                  // Only allow removing the last generated file, to prevent accidental holes.
-                  onRemove={
-                    index() === generatedNextFikenFiles().length - 1
-                      ? () => removeGeneratedFikenLines(fikenFile.rows)
-                      : undefined
-                  }
-                />
-              )}
-            </For>
+        <Show when={canGenerateNextMonth()}>
+          <div class="mt-4">
+            <Button onClick={generateNextMonth} variant={ButtonVariant.SECONDARY} icon={<CreationIcon />}>
+              Generer saldo for {format(nextDate(), 'MMMM yyyy', { locale: nb })}
+            </Button>
           </div>
-
-          <Show when={canGenerateNextMonth()}>
-            <div class="mt-4">
-              <Button onClick={generateNextMonth} variant={ButtonVariant.SECONDARY} icon={<CreationIcon />}>
-                Generer saldo for {format(nextDate(), 'MMMM yyyy', { locale: nb })}
-              </Button>
-            </div>
-          </Show>
         </Show>
-      </section>
+      </Show>
 
       <FikenDownloadButtons fikenFiles={() => [...generatedFikenFiles(), ...convertedFikenFiles()]} />
     </Show>

@@ -45,7 +45,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   };
 
   return (
-    <Row>
+    <Row className="mt-8">
       <Button
         onClick={onClickDownloadSingle}
         variant={ButtonVariant.PRIMARY}

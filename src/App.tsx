@@ -1,7 +1,7 @@
 import { AppFooter } from '@app/components/AppFooter';
 import { Button, ButtonVariant } from '@app/components/Button';
 import { DropZone } from '@app/components/DropZone';
-import { FikenSection } from '@app/components/Fiken/FikenSection';
+import { AccountSections } from '@app/components/Fiken/AccountSections';
 import { Header } from '@app/components/Header';
 import { Heading, HeadingSize } from '@app/components/Heading';
 import { NordnetSection } from '@app/components/Nordnet/NordnetSection';
@@ -77,7 +77,7 @@ export const App: VoidComponent = () => {
           </Show>
         </section>
 
-        <FikenSection csvFiles={csvFileList} />
+        <AccountSections csvFiles={csvFileList} />
       </main>
 
       <AppFooter />

@@ -7,8 +7,9 @@ import { createSignal } from 'solid-js';
 
 export const fikenLinesToFikenFiles = (fikenLines: FikenLine[]): FikenFileData[] =>
   fikenLines.reduce<FikenFileData[]>((fikenFiles, fikenLine) => {
-    const { year, month } = fikenLine;
-    const fileName = `nordnet-fiken-${year.toString(10)}.${month.toString(10).padStart(2, '0')}.csv`;
+    const { year, month, nordnetKonto } = fikenLine;
+    const sanitizedAccount = sanitizeAccountName(nordnetKonto);
+    const fileName = `nordnet-fiken-${sanitizedAccount}-${year.toString(10)}.${month.toString(10).padStart(2, '0')}.csv`;
     const existingFile = fikenFiles.find((f) => f.fileName === fileName);
 
     if (existingFile) {
@@ -72,3 +73,10 @@ export interface FikenFileData {
   readonly year: number;
   readonly rows: FikenLine[];
 }
+
+const sanitizeAccountName = (name: string): string =>
+  name
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9æøå-]/g, '');

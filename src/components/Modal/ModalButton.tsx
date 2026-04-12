@@ -49,4 +49,5 @@ const BUTTON_VARAINT_TO_MODAL_VARIANT: Record<ButtonVariant, ModalVariant> = {
   [ButtonVariant.SECONDARY]: ModalVariant.SECONDARY,
   [ButtonVariant.WARNING]: ModalVariant.WARNING,
   [ButtonVariant.ERROR]: ModalVariant.ERROR,
+  [ButtonVariant.NEUTRAL]: ModalVariant.SECONDARY,
 };
