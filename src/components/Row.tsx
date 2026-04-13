@@ -9,7 +9,7 @@ export const Row: FlowComponent<Props> = (allProps) => {
   const [props, rest] = splitProps(allProps, ['children', 'class']);
 
   return (
-    <div {...rest} class={twMerge('flex flex-row flex-wrap mb-4 gap-4', props.class)}>
+    <div {...rest} class={twMerge('flex flex-row flex-wrap gap-4', props.class)}>
       {props.children}
     </div>
   );

@@ -52,7 +52,7 @@ export const App: VoidComponent = () => {
             Nordnet
           </Heading>
 
-          <Row>
+          <Row class="mb-4">
             <UploadButton onFiles={addFiles} />
 
             <Show when={hasFiles()}>
