@@ -4,7 +4,6 @@ import { Heading, HeadingSize } from '@app/components/Heading';
 import type { CsvFile } from '@app/lib/csv';
 import { getAccountName, removeAccountName, setAccountName } from '@app/lib/nordnet/account-alias';
 import { groupNordnetLinesByAccount, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
-import type { NordnetLine } from '@app/lib/nordnet/types';
 import { type Accessor, createMemo, createSignal, For, type JSX, Show, type VoidComponent } from 'solid-js';
 import SaveIcon from '~icons/mdi/check';
 import CancelIcon from '~icons/mdi/close';
@@ -18,30 +17,30 @@ interface AccountSectionsProps {
 
 export const AccountSections: VoidComponent<AccountSectionsProps> = (props) => {
   const allNordnetLines = createMemo(() => toNordnetLines(props.csvFiles()));
-  const accountGroups = createMemo(() => groupNordnetLinesByAccount(allNordnetLines()));
-  const accountEntries = createMemo(() => [...accountGroups().entries()]);
+  const accountGroups = createMemo(() =>
+    groupNordnetLinesByAccount(allNordnetLines())
+      .entries()
+      .toArray()
+      .toSorted(([a], [b]) => a.localeCompare(b)),
+  );
 
   return (
-    <Show when={accountEntries().length > 0}>
+    <Show when={accountGroups().length > 0}>
       <section class="flex flex-col gap-y-8">
         <Heading level={1} size={HeadingSize.SMALL}>
           Fiken
         </Heading>
 
-        <For each={accountEntries()}>
-          {([name, lines]) => {
-            const linesAccessor: Accessor<NordnetLine[]> = createMemo(() => accountGroups().get(name) ?? lines);
+        <For each={accountGroups()}>
+          {([name, lines]) => (
+            <section class="rounded-xl border border-surface-600 overflow-hidden bg-surface-800/50">
+              <AccountHeading accountNumber={name} headerBand />
 
-            return (
-              <section class="rounded-xl border border-surface-600 overflow-hidden bg-surface-800/50">
-                <AccountHeading accountNumber={name} headerBand />
-
-                <div class="p-4">
-                  <FikenSection nordnetLines={linesAccessor} />
-                </div>
-              </section>
-            );
-          }}
+              <div class="p-4">
+                <FikenSection nordnetLines={() => lines} />
+              </div>
+            </section>
+          )}
         </For>
       </section>
     </Show>
