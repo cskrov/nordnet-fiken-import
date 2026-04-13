@@ -16,8 +16,8 @@ interface FikenFilesProps {
   nordnetLines: Accessor<NordnetLine[]>;
 }
 
-export const FikenSection: VoidComponent<FikenFilesProps> = ({ nordnetLines }) => {
-  const convertedFikenLines = createMemo(() => nordnetLinesToFikenLines(fixNordnetLines(nordnetLines())));
+export const FikenSection: VoidComponent<FikenFilesProps> = (props) => {
+  const convertedFikenLines = createMemo(() => nordnetLinesToFikenLines(fixNordnetLines(props.nordnetLines())));
   const [generatedFikenLines, setGeneratedFikenLines] = createSignal<FikenLine[]>([]);
 
   const firstLine: Accessor<FikenLine | undefined> = () => generatedFikenLines().at(0) ?? convertedFikenLines().at(0);
@@ -60,19 +60,12 @@ interface FikenSectionWithFirstLineProps {
   removeGeneratedFikenLines: (lines: FikenLine[]) => void;
 }
 
-const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
-  convertedFikenLines,
-  generatedFikenLines,
-  firstLine,
-  prependGeneratedFikenLine,
-  appendGeneratedFikenLine,
-  removeGeneratedFikenLines,
-}) => {
+const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => {
   const lastLine: Accessor<FikenLine> = createMemo(
-    () => generatedFikenLines().at(-1) ?? convertedFikenLines().at(-1) ?? firstLine(),
+    () => props.generatedFikenLines().at(-1) ?? props.convertedFikenLines().at(-1) ?? props.firstLine(),
   );
 
-  const previousDate = createMemo(() => endOfMonth(subMonths(firstLine().bokførtDato, 1)));
+  const previousDate = createMemo(() => endOfMonth(subMonths(props.firstLine().bokførtDato, 1)));
   const nextDate = createMemo(() => endOfMonth(addMonths(lastLine().bokførtDato, 1)));
   const canGenerateNextMonth = createMemo(() => isBefore(nextDate(), startOfMonth(new Date())));
 
@@ -82,11 +75,11 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
     umami.track('Generate previous month', { month, year });
 
-    const { nordnetKonto, inngående } = firstLine();
+    const { nordnetKonto, inngående } = props.firstLine();
 
     const [konto, setKonto] = createSignal<string>(nordnetKonto);
 
-    prependGeneratedFikenLine({
+    props.prependGeneratedFikenLine({
       type: NordnetType.SALDO,
       fraKonto: konto,
       setFraKonto: setKonto,
@@ -119,7 +112,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
 
     const [konto, setKonto] = createSignal<string>(nordnetKonto);
 
-    appendGeneratedFikenLine({
+    props.appendGeneratedFikenLine({
       type: NordnetType.SALDO,
       fraKonto: konto,
       setFraKonto: setKonto,
@@ -142,8 +135,8 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
     });
   };
 
-  const generatedFikenFiles = createMemo(() => fikenLinesToFikenFiles(generatedFikenLines()));
-  const convertedFikenFiles = createMemo(() => fikenLinesToFikenFiles(convertedFikenLines()));
+  const generatedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.generatedFikenLines()));
+  const convertedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.convertedFikenLines()));
 
   const firstConvertedFile = () => convertedFikenFiles().at(0);
 
@@ -171,14 +164,14 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
         Generer saldo for {format(previousDate(), 'MMMM yyyy', { locale: nb })}
       </Button>
 
-      <Show when={convertedFikenFiles().length !== 0 || generatedFikenFiles().length !== 0}>
+      <Show when={convertedFikenFiles().length !== 0 || props.generatedFikenLines().length !== 0}>
         <div class="flex flex-col gap-y-4">
           <For each={generatedPreviousFikenFiles()}>
             {(fikenFile, index) => (
               <FikenFile
                 fikenFile={fikenFile}
                 // Only allow removing the first generated file, to prevent accidental holes.
-                onRemove={index() === 0 ? () => removeGeneratedFikenLines(fikenFile.rows) : undefined}
+                onRemove={index() === 0 ? () => props.removeGeneratedFikenLines(fikenFile.rows) : undefined}
               />
             )}
           </For>
@@ -192,7 +185,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = ({
                 // Only allow removing the last generated file, to prevent accidental holes.
                 onRemove={
                   index() === generatedNextFikenFiles().length - 1
-                    ? () => removeGeneratedFikenLines(fikenFile.rows)
+                    ? () => props.removeGeneratedFikenLines(fikenFile.rows)
                     : undefined
                 }
               />

@@ -8,24 +8,24 @@ interface AccountProps {
   line: Accessor<FikenLineInnskudd | FikenLineUttak>;
 }
 
-export const Account: VoidComponent<AccountProps> = ({ account, setAccount, line }) => {
+export const Account: VoidComponent<AccountProps> = (props) => {
   const onInput: JSX.ChangeEventHandler<HTMLInputElement, Event> = ({ target }) => {
     const localAccount = target.value;
 
-    if (localAccount === account()) {
+    if (localAccount === props.account()) {
       return;
     }
 
-    setAccount(localAccount);
+    props.setAccount(localAccount);
 
     if (localAccount.length === 0) {
-      removeLocalStorageAccountNumber(line().referanse);
+      removeLocalStorageAccountNumber(props.line().referanse);
     } else {
-      setLocalStorageAccountNumber(line().referanse, localAccount.trim());
+      setLocalStorageAccountNumber(props.line().referanse, localAccount.trim());
     }
   };
 
-  return <input class={BASE_CLASSES} type="text" required value={account() ?? ''} onInput={onInput} />;
+  return <input class={BASE_CLASSES} type="text" required value={props.account() ?? ''} onInput={onInput} />;
 };
 
 const BASE_CLASSES = `

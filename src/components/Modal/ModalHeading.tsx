@@ -8,8 +8,8 @@ interface HeadingProps {
   variant: ModalVariant;
 }
 
-export const ModalHeading: VoidComponent<HeadingProps> = ({ variant }) => {
-  switch (variant) {
+export const ModalHeading: VoidComponent<HeadingProps> = (props) => {
+  switch (props.variant) {
     case ModalVariant.PRIMARY:
     case ModalVariant.SECONDARY:
       return (

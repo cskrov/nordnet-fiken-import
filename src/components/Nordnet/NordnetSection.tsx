@@ -3,7 +3,16 @@ import { NordnetRow } from '@app/components/Nordnet/NordnetRow';
 import { Section, SectionVariant } from '@app/components/Section';
 import { Table } from '@app/components/Table';
 import type { Csv } from '@app/lib/csv';
-import { createSignal, type FlowComponent, Index, type JSX, Show, type VoidComponent } from 'solid-js';
+import {
+  createSignal,
+  type FlowComponent,
+  Index,
+  type JSX,
+  mergeProps,
+  Show,
+  splitProps,
+  type VoidComponent,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import DeleteIcon from '~icons/mdi/Delete';
 import ExpandLessIcon from '~icons/mdi/ExpandLess';
@@ -16,30 +25,27 @@ interface Props {
   onDelete: () => void;
 }
 
-export const NordnetSection: VoidComponent<Props> = ({ fileName, data, onDelete }) => {
+export const NordnetSection: VoidComponent<Props> = (props) => {
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const { headers, rows } = data;
-  const rowCount = rows.length;
-
   return (
-    <Section variant={rows.length === 0 ? SectionVariant.INACTIVE : SectionVariant.SURFACE}>
-      <Heading level={1} size={HeadingSize.XSMALL} className="font-normal">
-        <HeadingButton className="grow" onClick={() => setIsOpen((o) => !o)}>
+    <Section variant={props.data.rows.length === 0 ? SectionVariant.INACTIVE : SectionVariant.SURFACE}>
+      <Heading level={1} size={HeadingSize.XSMALL} class="font-normal">
+        <HeadingButton class="grow" onClick={() => setIsOpen((o) => !o)}>
           {isOpen() ? <ExpandLessIcon /> : <ExpandMore />}
           <CsvIcon />
           <span>
-            {fileName} ({rows.length} linjer)
+            {props.fileName} ({props.data.rows.length} linjer)
           </span>
         </HeadingButton>
-        <HeadingButton className="text-red-500" onClick={onDelete}>
+        <HeadingButton class="text-red-500" onClick={props.onDelete}>
           <DeleteIcon />
         </HeadingButton>
       </Heading>
       <Show when={isOpen()}>
-        <Show when={rowCount !== 0} fallback={<NoTransactions />}>
-          <Table headers={headers} rowCount={rowCount} showLineNumbers>
-            <Index each={rows}>{(line, index) => <NordnetRow line={line} lineNumber={index} />}</Index>
+        <Show when={props.data.rows.length !== 0} fallback={<NoTransactions />}>
+          <Table headers={props.data.headers} rowCount={props.data.rows.length} showLineNumbers>
+            <Index each={props.data.rows}>{(line, index) => <NordnetRow line={line} lineNumber={index} />}</Index>
           </Table>
         </Show>
       </Show>
@@ -54,11 +60,20 @@ const NoTransactions: VoidComponent = () => (
 );
 
 interface HeadingButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'class' | 'classList'> {
-  className?: string;
+  class?: string;
 }
 
-const HeadingButton: FlowComponent<HeadingButtonProps> = ({ children, className, type = 'button', ...rest }) => (
-  <button {...rest} type={type} class={twMerge('flex items-center justify-start gap-x-1 cursor-pointer', className)}>
-    {children}
-  </button>
-);
+const HeadingButton: FlowComponent<HeadingButtonProps> = (allProps) => {
+  const [props, rest] = splitProps(allProps, ['children', 'class', 'type']);
+  const merged = mergeProps({ type: 'button' as const }, props);
+
+  return (
+    <button
+      {...rest}
+      type={merged.type}
+      class={twMerge('flex items-center justify-start gap-x-1 cursor-pointer', merged.class)}
+    >
+      {merged.children}
+    </button>
+  );
+};

@@ -5,9 +5,9 @@ interface Props {
   lineNumber: number;
 }
 
-export const NordnetRow: VoidComponent<Props> = ({ line, lineNumber }) => (
+export const NordnetRow: VoidComponent<Props> = (props) => (
   <tr class="odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row">
-    <td class="p-2 whitespace-nowrap">{lineNumber + 1}</td>
-    <Index each={line()}>{(cell) => <td class="p-2 whitespace-nowrap">{cell()}</td>}</Index>
+    <td class="p-2 whitespace-nowrap">{props.lineNumber + 1}</td>
+    <Index each={props.line()}>{(cell) => <td class="p-2 whitespace-nowrap">{cell()}</td>}</Index>
   </tr>
 );

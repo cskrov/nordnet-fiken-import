@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js';
+import { type Component, mergeProps } from 'solid-js';
 
 export enum VersionSize {
   SMALL = 0,
@@ -20,8 +20,12 @@ interface Props {
   size?: VersionSize;
 }
 
-export const Version: Component<Props> = ({ title, size = VersionSize.MEDIUM }) => (
-  <span class={`${SIZE[size]} bg-gray-700 font-mono`} title={title}>
-    {__APP_VERSION__.slice(0, 7)}
-  </span>
-);
+export const Version: Component<Props> = (rawProps) => {
+  const props = mergeProps({ size: VersionSize.MEDIUM }, rawProps);
+
+  return (
+    <span class={`${SIZE[props.size]} bg-gray-700 font-mono`} title={props.title}>
+      {__APP_VERSION__.slice(0, 7)}
+    </span>
+  );
+};

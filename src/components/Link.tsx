@@ -4,8 +4,8 @@ interface Props {
   href: string;
 }
 
-export const Link: FlowComponent<Props> = ({ href, children }) => (
-  <a href={href} target="_blank" rel="noreferrer">
-    {children}
+export const Link: FlowComponent<Props> = (props) => (
+  <a href={props.href} target="_blank" rel="noreferrer">
+    {props.children}
   </a>
 );

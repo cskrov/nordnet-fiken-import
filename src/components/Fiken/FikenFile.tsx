@@ -22,34 +22,43 @@ interface FikenSectionProps {
   onRemove?: () => void;
 }
 
-export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemove }) => {
-  const { month, year, rows, fileName } = fikenFile;
+export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
   const onCloseError = () => setShowErrorModal(false);
 
-  const hasUnexpectedSaldo = () => isGenerated() && rows.some((row) => row.unexpectedSaldo);
-  const isGenerated = () => rows.every((row) => row.generated);
+  const hasUnexpectedSaldo = () => isGenerated() && props.fikenFile.rows.some((row) => row.unexpectedSaldo);
+  const isGenerated = () => props.fikenFile.rows.every((row) => row.generated);
   const isCurrentMonth = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
-    return year === currentYear && month === currentMonth && !isLastDayOfMonth(now);
+    return props.fikenFile.year === currentYear && props.fikenFile.month === currentMonth && !isLastDayOfMonth(now);
   };
 
   createEffect(() => {
     if (hasUnexpectedSaldo()) {
-      umami.track('Unexpected saldo', { year, month, rows: rows.length, generated: isGenerated() });
+      umami.track('Unexpected saldo', {
+        year: props.fikenFile.year,
+        month: props.fikenFile.month,
+        rows: props.fikenFile.rows.length,
+        generated: isGenerated(),
+      });
     }
   });
 
   const onDownloadClick = () => {
-    umami.track('Download single', { year, month, rows: rows.length, generated: isGenerated() });
+    umami.track('Download single', {
+      year: props.fikenFile.year,
+      month: props.fikenFile.month,
+      rows: props.fikenFile.rows.length,
+      generated: isGenerated(),
+    });
 
     try {
-      downloadFikenLinesCsv(rows, fileName);
+      downloadFikenLinesCsv(props.fikenFile.rows, props.fikenFile.fileName);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -63,10 +72,10 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
     <Section variant={SectionVariant.SURFACE}>
       <header class="flex flex-row items-center justify-between">
         <Heading level={1} size={HeadingSize.XSMALL}>
-          {year} {isMonth(month) ? MONTHS.get(month) : 'Ukjent måned'}
+          {props.fikenFile.year} {isMonth(props.fikenFile.month) ? MONTHS.get(props.fikenFile.month) : 'Ukjent måned'}
         </Heading>
 
-        <span class="font-mono italic text-base ml-4 mr-auto">{fileName}</span>
+        <span class="font-mono italic text-base ml-4 mr-auto">{props.fikenFile.fileName}</span>
 
         <div class="flex gap-2">
           <Show when={isCurrentMonth()}>
@@ -82,7 +91,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
             </ModalButton>
           </Show>
 
-          <Show when={onRemove}>
+          <Show when={props.onRemove}>
             {(_onRemove) => (
               <Button onClick={_onRemove()} variant={ButtonVariant.ERROR} size={ButtonSize.SMALL} icon={<DeleteIcon />}>
                 Slett
@@ -126,8 +135,10 @@ export const FikenFile: VoidComponent<FikenSectionProps> = ({ fikenFile, onRemov
         </div>
       </header>
 
-      <Table headers={FIKEN_TABLE_HEADERS} showLineNumbers rowCount={rows.length}>
-        <Index each={rows}>{(line, lineNumber) => <FikenRow line={line} lineNumber={lineNumber} />}</Index>
+      <Table headers={FIKEN_TABLE_HEADERS} showLineNumbers rowCount={props.fikenFile.rows.length}>
+        <Index each={props.fikenFile.rows}>
+          {(line, lineNumber) => <FikenRow line={line} lineNumber={lineNumber} />}
+        </Index>
       </Table>
     </Section>
   );

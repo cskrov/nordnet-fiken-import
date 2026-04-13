@@ -9,6 +9,9 @@
   },
   "linter": {
     "enabled": true,
+    "domains": {
+      "solid": "all"
+    },
     "rules": {
       "recommended": true,
       "suspicious": {

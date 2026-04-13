@@ -5,7 +5,7 @@ interface Props {
   onFiles: (files: CsvFile[]) => void;
 }
 
-export const DropZone: FlowComponent<Props> = ({ onFiles, children }) => {
+export const DropZone: FlowComponent<Props> = (props) => {
   const [isDragOver, setIsDragOver] = createSignal(false);
 
   const onDrop = async (event: DragEvent) => {
@@ -19,7 +19,7 @@ export const DropZone: FlowComponent<Props> = ({ onFiles, children }) => {
 
     const { files } = event.dataTransfer;
     const csvFiles = await parseCsvFiles(files);
-    onFiles(csvFiles);
+    props.onFiles(csvFiles);
   };
 
   const onDragOver = (event: DragEvent) => {
@@ -43,7 +43,7 @@ export const DropZone: FlowComponent<Props> = ({ onFiles, children }) => {
       data-label="Slipp her"
       class={`flex flex-col w-full h-full ${isDragOver() ? 'before:flex' : 'before:hidden'} ${beforeClasses}`}
     >
-      {children}
+      {props.children}
     </div>
   );
 };

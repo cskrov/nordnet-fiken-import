@@ -20,40 +20,43 @@ const NOT_GENERATED_CLASSES = 'opacity-100 normal';
 const CELL_CLASSES = 'p-2 whitespace-nowrap';
 const IGNORED_CLASSES = 'italic text-gray-500';
 
-export const FikenRow: VoidComponent<FikenRowProps> = ({ line, lineNumber }) => {
-  const source = line().source.fileName === null ? null : `${line().source.fileName} (${line().source.rowNumber + 1})`;
+export const FikenRow: VoidComponent<FikenRowProps> = (props) => {
+  const source = () =>
+    props.line().source.fileName === null
+      ? null
+      : `${props.line().source.fileName} (${props.line().source.rowNumber + 1})`;
 
   return (
     <tr
-      class={`${line().generated ? GENERATED_CLASSES : NOT_GENERATED_CLASSES} odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row`}
+      class={`${props.line().generated ? GENERATED_CLASSES : NOT_GENERATED_CLASSES} odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row`}
     >
-      <td class={CELL_CLASSES}>{lineNumber + 1}</td>
+      <td class={CELL_CLASSES}>{props.lineNumber + 1}</td>
       <td class={CELL_CLASSES}>
-        <DateElement date={line().bokførtDato} />
+        <DateElement date={props.line().bokførtDato} />
       </td>
       <td class={CELL_CLASSES}>
-        <FromAccount line={line} />
+        <FromAccount line={props.line} />
       </td>
       <td class={CELL_CLASSES}>
-        <ToAccount line={line} />
+        <ToAccount line={props.line} />
       </td>
-      <td class={CELL_CLASSES}>{line().forklarendeTekst()}</td>
-      <td class={CELL_CLASSES}>{line().isin}</td>
+      <td class={CELL_CLASSES}>{props.line().forklarendeTekst()}</td>
+      <td class={CELL_CLASSES}>{props.line().isin}</td>
       <td class={CELL_CLASSES}>
-        <DisplayMoney>{line().inngående}</DisplayMoney>
-      </td>
-      <td class={CELL_CLASSES}>
-        <DisplayMoney reversed>{line().ut}</DisplayMoney>
+        <DisplayMoney>{props.line().inngående}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>
-        <DisplayMoney>{line().inn}</DisplayMoney>
+        <DisplayMoney reversed>{props.line().ut}</DisplayMoney>
       </td>
       <td class={CELL_CLASSES}>
-        <DisplayMoney>{line().saldo}</DisplayMoney>
+        <DisplayMoney>{props.line().inn}</DisplayMoney>
       </td>
-      <td class={CELL_CLASSES}>{line().referanse}</td>
       <td class={CELL_CLASSES}>
-        <Show when={line().generated} fallback={<span class="text-gray-500">{source}</span>}>
+        <DisplayMoney>{props.line().saldo}</DisplayMoney>
+      </td>
+      <td class={CELL_CLASSES}>{props.line().referanse}</td>
+      <td class={CELL_CLASSES}>
+        <Show when={props.line().generated} fallback={<span class="text-gray-500">{source()}</span>}>
           <ModalButton
             variant={ButtonVariant.SECONDARY}
             size={ButtonSize.SMALL}
@@ -72,38 +75,50 @@ interface FromAccountProps {
   line: Accessor<FikenLine>;
 }
 
-const FromAccount: VoidComponent<FromAccountProps> = ({ line }) => {
-  if (isInnskuddLineAccessor(line)) {
-    return <Account account={line().fraKonto} line={line} setAccount={(account) => line().setFraKonto(account)} />;
+const FromAccount: VoidComponent<FromAccountProps> = (props) => {
+  if (isInnskuddLineAccessor(props.line)) {
+    return (
+      <Account
+        account={props.line().fraKonto}
+        line={props.line}
+        setAccount={(account) => props.line().setFraKonto(account)}
+      />
+    );
   }
 
-  if (line().fraKonto() === null) {
+  if (props.line().fraKonto() === null) {
     return <span class={IGNORED_CLASSES}>Ikke relevant</span>;
   }
 
-  return <span>{line().fraKonto()}</span>;
+  return <span>{props.line().fraKonto()}</span>;
 };
 
 interface ToAccountProps {
   line: Accessor<FikenLine>;
 }
 
-const ToAccount: VoidComponent<ToAccountProps> = ({ line }) => {
-  if (isUttakLineAccessor(line)) {
-    return <Account account={line().tilKonto} line={line} setAccount={(account) => line().setTilKonto(account)} />;
+const ToAccount: VoidComponent<ToAccountProps> = (props) => {
+  if (isUttakLineAccessor(props.line)) {
+    return (
+      <Account
+        account={props.line().tilKonto}
+        line={props.line}
+        setAccount={(account) => props.line().setTilKonto(account)}
+      />
+    );
   }
 
-  if (line().tilKonto === null) {
+  if (props.line().tilKonto === null) {
     return <span class={IGNORED_CLASSES}>Ikke relevant</span>;
   }
 
-  return <span>{line().tilKonto()}</span>;
+  return <span>{props.line().tilKonto()}</span>;
 };
 
 interface DateElementProps {
   date: Date;
 }
 
-const DateElement: VoidComponent<DateElementProps> = ({ date }) => (
-  <time datetime={format(date, 'yyyy-MM-dd')}>{format(date, 'dd. MMM yyyy', { locale: nb })}</time>
+const DateElement: VoidComponent<DateElementProps> = (props) => (
+  <time datetime={format(props.date, 'yyyy-MM-dd')}>{format(props.date, 'dd. MMM yyyy', { locale: nb })}</time>
 );

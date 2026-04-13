@@ -1,4 +1,4 @@
-import type { FlowComponent } from 'solid-js';
+import { type FlowComponent, mergeProps } from 'solid-js';
 import type { JSX } from 'solid-js/jsx-runtime';
 import { twMerge } from 'tailwind-merge';
 
@@ -16,36 +16,31 @@ interface Props {
   size: HeadingSize;
   spacing?: boolean;
   centered?: boolean;
-  className?: string;
+  class?: string;
   children: JSX.Element;
 }
 
 const BASE_CLASSES = 'flex flex-row items-center gap-x-1 font-bold';
 
-export const Heading: FlowComponent<Props> = ({
-  level,
-  size = HeadingSize.MEDIUM,
-  spacing = false,
-  centered = false,
-  className,
-  children,
-}) => {
-  const variantClasses = `${BASE_CLASSES} ${centered ? 'justify-center' : 'justify-start'} ${FONT_SIZE[size]} ${spacing ? 'mb-4' : ''}`;
-  const headingClasses = twMerge(variantClasses, className);
+export const Heading: FlowComponent<Props> = (rawProps) => {
+  const props = mergeProps({ size: HeadingSize.MEDIUM, spacing: false, centered: false }, rawProps);
 
-  switch (level) {
+  const variantClasses = `${BASE_CLASSES} ${props.centered ? 'justify-center' : 'justify-start'} ${FONT_SIZE[props.size]} ${props.spacing ? 'mb-4' : ''}`;
+  const headingClasses = twMerge(variantClasses, props.class);
+
+  switch (props.level) {
     case 1:
-      return <h1 class={headingClasses}>{children}</h1>;
+      return <h1 class={headingClasses}>{props.children}</h1>;
     case 2:
-      return <h2 class={headingClasses}>{children}</h2>;
+      return <h2 class={headingClasses}>{props.children}</h2>;
     case 3:
-      return <h3 class={headingClasses}>{children}</h3>;
+      return <h3 class={headingClasses}>{props.children}</h3>;
     case 4:
-      return <h4 class={headingClasses}>{children}</h4>;
+      return <h4 class={headingClasses}>{props.children}</h4>;
     case 5:
-      return <h5 class={headingClasses}>{children}</h5>;
+      return <h5 class={headingClasses}>{props.children}</h5>;
     case 6:
-      return <h6 class={headingClasses}>{children}</h6>;
+      return <h6 class={headingClasses}>{props.children}</h6>;
   }
 };
 

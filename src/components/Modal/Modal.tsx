@@ -1,7 +1,15 @@
 import { ModalFooter } from '@app/components/Modal/ModalFooter';
 import { ModalHeading } from '@app/components/Modal/ModalHeading';
 import { ModalVariant } from '@app/components/Modal/types';
-import { type Accessor, createEffect, createSignal, type FlowComponent, type JSX, onCleanup } from 'solid-js';
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  type FlowComponent,
+  type JSX,
+  mergeProps,
+  onCleanup,
+} from 'solid-js';
 
 interface Props {
   isOpen: Accessor<boolean>;
@@ -10,17 +18,13 @@ interface Props {
   footerContent?: JSX.Element;
 }
 
-export const Modal: FlowComponent<Props> = ({
-  isOpen,
-  onClose,
-  variant = ModalVariant.PRIMARY,
-  footerContent,
-  children,
-}) => {
+export const Modal: FlowComponent<Props> = (rawProps) => {
+  const props = mergeProps({ variant: ModalVariant.PRIMARY }, rawProps);
+
   let dialogRef: HTMLDialogElement;
 
   createEffect(() => {
-    if (isOpen()) {
+    if (props.isOpen()) {
       dialogRef.showModal();
     } else {
       dialogRef.close();
@@ -29,7 +33,7 @@ export const Modal: FlowComponent<Props> = ({
 
   const closeModal = () => {
     dialogRef.close();
-    onClose?.();
+    props.onClose?.();
   };
 
   const [startX, setStartX] = createSignal(0);
@@ -73,17 +77,17 @@ export const Modal: FlowComponent<Props> = ({
 
   return (
     <dialog
-      class={`absolute m-auto rounded-lg border-1 ${BORDER_COLOR[variant]} bg-surface-900 not-italic text-base text-text-default overflow-x-hidden overflow-y-auto max-w-[90%] w-fit min-w-3xl backdrop:backdrop-blur-xs`}
+      class={`absolute m-auto rounded-lg border-1 ${BORDER_COLOR[props.variant]} bg-surface-900 not-italic text-base text-text-default overflow-x-hidden overflow-y-auto max-w-[90%] w-fit min-w-3xl backdrop:backdrop-blur-xs`}
       ref={(ref) => {
         dialogRef = ref;
       }}
-      onClose={onClose}
+      onClose={props.onClose}
     >
       <section class="flex flex-col gap-4 px-4 pt-20 pb-4">
-        <ModalHeading variant={variant} />
-        {children}
+        <ModalHeading variant={props.variant} />
+        {props.children}
       </section>
-      <ModalFooter closeModal={closeModal}>{footerContent}</ModalFooter>
+      <ModalFooter closeModal={closeModal}>{props.footerContent}</ModalFooter>
     </dialog>
   );
 };

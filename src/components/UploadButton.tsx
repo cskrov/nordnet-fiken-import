@@ -7,7 +7,7 @@ interface Props {
   onFiles: (files: CsvFile[]) => void;
 }
 
-export const UploadButton: VoidComponent<Props> = ({ onFiles }) => {
+export const UploadButton: VoidComponent<Props> = (props) => {
   const inputElement = document.createElement('input');
   inputElement.type = 'file';
   inputElement.accept = '.csv';
@@ -17,7 +17,7 @@ export const UploadButton: VoidComponent<Props> = ({ onFiles }) => {
     const { files } = inputElement;
 
     if (files !== null) {
-      onFiles(await parseCsvFiles(files));
+      props.onFiles(await parseCsvFiles(files));
     }
   };
 

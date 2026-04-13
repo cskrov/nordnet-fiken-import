@@ -12,15 +12,15 @@ interface FikenDownloadButtonsProps {
   fikenFiles: Accessor<FikenFileData[]>;
 }
 
-export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({ fikenFiles }) => {
+export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (props) => {
   const [modalErrorMessage, setModalErrorMessage] = createSignal<string | null>(null);
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
   const onClickDownloadSingle = () => {
-    umami.track('Download all (single file)', getEventData(fikenFiles()));
+    umami.track('Download all (single file)', getEventData(props.fikenFiles()));
 
     try {
-      downloadFikenMapSingleCsv(fikenFiles().flatMap((f) => f.rows));
+      downloadFikenMapSingleCsv(props.fikenFiles().flatMap((f) => f.rows));
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -31,10 +31,10 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   };
 
   const onClickDownloadSeparate = () => {
-    umami.track('Download all (separate files)', getEventData(fikenFiles()));
+    umami.track('Download all (separate files)', getEventData(props.fikenFiles()));
 
     try {
-      downloadFikenMapMultipleCsv(fikenFiles());
+      downloadFikenMapMultipleCsv(props.fikenFiles());
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -45,7 +45,7 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = ({
   };
 
   return (
-    <Row className="mt-8">
+    <Row class="mt-8">
       <Button
         onClick={onClickDownloadSingle}
         variant={ButtonVariant.PRIMARY}

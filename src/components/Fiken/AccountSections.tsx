@@ -16,8 +16,8 @@ interface AccountSectionsProps {
   csvFiles: Accessor<CsvFile[]>;
 }
 
-export const AccountSections: VoidComponent<AccountSectionsProps> = ({ csvFiles }) => {
-  const allNordnetLines = createMemo(() => toNordnetLines(csvFiles()));
+export const AccountSections: VoidComponent<AccountSectionsProps> = (props) => {
+  const allNordnetLines = createMemo(() => toNordnetLines(props.csvFiles()));
   const accountGroups = createMemo(() => groupNordnetLinesByAccount(allNordnetLines()));
   const accountEntries = createMemo(() => [...accountGroups().entries()]);
 
@@ -53,8 +53,8 @@ interface AccountHeadingProps {
   headerBand?: boolean;
 }
 
-const AccountHeading: VoidComponent<AccountHeadingProps> = ({ accountNumber, headerBand }) => {
-  const [name, setName] = createSignal(getAccountName(accountNumber) ?? '');
+const AccountHeading: VoidComponent<AccountHeadingProps> = (props) => {
+  const [name, setName] = createSignal(getAccountName(props.accountNumber) ?? '');
   const [editing, setEditing] = createSignal(false);
 
   const hasName = () => name().trim().length > 0;
@@ -63,10 +63,10 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = ({ accountNumber, hea
     const value = rawValue.trim();
 
     if (value.length === 0) {
-      removeAccountName(accountNumber);
+      removeAccountName(props.accountNumber);
       setName('');
     } else {
-      setAccountName(accountNumber, value);
+      setAccountName(props.accountNumber, value);
       setName(value);
     }
 
@@ -82,7 +82,9 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = ({ accountNumber, hea
   };
 
   return (
-    <div class={`bg-surface-700 px-4 py-2 flex items-center gap-x-3 ${headerBand === true ? '' : 'rounded-lg mb-4'}`}>
+    <div
+      class={`bg-surface-700 px-4 py-2 flex items-center gap-x-3 ${props.headerBand === true ? '' : 'rounded-lg mb-4'}`}
+    >
       <AccountIcon class="shrink-0" />
 
       <Show when={hasName() && !editing()}>
@@ -90,11 +92,11 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = ({ accountNumber, hea
           <span class="font-bold text-base">{name()}</span>
           <EditIcon class="text-text-default/0 group-hover:text-text-default/50 transition-opacity text-sm" />
         </button>
-        <span class="text-text-default/80 text-sm">{accountNumber}</span>
+        <span class="text-text-default/80 text-sm">{props.accountNumber}</span>
       </Show>
 
       <Show when={!(hasName() || editing())}>
-        <span class="font-bold text-base">{accountNumber}</span>
+        <span class="font-bold text-base">{props.accountNumber}</span>
         <Button
           variant={ButtonVariant.SECONDARY}
           size={ButtonSize.SMALL}
@@ -131,7 +133,7 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = ({ accountNumber, hea
           icon={<CancelIcon />}
           onClick={() => setEditing(false)}
         />
-        <span class="text-text-default/80 text-sm">{accountNumber}</span>
+        <span class="text-text-default/80 text-sm">{props.accountNumber}</span>
       </Show>
     </div>
   );

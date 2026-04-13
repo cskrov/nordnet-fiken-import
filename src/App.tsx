@@ -38,7 +38,7 @@ export const App: VoidComponent = () => {
 
   return (
     <DropZone onFiles={addFiles}>
-      <Header className="pt-4 px-4" spacing>
+      <Header class="pt-4 px-4" spacing>
         <Heading level={1} size={HeadingSize.LARGE} centered>
           Nordnet til Fiken
         </Heading>
