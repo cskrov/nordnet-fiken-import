@@ -2,10 +2,9 @@ import tailwindcss from '@tailwindcss/vite';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), solidPlugin(), tailwindcss(), Icons({ compiler: 'solid' })],
+  plugins: [solidPlugin(), tailwindcss(), Icons({ compiler: 'solid' })],
   server: {
     port: 5173,
   },
@@ -14,5 +13,8 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+  },
+  resolve: {
+    tsconfigPaths: true,
   },
 });

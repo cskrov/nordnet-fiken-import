@@ -20,8 +20,7 @@
     "typescript": "6.0.2",
     "unplugin-icons": "23.0.1",
     "vite": "8.0.8",
-    "vite-plugin-solid": "2.11.12",
-    "vite-tsconfig-paths": "6.1.1"
+    "vite-plugin-solid": "2.11.12"
   },
   "dependencies": {
     "@types/umami": "2.10.1",
