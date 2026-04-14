@@ -64,9 +64,11 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = (props) => {
     if (value.length === 0) {
       removeAccountName(props.accountNumber);
       setName('');
+      umami.track('Remove account name');
     } else {
       setAccountName(props.accountNumber, value);
       setName(value);
+      umami.track('Set account name');
     }
 
     setEditing(false);
