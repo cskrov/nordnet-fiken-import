@@ -17,7 +17,13 @@ export const UploadButton: VoidComponent<Props> = (props) => {
     const { files } = inputElement;
 
     if (files !== null) {
-      props.onFiles(await parseCsvFiles(files));
+      try {
+        const csvFiles = await parseCsvFiles(files);
+        umami.track('Files uploaded', { fileCount: csvFiles.length });
+        props.onFiles(csvFiles);
+      } catch (error) {
+        umami.track('File parse error', { source: 'upload', error: String(error) });
+      }
     }
   };
 

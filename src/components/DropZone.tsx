@@ -17,9 +17,14 @@ export const DropZone: FlowComponent<Props> = (props) => {
       return;
     }
 
-    const { files } = event.dataTransfer;
-    const csvFiles = await parseCsvFiles(files);
-    props.onFiles(csvFiles);
+    try {
+      const { files } = event.dataTransfer;
+      const csvFiles = await parseCsvFiles(files);
+      umami.track('Files dropped', { fileCount: csvFiles.length });
+      props.onFiles(csvFiles);
+    } catch (error) {
+      umami.track('File parse error', { source: 'drop', error: String(error) });
+    }
   };
 
   const onDragOver = (event: DragEvent) => {

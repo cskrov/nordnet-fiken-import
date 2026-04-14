@@ -27,6 +27,7 @@ export const App: VoidComponent = () => {
       newRowCount: newFileList.reduce((acc, file) => acc + file.data.rows.length, 0),
       previousFileCount: previousFileList.length,
       previousRowCount: previousFileList.reduce((acc, file) => acc + file.data.rows.length, 0),
+      filesPerUpload: files.length,
     });
 
     setCsvFileList(newFileList);

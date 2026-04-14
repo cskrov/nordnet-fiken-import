@@ -4,7 +4,17 @@ import { Heading, HeadingSize } from '@app/components/Heading';
 import type { CsvFile } from '@app/lib/csv';
 import { getAccountName, removeAccountName, setAccountName } from '@app/lib/nordnet/account-alias';
 import { groupNordnetLinesByAccount, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
-import { type Accessor, createMemo, createSignal, For, type JSX, Show, type VoidComponent } from 'solid-js';
+import { format } from 'date-fns';
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  type JSX,
+  Show,
+  type VoidComponent,
+} from 'solid-js';
 import SaveIcon from '~icons/mdi/check';
 import CancelIcon from '~icons/mdi/close';
 import EditIcon from '~icons/mdi/pencil';
@@ -23,6 +33,34 @@ export const AccountSections: VoidComponent<AccountSectionsProps> = (props) => {
       .toArray()
       .toSorted(([a], [b]) => a.localeCompare(b)),
   );
+
+  createEffect(() => {
+    const groups = accountGroups();
+
+    if (groups.length > 0) {
+      const allLines = groups.flatMap(([, lines]) => lines);
+      const dates = allLines.map((line) => line.bokførtDato.getTime());
+
+      umami.track('Accounts detected', {
+        accountCount: groups.length,
+        earliestDate: format(new Date(Math.min(...dates)), 'yyyy-MM-dd'),
+        latestDate: format(new Date(Math.max(...dates)), 'yyyy-MM-dd'),
+      });
+
+      for (const [accountNumber, lines] of groups) {
+        const savedName = getAccountName(accountNumber);
+        const accountDates = lines.map((line) => line.bokførtDato.getTime());
+
+        umami.track('Account loaded', {
+          rowCount: lines.length,
+          savedName: savedName ?? '',
+          nameLength: savedName !== null ? savedName.length : 0,
+          earliestDate: format(new Date(Math.min(...accountDates)), 'yyyy-MM-dd'),
+          latestDate: format(new Date(Math.max(...accountDates)), 'yyyy-MM-dd'),
+        });
+      }
+    }
+  });
 
   return (
     <Show when={accountGroups().length > 0}>
@@ -68,7 +106,7 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = (props) => {
     } else {
       setAccountName(props.accountNumber, value);
       setName(value);
-      umami.track('Set account name');
+      umami.track('Set account name', { name: value, nameLength: value.length });
     }
 
     setEditing(false);
@@ -78,6 +116,7 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = (props) => {
     if (event.key === 'Enter') {
       saveAndClose(event.currentTarget.value);
     } else if (event.key === 'Escape') {
+      umami.track('Cancel name edit');
       setEditing(false);
     }
   };
@@ -132,7 +171,10 @@ const AccountHeading: VoidComponent<AccountHeadingProps> = (props) => {
           variant={ButtonVariant.NEUTRAL}
           size={ButtonSize.SMALL}
           icon={<CancelIcon />}
-          onClick={() => setEditing(false)}
+          onClick={() => {
+            umami.track('Cancel name edit');
+            setEditing(false);
+          }}
         />
         <span class="text-text-default/80 text-sm">{props.accountNumber}</span>
       </Show>
