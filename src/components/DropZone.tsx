@@ -1,5 +1,5 @@
-import { type CsvFile, parseCsvFiles } from '@app/lib/csv';
 import { createSignal, type FlowComponent } from 'solid-js';
+import { type CsvFile, parseCsvFiles } from '@/lib/csv';
 
 interface Props {
   onFiles: (files: CsvFile[]) => void;

@@ -1,5 +1,5 @@
-import { attemptToExtractAccountNumber, getLocalStorageAccountNumber } from '@app/lib/fiken/account-number';
-import { isNordnetType, type NordnetLine, NordnetType } from '@app/lib/nordnet/types';
+import { attemptToExtractAccountNumber, getLocalStorageAccountNumber } from '@/lib/fiken/account-number';
+import { isNordnetType, type NordnetLine, NordnetType } from '@/lib/nordnet/types';
 
 interface NordnetKonti {
   readonly fraKonto: string | null;

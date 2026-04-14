@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { fixNordnetLines, groupNordnetLinesByAccount, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
-import type { NordnetLine } from '@app/lib/nordnet/types';
+import { fixNordnetLines, groupNordnetLinesByAccount, toNordnetLines } from '@/lib/nordnet/csv-to-nordnet-lines';
+import type { NordnetLine } from '@/lib/nordnet/types';
 
 const makeNordnetLine = (overrides: Partial<NordnetLine> & Pick<NordnetLine, 'id' | 'portefølje'>): NordnetLine => ({
   bokførtDato: new Date('2024-03-15'),

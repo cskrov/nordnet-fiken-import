@@ -1,6 +1,3 @@
-import { ModalFooter } from '@app/components/Modal/ModalFooter';
-import { ModalHeading } from '@app/components/Modal/ModalHeading';
-import { ModalVariant } from '@app/components/Modal/types';
 import {
   type Accessor,
   createEffect,
@@ -10,6 +7,9 @@ import {
   mergeProps,
   onCleanup,
 } from 'solid-js';
+import { ModalFooter } from '@/components/Modal/ModalFooter';
+import { ModalHeading } from '@/components/Modal/ModalHeading';
+import { ModalVariant } from '@/components/Modal/types';
 
 interface Props {
   isOpen: Accessor<boolean>;

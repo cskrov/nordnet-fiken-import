@@ -1,9 +1,3 @@
-import { Button, ButtonSize, ButtonVariant } from '@app/components/Button';
-import { FikenSection } from '@app/components/Fiken/FikenSection';
-import { Heading, HeadingSize } from '@app/components/Heading';
-import type { CsvFile } from '@app/lib/csv';
-import { getAccountName, removeAccountName, setAccountName } from '@app/lib/nordnet/account-alias';
-import { groupNordnetLinesByAccount, toNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
 import { format } from 'date-fns';
 import {
   type Accessor,
@@ -15,6 +9,12 @@ import {
   Show,
   type VoidComponent,
 } from 'solid-js';
+import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
+import { FikenSection } from '@/components/Fiken/FikenSection';
+import { Heading, HeadingSize } from '@/components/Heading';
+import type { CsvFile } from '@/lib/csv';
+import { getAccountName, removeAccountName, setAccountName } from '@/lib/nordnet/account-alias';
+import { groupNordnetLinesByAccount, toNordnetLines } from '@/lib/nordnet/csv-to-nordnet-lines';
 import SaveIcon from '~icons/mdi/check';
 import CancelIcon from '~icons/mdi/close';
 import EditIcon from '~icons/mdi/pencil';

@@ -1,4 +1,4 @@
-import { type NordnetLine, NordnetType } from '@app/lib/nordnet/types';
+import { type NordnetLine, NordnetType } from '@/lib/nordnet/types';
 
 export const getForklarendeTekst = (
   nordnetLine: NordnetLine,

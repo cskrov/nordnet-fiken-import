@@ -1,8 +1,3 @@
-import { Heading, HeadingSize } from '@app/components/Heading';
-import { NordnetRow } from '@app/components/Nordnet/NordnetRow';
-import { Section, SectionVariant } from '@app/components/Section';
-import { Table } from '@app/components/Table';
-import type { Csv } from '@app/lib/csv';
 import {
   createSignal,
   type FlowComponent,
@@ -14,6 +9,11 @@ import {
   type VoidComponent,
 } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import { Heading, HeadingSize } from '@/components/Heading';
+import { NordnetRow } from '@/components/Nordnet/NordnetRow';
+import { Section, SectionVariant } from '@/components/Section';
+import { Table } from '@/components/Table';
+import type { Csv } from '@/lib/csv';
 import DeleteIcon from '~icons/mdi/Delete';
 import ExpandLessIcon from '~icons/mdi/ExpandLess';
 import ExpandMore from '~icons/mdi/ExpandMore';

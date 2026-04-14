@@ -1,15 +1,15 @@
-import { Button, ButtonVariant } from '@app/components/Button';
-import { FikenDownloadButtons } from '@app/components/Fiken/FikenDownloadButtons';
-import { FikenFile } from '@app/components/Fiken/FikenFile';
-import { fikenLinesToFikenFiles, nordnetLinesToFikenLines } from '@app/lib/fiken/fiken-files';
-import type { FikenLine } from '@app/lib/fiken/types';
-import { fixNordnetLines } from '@app/lib/nordnet/csv-to-nordnet-lines';
-import type { NordnetLine } from '@app/lib/nordnet/types';
-import { NordnetType } from '@app/lib/nordnet/types';
-import { pad } from '@app/lib/pad-number';
 import { addMonths, endOfMonth, format, isBefore, startOfMonth, subMonths } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { type Accessor, createEffect, createMemo, createSignal, For, Show, type VoidComponent } from 'solid-js';
+import { Button, ButtonVariant } from '@/components/Button';
+import { FikenDownloadButtons } from '@/components/Fiken/FikenDownloadButtons';
+import { FikenFile } from '@/components/Fiken/FikenFile';
+import { fikenLinesToFikenFiles, nordnetLinesToFikenLines } from '@/lib/fiken/fiken-files';
+import type { FikenLine } from '@/lib/fiken/types';
+import { fixNordnetLines } from '@/lib/nordnet/csv-to-nordnet-lines';
+import type { NordnetLine } from '@/lib/nordnet/types';
+import { NordnetType } from '@/lib/nordnet/types';
+import { pad } from '@/lib/pad-number';
 import CreationIcon from '~icons/mdi/creation';
 
 interface FikenFilesProps {

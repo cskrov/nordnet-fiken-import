@@ -1,5 +1,5 @@
-import { ModalVariant } from '@app/components/Modal/types';
 import type { FlowComponent, VoidComponent } from 'solid-js';
+import { ModalVariant } from '@/components/Modal/types';
 import ErrorIcon from '~icons/mdi/Error';
 import HelpIcon from '~icons/mdi/HelpCircle';
 import WarningIcon from '~icons/mdi/Warning';

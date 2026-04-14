@@ -1,5 +1,5 @@
-import { Button, ButtonSize, ButtonVariant } from '@app/components/Button';
 import { type FlowComponent, Show } from 'solid-js';
+import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
 import CloseIcon from '~icons/mdi/WindowClose';
 
 interface ModalFooterProps {

@@ -1,6 +1,6 @@
-import { removeLocalStorageAccountNumber, setLocalStorageAccountNumber } from '@app/lib/fiken/account-number';
-import type { FikenLineInnskudd, FikenLineUttak } from '@app/lib/fiken/types';
 import type { Accessor, JSX, VoidComponent } from 'solid-js';
+import { removeLocalStorageAccountNumber, setLocalStorageAccountNumber } from '@/lib/fiken/account-number';
+import type { FikenLineInnskudd, FikenLineUttak } from '@/lib/fiken/types';
 
 interface AccountProps {
   account: Accessor<string | null>;

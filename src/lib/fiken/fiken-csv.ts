@@ -1,8 +1,8 @@
-import type { Csv, CsvRow } from '@app/lib/csv';
-import type { FikenLine } from '@app/lib/fiken/types';
-import { formatMoney } from '@app/lib/money';
-import { NordnetType } from '@app/lib/nordnet/types';
 import { format } from 'date-fns';
+import type { Csv, CsvRow } from '@/lib/csv';
+import type { FikenLine } from '@/lib/fiken/types';
+import { formatMoney } from '@/lib/money';
+import { NordnetType } from '@/lib/nordnet/types';
 
 const FIKEN_CSV_HEADERS = [
   'Bokført dato',

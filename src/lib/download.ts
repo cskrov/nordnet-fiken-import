@@ -1,8 +1,8 @@
-import { toFikenCsv } from '@app/lib/fiken/fiken-csv';
-import type { FikenFileData } from '@app/lib/fiken/fiken-files';
-import type { FikenLine } from '@app/lib/fiken/types';
-import { pad } from '@app/lib/pad-number';
 import { format } from 'date-fns';
+import { toFikenCsv } from '@/lib/fiken/fiken-csv';
+import type { FikenFileData } from '@/lib/fiken/fiken-files';
+import type { FikenLine } from '@/lib/fiken/types';
+import { pad } from '@/lib/pad-number';
 
 export const downloadFikenLinesCsv = (fikenLines: FikenLine[], fileName: string) => {
   const csv = toFikenCsv(fikenLines);

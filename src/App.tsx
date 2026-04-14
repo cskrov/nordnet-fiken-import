@@ -1,14 +1,14 @@
-import { AppFooter } from '@app/components/AppFooter';
-import { Button, ButtonVariant } from '@app/components/Button';
-import { DropZone } from '@app/components/DropZone';
-import { AccountSections } from '@app/components/Fiken/AccountSections';
-import { Header } from '@app/components/Header';
-import { Heading, HeadingSize } from '@app/components/Heading';
-import { NordnetSection } from '@app/components/Nordnet/NordnetSection';
-import { Row } from '@app/components/Row';
-import { UploadButton } from '@app/components/UploadButton';
-import type { CsvFile } from '@app/lib/csv';
 import { createSignal, For, Show, type VoidComponent } from 'solid-js';
+import { AppFooter } from '@/components/AppFooter';
+import { Button, ButtonVariant } from '@/components/Button';
+import { DropZone } from '@/components/DropZone';
+import { AccountSections } from '@/components/Fiken/AccountSections';
+import { Header } from '@/components/Header';
+import { Heading, HeadingSize } from '@/components/Heading';
+import { NordnetSection } from '@/components/Nordnet/NordnetSection';
+import { Row } from '@/components/Row';
+import { UploadButton } from '@/components/UploadButton';
+import type { CsvFile } from '@/lib/csv';
 import DeleteAllIcon from '~icons/mdi/delete-sweep';
 
 export const App: VoidComponent = () => {

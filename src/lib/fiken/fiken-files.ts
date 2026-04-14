@@ -1,9 +1,9 @@
-import { getKonti } from '@app/lib/fiken/accounts';
-import { getForklarendeTekst } from '@app/lib/fiken/text';
-import type { FikenLine } from '@app/lib/fiken/types';
-import { Money, Sign } from '@app/lib/money';
-import type { NordnetLine } from '@app/lib/nordnet/types';
 import { createSignal } from 'solid-js';
+import { getKonti } from '@/lib/fiken/accounts';
+import { getForklarendeTekst } from '@/lib/fiken/text';
+import type { FikenLine } from '@/lib/fiken/types';
+import { Money, Sign } from '@/lib/money';
+import type { NordnetLine } from '@/lib/nordnet/types';
 
 export const fikenLinesToFikenFiles = (fikenLines: FikenLine[]): FikenFileData[] =>
   fikenLines.reduce<FikenFileData[]>((fikenFiles, fikenLine) => {

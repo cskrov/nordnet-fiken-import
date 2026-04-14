@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { formatMoney, parseDecimal, parseMoney, prettyFormatMoney, RESOLUTION } from '@app/lib/money';
+import { formatMoney, parseDecimal, parseMoney, prettyFormatMoney, RESOLUTION } from '@/lib/money';
 
 const SUCCESS_PARSE_MONEY_TESTS: [string, bigint][] = [
   ['2 000 000 500 321 001', 2_000_000_500_321_001n * RESOLUTION],

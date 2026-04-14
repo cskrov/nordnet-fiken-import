@@ -1,12 +1,12 @@
-import { Account } from '@app/components/Account';
-import { ButtonSize, ButtonVariant } from '@app/components/Button';
-import { ModalButton } from '@app/components/Modal/ModalButton';
-import { DisplayMoney } from '@app/components/Money';
-import { isInnskuddLineAccessor, isUttakLineAccessor } from '@app/lib/fiken/guards';
-import type { FikenLine } from '@app/lib/fiken/types';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { type Accessor, Show, type VoidComponent } from 'solid-js';
+import { Account } from '@/components/Account';
+import { ButtonSize, ButtonVariant } from '@/components/Button';
+import { ModalButton } from '@/components/Modal/ModalButton';
+import { DisplayMoney } from '@/components/Money';
+import { isInnskuddLineAccessor, isUttakLineAccessor } from '@/lib/fiken/guards';
+import type { FikenLine } from '@/lib/fiken/types';
 import HelpIcon from '~icons/mdi/HelpCircle';
 
 interface FikenRowProps {

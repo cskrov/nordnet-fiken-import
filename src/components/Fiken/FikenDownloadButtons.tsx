@@ -1,10 +1,10 @@
-import { Button, ButtonSize, ButtonVariant } from '@app/components/Button';
-import { Modal } from '@app/components/Modal/Modal';
-import { ModalVariant } from '@app/components/Modal/types';
-import { Row } from '@app/components/Row';
-import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from '@app/lib/download';
-import type { FikenFileData } from '@app/lib/fiken/fiken-files';
 import { type Accessor, createSignal, type VoidComponent } from 'solid-js';
+import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
+import { Modal } from '@/components/Modal/Modal';
+import { ModalVariant } from '@/components/Modal/types';
+import { Row } from '@/components/Row';
+import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from '@/lib/download';
+import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import DownloadIcon from '~icons/mdi/Download';
 import DownloadMultipleIcon from '~icons/mdi/DownloadMultiple';
 

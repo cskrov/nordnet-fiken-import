@@ -1,5 +1,5 @@
-import type { NordnetLineSource, NordnetType } from '@app/lib/nordnet/types';
 import type { Accessor } from 'solid-js';
+import type { NordnetLineSource, NordnetType } from '@/lib/nordnet/types';
 
 export interface BaseFikenLine {
   readonly type: NordnetType | string;

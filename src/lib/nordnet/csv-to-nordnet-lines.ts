@@ -1,9 +1,9 @@
-import { chain } from '@app/lib/chain';
-import type { CsvFile } from '@app/lib/csv';
-import { parseMoney } from '@app/lib/money';
-import { type NordnetLine, NordnetType } from '@app/lib/nordnet/types';
-import { pad } from '@app/lib/pad-number';
 import { addMonths, endOfMonth, isLastDayOfMonth, isSameMonth, parse } from 'date-fns';
+import { chain } from '@/lib/chain';
+import type { CsvFile } from '@/lib/csv';
+import { parseMoney } from '@/lib/money';
+import { type NordnetLine, NordnetType } from '@/lib/nordnet/types';
+import { pad } from '@/lib/pad-number';
 
 const NORDNET_HEADER_ID = 'Id';
 const NORDNET_HEADER_BOKFORT_DATO = 'Bokføringsdag';

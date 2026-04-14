@@ -1,5 +1,5 @@
-import { Money, prettyFormatMoney, Sign } from '@app/lib/money';
 import { type Component, mergeProps } from 'solid-js';
+import { Money, prettyFormatMoney, Sign } from '@/lib/money';
 
 interface Props {
   children: bigint;

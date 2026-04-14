@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'bun:test';
-import { fikenLinesToFikenFiles } from '@app/lib/fiken/fiken-files';
-import type { FikenLine } from '@app/lib/fiken/types';
-import { NordnetType } from '@app/lib/nordnet/types';
 import { createSignal } from 'solid-js';
+import { fikenLinesToFikenFiles } from '@/lib/fiken/fiken-files';
+import type { FikenLine } from '@/lib/fiken/types';
+import { NordnetType } from '@/lib/nordnet/types';
 
 const makeFikenLine = (
   overrides: Partial<FikenLine> & Pick<FikenLine, 'nordnetKonto' | 'month' | 'year'>,
