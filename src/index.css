@@ -59,6 +59,17 @@
   --color-error-800: rgb(127, 15, 71);
   --color-error-900: rgb(104, 12, 58);
 
+  --color-success-50: var(--color-green-50);
+  --color-success-100: var(--color-green-100);
+  --color-success-200: var(--color-green-200);
+  --color-success-300: var(--color-green-300);
+  --color-success-400: var(--color-green-400);
+  --color-success-500: var(--color-green-500);
+  --color-success-600: var(--color-green-600);
+  --color-success-700: var(--color-green-700);
+  --color-success-800: var(--color-green-800);
+  --color-success-900: var(--color-green-900);
+
   --color-background-color: #242c46;
 
   --color-text-default: #fff;

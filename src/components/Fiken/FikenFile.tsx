@@ -1,5 +1,6 @@
-import { isLastDayOfMonth } from 'date-fns';
-import { createEffect, createSignal, Index, Show, type VoidComponent } from 'solid-js';
+import { format as formatDate, isLastDayOfMonth } from 'date-fns';
+import { nb } from 'date-fns/locale/nb';
+import { createEffect, createResource, createSignal, Index, Show, type VoidComponent } from 'solid-js';
 import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
 import { FikenRow } from '@/components/Fiken/FikenRow';
 import { Heading, HeadingSize } from '@/components/Heading';
@@ -9,12 +10,15 @@ import { ModalVariant } from '@/components/Modal/types';
 import { Section, SectionVariant } from '@/components/Section';
 import { Table } from '@/components/Table';
 import { downloadFikenLinesCsv } from '@/lib/download';
+import { computeContentHash, getDownloadRecord, markAsDownloaded } from '@/lib/fiken/download-history';
 import { FIKEN_TABLE_HEADERS } from '@/lib/fiken/fiken-csv';
 import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import { isMonth, MONTHS } from '@/lib/month';
+import CheckIcon from '~icons/mdi/Check';
 import DeleteIcon from '~icons/mdi/Delete';
 import DownloadIcon from '~icons/mdi/Download';
 import HelpIcon from '~icons/mdi/HelpCircle';
+import UpdateIcon from '~icons/mdi/Update';
 import WarningIcon from '~icons/mdi/Warning';
 
 interface FikenSectionProps {
@@ -38,6 +42,16 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
     return props.fikenFile.year === currentYear && props.fikenFile.month === currentMonth && !isLastDayOfMonth(now);
   };
 
+  const [currentHash] = createResource(() => props.fikenFile, computeContentHash);
+
+  const downloadRecord = () => getDownloadRecord(props.fikenFile.fileName);
+
+  const hasChanged = () => {
+    const record = downloadRecord();
+    const hash = currentHash();
+    return record !== undefined && hash !== undefined && record.hash !== hash;
+  };
+
   createEffect(() => {
     if (hasUnexpectedSaldo()) {
       umami.track('Unexpected saldo', {
@@ -49,7 +63,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
     }
   });
 
-  const onDownloadClick = () => {
+  const onDownloadClick = async () => {
     umami.track('Download single', {
       year: props.fikenFile.year,
       month: props.fikenFile.month,
@@ -59,6 +73,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
 
     try {
       downloadFikenLinesCsv(props.fikenFile.rows, props.fikenFile.fileName);
+      await markAsDownloaded(props.fikenFile);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -78,6 +93,21 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
         <span class="font-mono italic text-base ml-4 mr-auto">{props.fikenFile.fileName}</span>
 
         <div class="flex gap-2">
+          <Show when={downloadRecord()}>
+            {(record) => {
+              const date = formatDate(new Date(record().downloadedAt), 'd. MMM yyyy HH:mm', { locale: nb });
+
+              return (
+                <span
+                  class={`flex items-center gap-x-1 text-sm ${hasChanged() ? 'text-warning-600' : 'text-success-600'}`}
+                >
+                  {hasChanged() ? <UpdateIcon /> : <CheckIcon />}
+                  {hasChanged() ? `Endret siden ${date}` : `Lastet ned ${date}`}
+                </span>
+              );
+            }}
+          </Show>
+
           <Show when={isCurrentMonth()}>
             <ModalButton
               buttonText="Inneværende"

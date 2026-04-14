@@ -4,6 +4,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { ModalVariant } from '@/components/Modal/types';
 import { Row } from '@/components/Row';
 import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from '@/lib/download';
+import { markAllAsDownloaded } from '@/lib/fiken/download-history';
 import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import DownloadIcon from '~icons/mdi/Download';
 import DownloadMultipleIcon from '~icons/mdi/DownloadMultiple';
@@ -16,11 +17,12 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (p
   const [modalErrorMessage, setModalErrorMessage] = createSignal<string | null>(null);
   const [showErrorModal, setShowErrorModal] = createSignal(false);
 
-  const onClickDownloadSingle = () => {
+  const onClickDownloadSingle = async () => {
     umami.track('Download all (single file)', getEventData(props.fikenFiles()));
 
     try {
       downloadFikenMapSingleCsv(props.fikenFiles().flatMap((f) => f.rows));
+      await markAllAsDownloaded(props.fikenFiles());
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -30,11 +32,12 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (p
     }
   };
 
-  const onClickDownloadSeparate = () => {
+  const onClickDownloadSeparate = async () => {
     umami.track('Download all (separate files)', getEventData(props.fikenFiles()));
 
     try {
       downloadFikenMapMultipleCsv(props.fikenFiles());
+      await markAllAsDownloaded(props.fikenFiles());
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);

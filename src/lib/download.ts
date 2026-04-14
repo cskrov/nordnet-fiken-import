@@ -1,12 +1,12 @@
 import { format } from 'date-fns';
-import { toFikenCsv } from '@/lib/fiken/fiken-csv';
+import { serializeFikenCsv, toFikenCsv } from '@/lib/fiken/fiken-csv';
 import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import type { FikenLine } from '@/lib/fiken/types';
 import { pad } from '@/lib/pad-number';
 
 export const downloadFikenLinesCsv = (fikenLines: FikenLine[], fileName: string) => {
   const csv = toFikenCsv(fikenLines);
-  const csvContent = [csv.headers.join(';'), ...csv.rows.map((row) => row.join(';'))].join('\n');
+  const csvContent = serializeFikenCsv(csv);
 
   const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);

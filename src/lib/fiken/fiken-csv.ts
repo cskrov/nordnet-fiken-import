@@ -62,6 +62,9 @@ export const toFikenCsv = (fikenLines: FikenLine[]): Csv => {
   return { headers: FIKEN_CSV_HEADERS, rows };
 };
 
+export const serializeFikenCsv = (csv: Csv): string =>
+  [csv.headers.join(';'), ...csv.rows.map((row) => row.join(';'))].join('\n');
+
 const lineRequiresAccountNumber = (line: FikenLine): boolean =>
   line.type === NordnetType.INNSKUDD || line.type === NordnetType.UTTAK;
 
