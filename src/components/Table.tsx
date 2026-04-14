@@ -20,11 +20,6 @@ export const Table: ParentComponent<Props> = (props) => (
         </tr>
       </thead>
       <tbody>{props.children}</tbody>
-      <tfoot class="bg-table-footer italic text-base whitespace-nowrap">
-        <tr>
-          <td class="sticky left-0 p-2">{props.rowCount} rader</td>
-        </tr>
-      </tfoot>
     </table>
   </div>
 );
