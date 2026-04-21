@@ -12,6 +12,8 @@ export const getForklarendeTekst = (
       return `Salg av ${nordnetLine.verdipapir} (${nordnetLine.ISIN})`;
     case NordnetType.DEBETRENTE:
       return 'Debetrente';
+    case NordnetType.KREDITRENTE:
+      return 'Kreditrente';
     case NordnetType.OVERBELÅNINGSRENTE:
       return 'Overbelåningsrente';
     case NordnetType.UTTAK:

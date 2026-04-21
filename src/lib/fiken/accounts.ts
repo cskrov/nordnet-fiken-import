@@ -21,6 +21,7 @@ export const getKonti = ({ transaksjonstype, portefølje, transaksjonstekst, bel
       case NordnetType.SALDO:
         return { fraKonto: portefølje, tilKonto: portefølje };
       case NordnetType.DEBETRENTE:
+      case NordnetType.KREDITRENTE:
         return beløp < 0 ? { fraKonto: portefølje, tilKonto: null } : { fraKonto: null, tilKonto: portefølje };
       case NordnetType.OVERBELÅNINGSRENTE:
         return { fraKonto: portefølje, tilKonto: null };
