@@ -15,6 +15,7 @@ const makeNordnetLine = (overrides: Partial<NordnetLine> & Pick<NordnetLine, 'id
   source: { fileName: 'test.csv', rowNumber: 0 },
   generated: false,
   unexpectedSaldo: false,
+  unknownType: false,
   ...overrides,
 });
 

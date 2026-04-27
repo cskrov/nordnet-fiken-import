@@ -39,4 +39,5 @@ export interface NordnetLine {
   readonly source: NordnetLineSource;
   readonly generated: boolean;
   readonly unexpectedSaldo: boolean;
+  readonly unknownType: boolean;
 }

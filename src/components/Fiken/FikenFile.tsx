@@ -1,6 +1,6 @@
 import { format as formatDate, isLastDayOfMonth } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { createEffect, createResource, createSignal, Index, Show, type VoidComponent } from 'solid-js';
+import { createEffect, createResource, createSignal, For, Index, Show, type VoidComponent } from 'solid-js';
 import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
 import { FikenRow } from '@/components/Fiken/FikenRow';
 import { Heading, HeadingSize } from '@/components/Heading';
@@ -34,6 +34,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
 
   const hasUnexpectedSaldo = () => isGenerated() && props.fikenFile.rows.some((row) => row.unexpectedSaldo);
   const isGenerated = () => props.fikenFile.rows.every((row) => row.generated);
+  const unknownTypes = () => [...new Set(props.fikenFile.rows.filter((row) => row.unknownType).map((row) => row.type))];
   const isCurrentMonth = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -137,6 +138,24 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
             >
               <span>Utgående saldo for denne måneden stemmer ikke overens med inngående saldo for neste måned.</span>
               <span>Har du glemt å laste opp en fil fra Nordnet?</span>
+            </ModalButton>
+          </Show>
+
+          <Show when={unknownTypes().length > 0}>
+            <ModalButton
+              variant={ButtonVariant.WARNING}
+              size={ButtonSize.SMALL}
+              icon={<WarningIcon />}
+              buttonText={`${unknownTypes().length.toString(10)} ukjent${unknownTypes().length > 1 ? 'e' : ''} type${unknownTypes().length > 1 ? 'r' : ''}`}
+            >
+              <span>Denne måneden inneholder transaksjoner med ukjent type:</span>
+              <span class="inline-flex flex-wrap flex-row gap-1">
+                <For each={unknownTypes()}>
+                  {(t) => <span class="text-xs bg-warning-700 px-1 py-0.5 rounded-sm font-mono">{t}</span>}
+                </For>
+              </span>
+              <span>Disse kan ikke konverteres korrekt til Fiken-format.</span>
+              <span>Kontakt utvikler for å legge til støtte.</span>
             </ModalButton>
           </Show>
           <Show when={isGenerated()}>

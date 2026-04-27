@@ -99,6 +99,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => 
       source: { fileName: null, rowNumber: -1 },
       isin: null,
       unexpectedSaldo: false,
+      unknownType: false,
     });
   };
 
@@ -132,6 +133,7 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => 
       source: { fileName: null, rowNumber: -1 },
       isin: null,
       unexpectedSaldo: false,
+      unknownType: false,
     });
   };
 

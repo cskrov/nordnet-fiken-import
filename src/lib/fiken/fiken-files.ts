@@ -38,6 +38,7 @@ const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     source,
     generated,
     unexpectedSaldo,
+    unknownType,
   } = nordnetLine;
   const sign = Money.sign(beløp);
   const nordnetKonti = getKonti(nordnetLine);
@@ -64,6 +65,7 @@ const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     source,
     generated,
     unexpectedSaldo,
+    unknownType,
   };
 };
 

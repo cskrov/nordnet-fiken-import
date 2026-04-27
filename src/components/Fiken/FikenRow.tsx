@@ -8,6 +8,7 @@ import { DisplayMoney } from '@/components/Money';
 import { isInnskuddLineAccessor, isUttakLineAccessor } from '@/lib/fiken/guards';
 import type { FikenLine } from '@/lib/fiken/types';
 import HelpIcon from '~icons/mdi/HelpCircle';
+import WarningIcon from '~icons/mdi/Warning';
 
 interface FikenRowProps {
   line: Accessor<FikenLine>;
@@ -28,7 +29,7 @@ export const FikenRow: VoidComponent<FikenRowProps> = (props) => {
 
   return (
     <tr
-      class={`${props.line().generated ? GENERATED_CLASSES : NOT_GENERATED_CLASSES} odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row`}
+      class={`${props.line().generated ? GENERATED_CLASSES : NOT_GENERATED_CLASSES} ${props.line().unknownType ? 'bg-warning-900/30!' : ''} odd:bg-table-odd-row even:bg-table-even-row hover:bg-table-hover-row`}
     >
       <td class={CELL_CLASSES}>{props.lineNumber + 1}</td>
       <td class={CELL_CLASSES}>
@@ -56,16 +57,29 @@ export const FikenRow: VoidComponent<FikenRowProps> = (props) => {
       </td>
       <td class={CELL_CLASSES}>{props.line().referanse}</td>
       <td class={CELL_CLASSES}>
-        <Show when={props.line().generated} fallback={<span class="text-gray-500">{source()}</span>}>
-          <ModalButton
-            variant={ButtonVariant.SECONDARY}
-            size={ButtonSize.SMALL}
-            icon={<HelpIcon />}
-            buttonText="Generert"
-          >
-            Denne raden er fylt inn for at Fiken skal kunne avstemme måneden.
-          </ModalButton>
-        </Show>
+        <div class="flex items-center gap-x-1">
+          <Show when={props.line().unknownType}>
+            <ModalButton variant={ButtonVariant.WARNING} size={ButtonSize.SMALL} icon={<WarningIcon />} buttonText="">
+              <span>
+                Transaksjonstypen{' '}
+                <span class="text-xs bg-warning-700 px-1 py-0.5 rounded-sm font-mono">{props.line().type}</span> er ikke
+                gjenkjent og kan ikke konverteres til Fiken-format.
+              </span>
+              <span>Kontakt utvikler for å legge til støtte for denne typen.</span>
+            </ModalButton>
+            <span class="text-xs bg-warning-700 px-1 py-0.5 rounded-sm font-mono">{props.line().type}</span>
+          </Show>
+          <Show when={props.line().generated} fallback={<span class="text-gray-500">{source()}</span>}>
+            <ModalButton
+              variant={ButtonVariant.SECONDARY}
+              size={ButtonSize.SMALL}
+              icon={<HelpIcon />}
+              buttonText="Generert"
+            >
+              Denne raden er fylt inn for at Fiken skal kunne avstemme måneden.
+            </ModalButton>
+          </Show>
+        </div>
       </td>
     </tr>
   );

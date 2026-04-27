@@ -28,6 +28,19 @@ export const toFikenCsv = (fikenLines: FikenLine[]): Csv => {
     throw new Error('En eller flere linjer har uventet saldo.');
   }
 
+  const unknownTypeLines = fikenLines.filter((line) => line.unknownType);
+
+  if (unknownTypeLines.length === 1) {
+    throw new Error(`Én linje har ukjent transaksjonstype: «${unknownTypeLines[0]?.type}».`);
+  }
+
+  if (unknownTypeLines.length > 1) {
+    const uniqueTypes = [...new Set(unknownTypeLines.map((l) => l.type))];
+    throw new Error(
+      `${unknownTypeLines.length.toString(10)} linjer har ukjent transaksjonstype: ${uniqueTypes.map((t) => `«${t}»`).join(', ')}.`,
+    );
+  }
+
   const missingAccountNumberCount = fikenLines.filter(
     (line) => lineRequiresAccountNumber(line) && isNullOrEmpty(line.fraKonto()),
   ).length;

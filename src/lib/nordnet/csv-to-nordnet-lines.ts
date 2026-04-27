@@ -2,7 +2,7 @@ import { addMonths, endOfMonth, isLastDayOfMonth, isSameMonth, parse } from 'dat
 import { chain } from '@/lib/chain';
 import type { CsvFile } from '@/lib/csv';
 import { parseMoney } from '@/lib/money';
-import { type NordnetLine, NordnetType } from '@/lib/nordnet/types';
+import { isNordnetType, type NordnetLine, NordnetType } from '@/lib/nordnet/types';
 import { pad } from '@/lib/pad-number';
 
 const NORDNET_HEADER_ID = 'Id';
@@ -74,12 +74,13 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
         const bokførtDato = parse(row[bokførtDatoIndex] ?? '', 'yyyy-MM-dd', referenceDate);
         const year = bokførtDato.getFullYear();
         const month = bokførtDato.getMonth() + 1;
+        const transaksjonstype = row[typeIndex] ?? '';
 
         return {
           id: row[idIndex] ?? '',
           bokførtDato,
           portefølje: row[kontoIndex] ?? '',
-          transaksjonstype: row[typeIndex] ?? '',
+          transaksjonstype,
           beløp: parseMoney(row[beløpIndex] ?? ''),
           saldo: parseMoney(row[saldoIndex] ?? ''),
           transaksjonstekst: row[transaksjonstekstekstIndex] ?? '',
@@ -90,6 +91,7 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
           source: { fileName, rowNumber },
           generated: false,
           unexpectedSaldo: false,
+          unknownType: !isNordnetType(transaksjonstype),
         };
       })
       .toReversed();
@@ -143,6 +145,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
           source: { fileName: null, rowNumber: -1 },
           generated: true,
           unexpectedSaldo: false,
+          unknownType: false,
         } satisfies NordnetLine,
       ];
     }
@@ -184,6 +187,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
         source: { fileName: null, rowNumber: -1 },
         generated: true,
         unexpectedSaldo,
+        unknownType: false,
       });
     }
 
