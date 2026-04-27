@@ -1,6 +1,6 @@
 export type CsvRow = string[];
 
-export type CsvData = CsvRow[];
+type CsvData = CsvRow[];
 
 export interface Csv {
   headers: string[];

@@ -1,7 +1,7 @@
 import type { Accessor } from 'solid-js';
 import type { NordnetLineSource, NordnetType } from '@/lib/nordnet/types';
 
-export interface BaseFikenLine {
+interface BaseFikenLine {
   readonly type: NordnetType | string;
   readonly fraKonto: Accessor<string | null>;
   readonly setFraKonto: (value: string | null) => void;
