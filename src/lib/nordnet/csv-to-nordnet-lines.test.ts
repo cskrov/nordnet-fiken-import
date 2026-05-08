@@ -175,4 +175,21 @@ describe('fixNordnetLines per account', () => {
 
     expect(originalLines.length).toBe(1);
   });
+
+  it('should sort lines chronologically regardless of id format', () => {
+    const lines: NordnetLine[] = [
+      makeNordnetLine({ id: '9', portefølje: 'A', bokførtDato: new Date('2026-03-15'), month: 3, year: 2026 }),
+      makeNordnetLine({ id: '10', portefølje: 'A', bokførtDato: new Date('2026-04-15'), month: 4, year: 2026 }),
+      makeNordnetLine({ id: '100', portefølje: 'A', bokførtDato: new Date('2026-12-15'), month: 12, year: 2026 }),
+    ];
+
+    const fixed = fixNordnetLines(lines);
+    const nonGenerated = fixed.filter((l) => !l.generated);
+    const dates = nonGenerated.map((l) => l.bokførtDato.getTime());
+
+    dates.reduce((prev, curr) => {
+      expect(curr).toBeGreaterThanOrEqual(prev);
+      return curr;
+    });
+  });
 });
