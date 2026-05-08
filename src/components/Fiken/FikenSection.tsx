@@ -12,6 +12,18 @@ import { NordnetType } from '@/lib/nordnet/types';
 import { pad } from '@/lib/pad-number';
 import CreationIcon from '~icons/mdi/creation';
 
+const minByDate = (lines: FikenLine[]): FikenLine | undefined =>
+  lines.reduce<FikenLine | undefined>(
+    (min, line) => (min === undefined || line.bokførtDato.getTime() < min.bokførtDato.getTime() ? line : min),
+    undefined,
+  );
+
+const maxByDate = (lines: FikenLine[]): FikenLine | undefined =>
+  lines.reduce<FikenLine | undefined>(
+    (max, line) => (max === undefined || line.bokførtDato.getTime() > max.bokførtDato.getTime() ? line : max),
+    undefined,
+  );
+
 interface FikenFilesProps {
   nordnetLines: Accessor<NordnetLine[]>;
   accountAlias?: string | null;
@@ -21,7 +33,8 @@ export const FikenSection: VoidComponent<FikenFilesProps> = (props) => {
   const convertedFikenLines = createMemo(() => nordnetLinesToFikenLines(fixNordnetLines(props.nordnetLines())));
   const [generatedFikenLines, setGeneratedFikenLines] = createSignal<FikenLine[]>([]);
 
-  const firstLine: Accessor<FikenLine | undefined> = () => generatedFikenLines().at(0) ?? convertedFikenLines().at(0);
+  const firstLine: Accessor<FikenLine | undefined> = () =>
+    minByDate([...generatedFikenLines(), ...convertedFikenLines()]);
 
   const prependGeneratedFikenLine = (newLine: FikenLine) => setGeneratedFikenLines([newLine, ...generatedFikenLines()]);
   const appendGeneratedFikenLine = (newLine: FikenLine) => setGeneratedFikenLines([...generatedFikenLines(), newLine]);
@@ -65,7 +78,7 @@ interface FikenSectionWithFirstLineProps {
 
 const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => {
   const lastLine: Accessor<FikenLine> = createMemo(
-    () => props.generatedFikenLines().at(-1) ?? props.convertedFikenLines().at(-1) ?? props.firstLine(),
+    () => maxByDate([...props.generatedFikenLines(), ...props.convertedFikenLines()]) ?? props.firstLine(),
   );
 
   const previousDate = createMemo(() => endOfMonth(subMonths(props.firstLine().bokførtDato, 1)));

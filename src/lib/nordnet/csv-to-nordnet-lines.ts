@@ -115,7 +115,7 @@ const deduplicateNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] => 
 };
 
 const sortNordnetLines = (nordnetLines: NordnetLine[]): NordnetLine[] =>
-  nordnetLines.toSorted((a, b) => a.id.localeCompare(b.id));
+  nordnetLines.toSorted((a, b) => a.id.length - b.id.length || a.id.localeCompare(b.id));
 
 const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
   const now = new Date();
