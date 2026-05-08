@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { createSignal } from 'solid-js';
-import { fikenLinesToFikenFiles } from '@/lib/fiken/fiken-files';
+import { fikenLinesToFikenFiles, sanitizeAlias } from '@/lib/fiken/fiken-files';
 import type { FikenLine } from '@/lib/fiken/types';
 import { NordnetType } from '@/lib/nordnet/types';
 
@@ -39,7 +39,7 @@ describe('fikenLinesToFikenFiles', () => {
     const files = fikenLinesToFikenFiles(lines);
 
     expect(files.length).toBe(1);
-    expect(files[0]?.fileName).toBe('nordnet-fiken-12345678-2024.03.csv');
+    expect(files[0]?.fileName).toBe('nordnet-12345678-2024-03.fiken.csv');
   });
 
   it('should group lines by month and account', () => {
@@ -61,7 +61,7 @@ describe('fikenLinesToFikenFiles', () => {
 
     const files = fikenLinesToFikenFiles(lines);
 
-    expect(files[0]?.fileName).toBe('nordnet-fiken-min-portefølje-2024.06.csv');
+    expect(files[0]?.fileName).toBe('nordnet-min-portefølje-2024-06.fiken.csv');
   });
 
   it('should produce separate files for different accounts in the same month', () => {
@@ -75,5 +75,63 @@ describe('fikenLinesToFikenFiles', () => {
     expect(files.length).toBe(2);
     expect(files[0]?.fileName).toContain('-a-');
     expect(files[1]?.fileName).toContain('-b-');
+  });
+
+  it('should include alias in file name when provided', () => {
+    const lines: FikenLine[] = [makeFikenLine({ nordnetKonto: 'Aksjesparekonto', month: 3, year: 2024 })];
+
+    const files = fikenLinesToFikenFiles(lines, 'Sparekonto');
+
+    expect(files[0]?.fileName).toBe('nordnet-sparekonto-aksjesparekonto-2024-03.fiken.csv');
+  });
+
+  it('should preserve dashes and replace spaces with underscores in alias', () => {
+    const lines: FikenLine[] = [makeFikenLine({ nordnetKonto: 'Aksjesparekonto', month: 3, year: 2024 })];
+
+    const files = fikenLinesToFikenFiles(lines, 'Aksje- og fondskonto');
+
+    expect(files[0]?.fileName).toBe('nordnet-aksje-_og_fondskonto-aksjesparekonto-2024-03.fiken.csv');
+  });
+
+  it('should omit alias from file name when null', () => {
+    const lines: FikenLine[] = [makeFikenLine({ nordnetKonto: 'Aksjesparekonto', month: 3, year: 2024 })];
+
+    const files = fikenLinesToFikenFiles(lines, null);
+
+    expect(files[0]?.fileName).toBe('nordnet-aksjesparekonto-2024-03.fiken.csv');
+  });
+});
+
+describe('sanitizeAlias', () => {
+  it('should lowercase the alias', () => {
+    expect(sanitizeAlias('Sparekonto')).toBe('sparekonto');
+  });
+
+  it('should replace spaces with underscores', () => {
+    expect(sanitizeAlias('Aksje- og fondskonto')).toBe('aksje-_og_fondskonto');
+  });
+
+  it('should collapse multiple consecutive spaces into one underscore', () => {
+    expect(sanitizeAlias('Aksje  konto')).toBe('aksje_konto');
+  });
+
+  it('should preserve dashes', () => {
+    expect(sanitizeAlias('Aksje-og-fondskonto')).toBe('aksje-og-fondskonto');
+  });
+
+  it('should keep numbers', () => {
+    expect(sanitizeAlias('Konto 2')).toBe('konto_2');
+  });
+
+  it('should keep norwegian characters', () => {
+    expect(sanitizeAlias('Konto ÆØÅ')).toBe('konto_æøå');
+  });
+
+  it('should strip special characters', () => {
+    expect(sanitizeAlias('Konto (privat)')).toBe('konto_privat');
+  });
+
+  it('should trim leading and trailing whitespace', () => {
+    expect(sanitizeAlias('  Sparekonto  ')).toBe('sparekonto');
   });
 });

@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
 import { serializeFikenCsv, toFikenCsv } from '@/lib/fiken/fiken-csv';
 import type { FikenFileData } from '@/lib/fiken/fiken-files';
+import { sanitizeAccountName, sanitizeAlias } from '@/lib/fiken/fiken-files';
 import type { FikenLine } from '@/lib/fiken/types';
 import { pad } from '@/lib/pad-number';
 
@@ -16,20 +16,36 @@ export const downloadFikenLinesCsv = (fikenLines: FikenLine[], fileName: string)
   a.click();
 };
 
-export const downloadFikenMapSingleCsv = (fikenLines: FikenLine[]) => {
+export const downloadFikenMapSingleCsv = (fikenLines: FikenLine[], accountAlias?: string | null) => {
+  const fileName = getCombinedFileName(fikenLines, accountAlias);
+
+  if (fileName === null) {
+    return;
+  }
+
+  downloadFikenLinesCsv(fikenLines, fileName);
+};
+
+const getCombinedFileName = (fikenLines: FikenLine[], accountAlias?: string | null): string | null => {
   const [firstLine] = fikenLines;
   const lastLine = fikenLines.at(-1);
 
   if (firstLine === undefined || lastLine === undefined) {
-    return;
+    return null;
   }
 
-  downloadFikenLinesCsv(fikenLines, `nordnet-fiken-${getKey(firstLine, lastLine)}.csv`);
+  const account = sanitizeAccountName(firstLine.nordnetKonto);
+  const aliasPart =
+    accountAlias !== undefined && accountAlias !== null && accountAlias.length > 0
+      ? `${sanitizeAlias(accountAlias)}-`
+      : '';
+
+  return `nordnet-${aliasPart}${account}-${getDateRangeKey(firstLine, lastLine)}.fiken.csv`;
 };
 
-const getKey = (firstLine: FikenLine, lastLine: FikenLine) => {
+const getDateRangeKey = (firstLine: FikenLine, lastLine: FikenLine): string => {
   if (firstLine === lastLine) {
-    return format(firstLine.bokførtDato, 'yyyy.MM');
+    return `${firstLine.bokførtDato.getFullYear().toString(10)}-${pad(firstLine.bokførtDato.getMonth() + 1)}`;
   }
 
   const firstYear = firstLine.bokførtDato.getFullYear();
@@ -38,10 +54,10 @@ const getKey = (firstLine: FikenLine, lastLine: FikenLine) => {
   const lastMonth = lastLine.bokførtDato.getMonth();
 
   if (firstYear === lastYear) {
-    return `${firstYear.toString(10)}.${pad(firstMonth + 1)}-${pad(lastMonth + 1)}`;
+    return `${firstYear.toString(10)}-${pad(firstMonth + 1)}-${pad(lastMonth + 1)}`;
   }
 
-  return `${firstYear.toString(10)}.${pad(firstMonth + 1)}-${lastYear.toString(10)}.${pad(lastMonth + 1)}`;
+  return `${firstYear.toString(10)}-${pad(firstMonth + 1)}_${lastYear.toString(10)}-${pad(lastMonth + 1)}`;
 };
 
 export const downloadFikenMapMultipleCsv = (fikenFiles: FikenFileData[]) => {

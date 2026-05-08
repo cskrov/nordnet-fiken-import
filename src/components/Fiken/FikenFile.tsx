@@ -45,7 +45,7 @@ export const FikenFile: VoidComponent<FikenSectionProps> = (props) => {
 
   const [currentHash] = createResource(() => props.fikenFile, computeContentHash);
 
-  const downloadRecord = () => getDownloadRecord(props.fikenFile.fileName);
+  const downloadRecord = () => getDownloadRecord(props.fikenFile);
 
   const hasChanged = () => {
     const record = downloadRecord();

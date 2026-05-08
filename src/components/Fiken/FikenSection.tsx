@@ -14,6 +14,7 @@ import CreationIcon from '~icons/mdi/creation';
 
 interface FikenFilesProps {
   nordnetLines: Accessor<NordnetLine[]>;
+  accountAlias?: string | null;
 }
 
 export const FikenSection: VoidComponent<FikenFilesProps> = (props) => {
@@ -45,6 +46,7 @@ export const FikenSection: VoidComponent<FikenFilesProps> = (props) => {
           prependGeneratedFikenLine={prependGeneratedFikenLine}
           appendGeneratedFikenLine={appendGeneratedFikenLine}
           removeGeneratedFikenLines={removeGeneratedFikenLines}
+          accountAlias={props.accountAlias}
         />
       )}
     </Show>
@@ -58,6 +60,7 @@ interface FikenSectionWithFirstLineProps {
   prependGeneratedFikenLine: (line: FikenLine) => void;
   appendGeneratedFikenLine: (line: FikenLine) => void;
   removeGeneratedFikenLines: (lines: FikenLine[]) => void;
+  accountAlias?: string | null;
 }
 
 const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => {
@@ -137,8 +140,8 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => 
     });
   };
 
-  const generatedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.generatedFikenLines()));
-  const convertedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.convertedFikenLines()));
+  const generatedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.generatedFikenLines(), props.accountAlias));
+  const convertedFikenFiles = createMemo(() => fikenLinesToFikenFiles(props.convertedFikenLines(), props.accountAlias));
 
   const firstConvertedFile = () => convertedFikenFiles().at(0);
 
@@ -204,7 +207,10 @@ const WithFirstLine: VoidComponent<FikenSectionWithFirstLineProps> = (props) => 
         </Show>
       </Show>
 
-      <FikenDownloadButtons fikenFiles={() => [...generatedFikenFiles(), ...convertedFikenFiles()]} />
+      <FikenDownloadButtons
+        fikenFiles={() => [...generatedFikenFiles(), ...convertedFikenFiles()]}
+        accountAlias={props.accountAlias}
+      />
     </Show>
   );
 };

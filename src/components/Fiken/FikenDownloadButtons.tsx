@@ -11,6 +11,7 @@ import DownloadMultipleIcon from '~icons/mdi/DownloadMultiple';
 
 interface FikenDownloadButtonsProps {
   fikenFiles: Accessor<FikenFileData[]>;
+  accountAlias?: string | null;
 }
 
 export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (props) => {
@@ -21,7 +22,10 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (p
     umami.track('Download all (single file)', getEventData(props.fikenFiles()));
 
     try {
-      downloadFikenMapSingleCsv(props.fikenFiles().flatMap((f) => f.rows));
+      downloadFikenMapSingleCsv(
+        props.fikenFiles().flatMap((f) => f.rows),
+        props.accountAlias,
+      );
       await markAllAsDownloaded(props.fikenFiles());
     } catch (error) {
       if (error instanceof Error) {
