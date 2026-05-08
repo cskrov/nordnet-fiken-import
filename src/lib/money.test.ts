@@ -165,5 +165,6 @@ describe('Pretty format money', () => {
 
 const NON_BREAKING_SPACE = '\u00A0';
 const MINUS_SIGN = '\u2212';
+const WHITESPACE = /\s/gi;
 
-const m = (value: string) => `${value.replaceAll('-', MINUS_SIGN).replaceAll(/\s/gi, NON_BREAKING_SPACE)} kr`;
+const m = (value: string) => `${value.replaceAll('-', MINUS_SIGN).replaceAll(WHITESPACE, NON_BREAKING_SPACE)} kr`;
