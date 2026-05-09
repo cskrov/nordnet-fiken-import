@@ -19,6 +19,3 @@ export const getAccountName = (accountNumber: string): string | null =>
 
 export const setAccountName = (accountNumber: string, name: string): void =>
   localStorage.setItem(getNameStorageKey(accountNumber), name);
-
-export const removeAccountName = (accountNumber: string): void =>
-  localStorage.removeItem(getNameStorageKey(accountNumber));
