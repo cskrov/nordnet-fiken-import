@@ -28,5 +28,8 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Knip
+        run: bun run knip
+
       - name: Test
         run: bun test
