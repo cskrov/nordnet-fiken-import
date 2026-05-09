@@ -1,5 +1,4 @@
 import { addMonths, endOfMonth, isLastDayOfMonth, isSameMonth, parse } from 'date-fns';
-import { chain } from '@/lib/chain';
 import type { CsvFile } from '@/lib/csv';
 import { parseMoney } from '@/lib/money';
 import { isNordnetType, type NordnetLine, NordnetType } from '@/lib/nordnet/types';
@@ -196,7 +195,8 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
   });
 };
 
-export const fixNordnetLines = chain(deduplicateNordnetLines, sortNordnetLines, generateMissingLines);
+export const fixNordnetLines = (lines: NordnetLine[]): NordnetLine[] =>
+  generateMissingLines(sortNordnetLines(deduplicateNordnetLines(lines)));
 
 export const groupNordnetLinesByAccount = (lines: NordnetLine[]): Map<string, NordnetLine[]> => {
   const groups = new Map<string, NordnetLine[]>();
