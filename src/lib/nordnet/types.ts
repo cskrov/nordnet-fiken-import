@@ -29,6 +29,8 @@ export interface NordnetLineSource {
 export interface NordnetLine {
   readonly id: string;
   readonly bokførtDato: Date;
+  readonly handelsDato: Date;
+  readonly oppgjørsDato: Date;
   readonly portefølje: string;
   readonly transaksjonstype: string;
   readonly beløp: bigint;

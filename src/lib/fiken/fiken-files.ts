@@ -46,7 +46,7 @@ const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
     id,
     transaksjonstype,
     portefølje,
-    bokførtDato,
+    handelsDato,
     beløp,
     saldo,
     ISIN,
@@ -64,7 +64,7 @@ const nordnetLineToFikenLine = (nordnetLine: NordnetLine): FikenLine => {
 
   return {
     type: transaksjonstype,
-    bokførtDato,
+    bokførtDato: handelsDato,
     fraKonto,
     setFraKonto,
     tilKonto,

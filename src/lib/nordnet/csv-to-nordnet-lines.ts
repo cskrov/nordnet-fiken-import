@@ -5,25 +5,29 @@ import { isNordnetType, type NordnetLine, NordnetType } from '@/lib/nordnet/type
 import { pad } from '@/lib/pad-number';
 
 const NORDNET_HEADER_ID = 'Id';
-const NORDNET_HEADER_BOKFORT_DATO = 'Bokføringsdag';
-const NORDNET_HEADER_KONTO = 'Portefølje';
+const NORDNET_HEADER_BOKFØRINGSDAG = 'Bokføringsdag';
+const NORDNET_HEADER_HANDELSDAG = 'Handelsdag';
+const NORDNET_HEADER_OPPGJØRSDAG = 'Oppgjørsdag';
+const NORDNET_HEADER_PORTEFØLJE = 'Portefølje';
+const NORDNET_HEADER_TRANSAKSJONSTYPE = 'Transaksjonstype';
+const NORDNET_HEADER_VERDIPAPIR = 'Verdipapir';
+const NORDNET_HEADER_ISIN = 'ISIN';
 const NORDNET_HEADER_BELØP = 'Beløp';
 const NORDNET_HEADER_SALDO = 'Saldo';
 const NORDNET_HEADER_TRANSAKSJONSTEKST = 'Transaksjonstekst';
-const NORDNET_HEADER_TYPE = 'Transaksjonstype';
-const NORDNET_HEADER_VERDIPAPIR = 'Verdipapir';
-const NORDNET_HEADER_ISIN = 'ISIN';
 
 const NORDNET_HEADERS = [
   NORDNET_HEADER_ID,
-  NORDNET_HEADER_BOKFORT_DATO,
-  NORDNET_HEADER_KONTO,
+  NORDNET_HEADER_BOKFØRINGSDAG,
+  NORDNET_HEADER_HANDELSDAG,
+  NORDNET_HEADER_OPPGJØRSDAG,
+  NORDNET_HEADER_PORTEFØLJE,
+  NORDNET_HEADER_TRANSAKSJONSTYPE,
+  NORDNET_HEADER_VERDIPAPIR,
+  NORDNET_HEADER_ISIN,
   NORDNET_HEADER_BELØP,
   NORDNET_HEADER_SALDO,
   NORDNET_HEADER_TRANSAKSJONSTEKST,
-  NORDNET_HEADER_TYPE,
-  NORDNET_HEADER_VERDIPAPIR,
-  NORDNET_HEADER_ISIN,
 ];
 
 export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
@@ -45,25 +49,29 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
     const [
       idIndex,
       bokførtDatoIndex,
+      handelsDatoIndex,
+      oppgjørsDatoIndex,
       kontoIndex,
-      beløpIndex,
-      saldoIndex,
-      transaksjonstekstekstIndex,
       typeIndex,
       verdipapirIndex,
       isinIndex,
+      beløpIndex,
+      saldoIndex,
+      transaksjonstekstekstIndex,
     ] = headerIndexes;
 
     if (
       idIndex === undefined ||
       bokførtDatoIndex === undefined ||
+      handelsDatoIndex === undefined ||
+      oppgjørsDatoIndex === undefined ||
       kontoIndex === undefined ||
-      beløpIndex === undefined ||
-      saldoIndex === undefined ||
-      transaksjonstekstekstIndex === undefined ||
       typeIndex === undefined ||
       verdipapirIndex === undefined ||
-      isinIndex === undefined
+      isinIndex === undefined ||
+      beløpIndex === undefined ||
+      saldoIndex === undefined ||
+      transaksjonstekstekstIndex === undefined
     ) {
       throw new Error('Kolonner mangler i eksport fra Nordnet');
     }
@@ -71,13 +79,17 @@ export const toNordnetLines = (csvFiles: CsvFile[]): NordnetLine[] => {
     return rows
       .map<NordnetLine>((row, rowNumber) => {
         const bokførtDato = parse(row[bokførtDatoIndex] ?? '', 'yyyy-MM-dd', referenceDate);
-        const year = bokførtDato.getFullYear();
-        const month = bokførtDato.getMonth() + 1;
+        const handelsDato = parse(row[handelsDatoIndex] ?? '', 'yyyy-MM-dd', referenceDate);
+        const oppgjørsDato = parse(row[oppgjørsDatoIndex] ?? '', 'yyyy-MM-dd', referenceDate);
+        const year = handelsDato.getFullYear();
+        const month = handelsDato.getMonth() + 1;
         const transaksjonstype = row[typeIndex] ?? '';
 
         return {
           id: row[idIndex] ?? '',
           bokførtDato,
+          handelsDato,
+          oppgjørsDato,
           portefølje: row[kontoIndex] ?? '',
           transaksjonstype,
           beløp: parseMoney(row[beløpIndex] ?? ''),
@@ -123,14 +135,16 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
     const nextLine = nordnetLines.at(index + 1);
 
     if (nextLine === undefined) {
-      if (isSameMonth(line.bokførtDato, now) || isLastDayOfMonth(line.bokførtDato)) {
+      if (isSameMonth(line.handelsDato, now) || isLastDayOfMonth(line.handelsDato)) {
         return line;
       }
 
       return [
         line,
         {
-          bokførtDato: endOfMonth(line.bokførtDato),
+          bokførtDato: endOfMonth(line.handelsDato),
+          handelsDato: endOfMonth(line.handelsDato),
+          oppgjørsDato: endOfMonth(line.handelsDato),
           portefølje: line.portefølje,
           beløp: 0n,
           saldo: line.saldo,
@@ -162,7 +176,7 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
     const expectedSaldo = nextLine.saldo - nextLine.beløp;
     const unexpectedSaldo = line.saldo !== expectedSaldo;
 
-    const start = isLastDayOfMonth(line.bokførtDato) ? 1 : 0;
+    const start = isLastDayOfMonth(line.handelsDato) ? 1 : 0;
 
     // Generate missing end of month lines.
     const missingMonths: NordnetLine[] = [];
@@ -172,7 +186,9 @@ const generateMissingLines = (nordnetLines: NordnetLine[]): NordnetLine[] => {
       const year = currentLineMonth === 12 ? line.year + 1 : line.year;
 
       missingMonths.push({
-        bokførtDato: endOfMonth(addMonths(line.bokførtDato, i)),
+        bokførtDato: endOfMonth(addMonths(line.handelsDato, i)),
+        handelsDato: endOfMonth(addMonths(line.handelsDato, i)),
+        oppgjørsDato: endOfMonth(addMonths(line.handelsDato, i)),
         portefølje: line.portefølje,
         beløp: 0n,
         saldo: line.saldo,

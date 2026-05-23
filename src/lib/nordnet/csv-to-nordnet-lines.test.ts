@@ -4,6 +4,8 @@ import type { NordnetLine } from '@/lib/nordnet/types';
 
 const makeNordnetLine = (overrides: Partial<NordnetLine> & Pick<NordnetLine, 'id' | 'portefølje'>): NordnetLine => ({
   bokførtDato: new Date('2024-03-15'),
+  handelsDato: new Date('2024-03-15'),
+  oppgjørsDato: new Date('2024-03-15'),
   transaksjonstype: 'INNSKUDD',
   beløp: 10000n,
   saldo: 50000n,
