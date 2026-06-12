@@ -14,6 +14,8 @@ export const downloadFikenLinesCsv = (fikenLines: FikenLine[], fileName: string)
   a.href = url;
   a.download = fileName;
   a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 };
 
 export const downloadFikenMapSingleCsv = (fikenLines: FikenLine[], accountAlias?: string | null) => {
