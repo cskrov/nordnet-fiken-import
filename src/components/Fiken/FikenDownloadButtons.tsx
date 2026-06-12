@@ -3,11 +3,10 @@ import { Button, ButtonSize, ButtonVariant } from '@/components/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalVariant } from '@/components/Modal/types';
 import { Row } from '@/components/Row';
-import { downloadFikenMapMultipleCsv, downloadFikenMapSingleCsv } from '@/lib/download';
+import { downloadFikenMapSingleCsv } from '@/lib/download';
 import { markAllAsDownloaded } from '@/lib/fiken/download-history';
 import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import DownloadIcon from '~icons/mdi/Download';
-import DownloadMultipleIcon from '~icons/mdi/DownloadMultiple';
 
 interface FikenDownloadButtonsProps {
   fikenFiles: Accessor<FikenFileData[]>;
@@ -36,21 +35,6 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (p
     }
   };
 
-  const onClickDownloadSeparate = async () => {
-    umami.track('Download all (separate files)', getEventData(props.fikenFiles()));
-
-    try {
-      downloadFikenMapMultipleCsv(props.fikenFiles());
-      await markAllAsDownloaded(props.fikenFiles());
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
-        setModalErrorMessage(error.message);
-        setShowErrorModal(true);
-      }
-    }
-  };
-
   return (
     <Row class="mt-8">
       <Button
@@ -60,14 +44,6 @@ export const FikenDownloadButtons: VoidComponent<FikenDownloadButtonsProps> = (p
         icon={<DownloadIcon />}
       >
         Last ned alle i én fil
-      </Button>
-      <Button
-        onClick={onClickDownloadSeparate}
-        variant={ButtonVariant.PRIMARY}
-        size={ButtonSize.LARGE}
-        icon={<DownloadMultipleIcon />}
-      >
-        Last ned alle i separate filer
       </Button>
       <Modal isOpen={showErrorModal} onClose={() => setShowErrorModal(false)} variant={ModalVariant.ERROR}>
         <span>{modalErrorMessage()}</span>

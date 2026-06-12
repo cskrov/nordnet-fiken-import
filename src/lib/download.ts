@@ -1,5 +1,4 @@
 import { serializeFikenCsv, toFikenCsv } from '@/lib/fiken/fiken-csv';
-import type { FikenFileData } from '@/lib/fiken/fiken-files';
 import { sanitizeAccountName, sanitizeAlias } from '@/lib/fiken/fiken-files';
 import type { FikenLine } from '@/lib/fiken/types';
 import { pad } from '@/lib/pad-number';
@@ -60,10 +59,4 @@ const getDateRangeKey = (firstLine: FikenLine, lastLine: FikenLine): string => {
   }
 
   return `${firstYear.toString(10)}-${pad(firstMonth + 1)}_${lastYear.toString(10)}-${pad(lastMonth + 1)}`;
-};
-
-export const downloadFikenMapMultipleCsv = (fikenFiles: FikenFileData[]) => {
-  for (const { fileName, rows } of fikenFiles) {
-    downloadFikenLinesCsv(rows, fileName);
-  }
 };
