@@ -55,3 +55,16 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ github.repository }}:latest .
           docker push ghcr.io/${{ github.repository }}:latest
+
+      - name: Generate hostname
+        id: hostname
+        run: echo "name=github-deploy-nordnet-fiken-import-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Connect to Netbird
+        uses: Alemiz112/netbird-connect@fbea46300ca7ee907ff7d8e39ede3f556a6ecf10 # v1.0.2
+        with:
+          setup-key: ${{ secrets.NETBIRD_SETUP_KEY }}
+          hostname: ${{ steps.hostname.outputs.name }}
+
+      - name: Trigger deploy
+        run: curl -fsS -X GET --retry 30 --retry-delay 1 --retry-all-errors "${{ secrets.DEPLOY_WEBHOOK }}"
