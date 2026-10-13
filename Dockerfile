@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/nginx:latest@sha256:2e0963ea5cd69cf64af80c53890f414ea47b8b1ad2aeb9ec6651153261794790
+FROM cgr.dev/chainguard/nginx:latest@sha256:d74ba9e5cf9f6b049807e27a5a14a8cd2550ac428143b7d15ea3dbad282f4ed1
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY dist /usr/share/nginx/html
