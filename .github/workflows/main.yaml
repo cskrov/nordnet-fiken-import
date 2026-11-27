@@ -17,14 +17,76 @@ on:
       - Dockerfile
       - nginx.conf
       - .github/workflows/main.yaml
+  schedule:
+    # Every night at 03:00 UTC, rebuild if the Chainguard base image has changed
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
+concurrency:
+  group: build-and-deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+  BASE_IMAGE: cgr.dev/chainguard/nginx:latest
+  BASE_DIGEST_LABEL: org.opencontainers.image.base.digest
+
 jobs:
-  build-and-deply:
+  check-base-image:
+    name: Check base image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    outputs:
+      base-digest: ${{ steps.base.outputs.digest }}
+      deploy: ${{ steps.compare.outputs.deploy }}
+    steps:
+      - name: Resolve base image digest
+        id: base
+        run: |
+          digest=$(docker buildx imagetools inspect "$BASE_IMAGE" --format '{{.Manifest.Digest}}')
+          echo "Current $BASE_IMAGE digest: $digest"
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'schedule'
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Compare with deployed base image
+        id: compare
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_DIGEST: ${{ steps.base.outputs.digest }}
+        run: |
+          if [ "$EVENT_NAME" != "schedule" ]; then
+            echo "Triggered by $EVENT_NAME, always deploying"
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          deployed=""
+          if docker pull --quiet "$IMAGE:latest"; then
+            deployed=$(docker image inspect "$IMAGE:latest" --format "{{ index .Config.Labels \"$BASE_DIGEST_LABEL\" }}")
+          fi
+          echo "Deployed base digest: ${deployed:-unknown}"
+
+          if [ "$deployed" = "$BASE_DIGEST" ]; then
+            echo "Base image unchanged, skipping deploy"
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Base image changed, deploying"
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-deploy:
     name: Build and deploy
+    needs: check-base-image
+    if: needs.check-base-image.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    env:
+      BASE_DIGEST: ${{ needs.check-base-image.outputs.base-digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -48,13 +110,35 @@ jobs:
         shell: bash
         run: bun test
 
+      - name: Build Docker image
+        run: |
+          tag="$(date -u +%Y%m%d-%H%M)-${GITHUB_SHA::7}"
+          docker build \
+            --pull \
+            --build-arg "BASE_IMAGE=$BASE_IMAGE@$BASE_DIGEST" \
+            --label "org.opencontainers.image.base.name=$BASE_IMAGE" \
+            --label "$BASE_DIGEST_LABEL=$BASE_DIGEST" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+            -t "$IMAGE:latest" \
+            -t "$IMAGE:$tag" \
+            .
+          echo "Built $IMAGE:$tag" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Smoke test Docker image
+        run: |
+          # nginx resolves the umami upstream at startup, so give it a hosts entry
+          docker run -d --name smoke-test --add-host umami:127.0.0.1 -p 3001:3001 "$IMAGE:latest"
+          trap 'docker logs smoke-test; docker rm -f smoke-test > /dev/null' EXIT
+          curl -fsS --retry 10 --retry-delay 1 --retry-all-errors http://localhost:3001/ \
+            | grep -q '<title>Fiken Nordnet import</title>'
+          echo "Smoke test passed"
+
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}:latest .
-          docker push ghcr.io/${{ github.repository }}:latest
+      - name: Push Docker image
+        run: docker push --all-tags "$IMAGE"
 
       - name: Generate hostname
         id: hostname

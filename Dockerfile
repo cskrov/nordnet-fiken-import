@@ -1,4 +1,6 @@
-FROM cgr.dev/chainguard/nginx:latest@sha256:7f1cc53f9c57ecfd182fa7a266f6178c5ba4b0a826421b87a753021db7d3d430
+# The deploy workflow passes the base image pinned to the digest it resolved
+ARG BASE_IMAGE=cgr.dev/chainguard/nginx:latest
+FROM ${BASE_IMAGE}
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY dist /usr/share/nginx/html
